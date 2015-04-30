@@ -3,6 +3,7 @@ package edu.asu.ser322.data;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import edu.asu.ser322.data.StorageFactory.SQL;
 
@@ -65,43 +66,119 @@ public class UserDaoSQL implements UserDao
 	@Override
 	public boolean updateUser(User user)
 	{
-		// TODO Auto-generated method stub return false;
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		// TODO: validate user
+		boolean result = false;
+		String sql = "UPDATE Users set Password=?, Waifu=?, WHERE Username=?";
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, user.getPassword());
+			statement.setInt(2, user.getWaifu().getID());
+			
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	@Override
 	public User findUser(String username)
 	{
-		// TODO Auto-generated method stub return null;
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		String sql = "SELECT * FROM Users WHERE Username=?";
+		User user = User.NULL_USER;
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, username);
+			ResultSet results = statement.executeQuery();
+			
+			if (results.next())
+			{
+				String resultUsername = results.getString("Username");
+				// FIXME: This is a security risk...
+				String resultPassword = results.getString("Password");
+				int resultWaifuID = results.getInt("Waifu");
+				
+				// TODO: get waifu from character DAO
+				Character waifu = null;
+				
+				user = new User(resultUsername, resultPassword, waifu);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return user;
 	}
 	
 	@Override
 	public boolean userExists(String username)
 	{
-		// TODO Auto-generated method stub return false;
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		return !User.NULL_USER.equals(findUser(username));
 	}
 	
 	@Override
 	public boolean deleteUser(String username)
 	{
-		// TODO Auto-generated method stub return false;
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		boolean result = false;
+		String sql = "DELETE FROM Users WHERE Username=?";
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, username);
+			
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	@Override
 	public boolean login(String username, String password)
 	{
-		// TODO Auto-generated method stub return false;
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		String sql = "SELECT * FROM Users WHERE Username=?";
+		boolean result = false;
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, username);
+			ResultSet results = statement.executeQuery();
+			
+			if (results.next())
+			{
+				String actualPassword = results.getString("Password");
+				result = actualPassword.equals(password);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	@Override
 	public boolean logout(String username, String password)
 	{
-		// TODO Auto-generated method stub return false;
-		throw new UnsupportedOperationException("The method is not implemented yet.");
+		// TODO add actual implementation or documentation that explains otherwise
+		return login(username, password);
 	}
 	
 }

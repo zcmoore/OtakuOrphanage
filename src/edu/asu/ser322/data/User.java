@@ -3,11 +3,10 @@ package edu.asu.ser322.data;
 /**
  * Placeholder.
  * 
- * Model of a single user, identified by their username. 
+ * Model of a single user, identified by their username.
  * <p>
- * NOTE: the inclusion of
- * {@link #password} is a potential security issue, and will likely be removed,
- * deprecated, or repurposed in a future version. It is currently included for
+ * NOTE: the inclusion of {@link #password} is a potential security issue, and will likely
+ * be removed, deprecated, or repurposed in a future version. It is currently included for
  * completeness.
  * 
  * @author Moore, Zachary
@@ -26,6 +25,19 @@ public class User
 	public String getUsername()
 	{
 		return username;
+	}
+	
+	public User(String username, String password, Character waifu)
+	{
+		super();
+		this.username = username;
+		this.password = password;
+		this.waifu = waifu;
+	}
+	
+	public User()
+	{
+		super();
 	}
 	
 	public void setUsername(String username)
