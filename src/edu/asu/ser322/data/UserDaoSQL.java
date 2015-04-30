@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
 
 import edu.asu.ser322.data.StorageFactory.SQL;
 
@@ -50,7 +51,12 @@ public class UserDaoSQL implements UserDao
 		{
 			statement.setString(1, user.getUsername());
 			statement.setString(2, user.getPassword());
-			statement.setInt(3, user.getWaifu().getID());
+			
+			Character waifu = user.getWaifu();
+			if (waifu != null)
+				statement.setInt(3, waifu.getID());
+			else
+				statement.setNull(3, Types.INTEGER);
 			
 			statement.execute();
 			result = true;
