@@ -1,4 +1,4 @@
-package edu.asu.ser322;
+package edu.asu.ser322.data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
