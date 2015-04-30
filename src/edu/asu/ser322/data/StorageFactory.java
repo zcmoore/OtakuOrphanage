@@ -4,6 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
+/**
+ * Factory to manufacture persistent stores for the OtakuOrphanage Anime Application. This
+ * factory is intended to build persistent stores, but it will not <i>populate</i> the
+ * store unless otherwise specified.
+ * 
+ * @author Moore, Zachary
+ *
+ */
 public class StorageFactory
 {
 	/**
