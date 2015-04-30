@@ -14,6 +14,12 @@ import java.sql.Statement;
  */
 public class StorageFactory
 {
+	public static final class SQL
+	{
+		public static final String DRIVER_PATH = "org.sqlite.JDBC";
+		public static final String CONNECTION_URL = "jdbc:sqlite:orphanage.db";
+	}
+	
 	/**
 	 * Creates an SQLite database and places the store in the root project folder. If the
 	 * database already exists, it will be overwritten.
@@ -24,8 +30,8 @@ public class StorageFactory
 	{
 		try
 		{
-			// Initialize org.sqlite.JDBC
-			Class.forName("org.sqlite.JDBC");
+			// Initialize database driver
+			Class.forName(SQL.DRIVER_PATH);
 		}
 		catch (ClassNotFoundException exception)
 		{
@@ -33,8 +39,7 @@ public class StorageFactory
 			return false;
 		}
 		
-		try (Connection dbConnection = DriverManager
-				.getConnection("jdbc:sqlite:orphanage.db");
+		try (Connection dbConnection = DriverManager.getConnection(SQL.CONNECTION_URL);
 				Statement sqlStatement = dbConnection.createStatement();)
 		{
 			
