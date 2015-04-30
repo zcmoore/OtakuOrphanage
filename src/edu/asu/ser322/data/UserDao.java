@@ -1,7 +1,5 @@
 package edu.asu.ser322.data;
 
-import model.User;
-
 /**
  * Intermediate layer to communicate User data between a client and a persistent store.
  * 
