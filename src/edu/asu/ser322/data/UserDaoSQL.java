@@ -42,7 +42,7 @@ public class UserDaoSQL implements UserDao
 	{
 		// TODO: validate user
 		boolean result = false;
-		String sql = "INSERT INTO User (Username, Password, Waifu)" + "VALUES(?, ?, ?)";
+		String sql = "INSERT INTO Users(Username, Password, Waifu) VALUES(?, ?, ?)";
 		
 		try (Connection connection = createConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
