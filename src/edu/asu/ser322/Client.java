@@ -15,15 +15,20 @@ public class Client extends JFrame
 	public static final int VERSION = 1;
 	public static final int REVISION = 0;
 	public static final String LOGIN = "0";
+	public static final String MAINMENU = "1";
 	JPanel panelCont = new JPanel();
 	CardLayout cardLayout = new CardLayout();
-	LoginGUI loginGUI = new LoginGUI();
+	LoginGUI loginGUI;
+	MainMenuGUI mainMenuGUI;
 	
 	public Client()
 	{
 		super(APPLICATION_NAME + " V" + VERSION + "." + REVISION);
+		loginGUI = new LoginGUI();
+		mainMenuGUI = new MainMenuGUI();
 		panelCont.setLayout(cardLayout);
 		panelCont.add(loginGUI, LOGIN);
+		panelCont.add(mainMenuGUI, MAINMENU);
 		cardLayout.show(panelCont, LOGIN);
 		this.pack();
 		this.invalidate();
@@ -43,4 +48,5 @@ public class Client extends JFrame
 		
 		return new Point(x, y);
 	}
+
 }

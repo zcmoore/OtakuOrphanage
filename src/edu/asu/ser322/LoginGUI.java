@@ -28,6 +28,8 @@ public class LoginGUI extends JPanel // implements ActionListener
 	protected JButton loginButton;
 	protected JButton registerButton;
 	private UserDao userDao;
+	public static final String MAINMENU = "1";
+
 	
 	// protected GroupLayout layout = new GroupLayout(this);
 	
@@ -53,7 +55,6 @@ public class LoginGUI extends JPanel // implements ActionListener
 	
 	public void layout()
 	{
-		// animeDatabaseLogin.setBounds
 		setLayout(null);
 		
 		animeDatabaseLogin.setBounds(600, 20, 300, 30);
@@ -70,17 +71,30 @@ public class LoginGUI extends JPanel // implements ActionListener
 		
 		passwordTextField.setBounds(600, 250, 200, 30);
 		add(passwordTextField);
-		
+		//FIXME: Implement the button differently
 		loginButton.setBounds(300, 500, 150, 75);
 		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				int counter = 0;
-				counter++;
-				System.out.println(counter);
 				User user = userDao.findUser(usernameTextField.getText());
-				System.out.println(user.getUsername());
-				System.out.println(user.getPassword());
+				if(user != null)
+				{
+					if(user.getPassword().equals(passwordTextField.getText()))
+					{
+						//TODO: Change panel to main menu
+						System.out.println("Sign in successful.");
+					}
+					else
+					{
+						//TODO: Change panel to failed to sign in
+						System.out.println("Sign in failed.");
+					}
+				}
+				else
+				{
+					//TODO: Change panel to no such user and offer to register user
+					System.out.println("No such user.");
+				}
 			}
 		});
 		add(loginButton);
@@ -89,45 +103,4 @@ public class LoginGUI extends JPanel // implements ActionListener
 		// registerButton.addActionListener(this);
 		add(registerButton);
 	}
-	
-	//@formatter:off
-    /*
-	@Override
-	public void actionPerformed(ActionEvent e) 
-	{
-		if(e.getSource() == loginButton)
-		{
-			int counter = 0;
-			counter++;
-			System.out.println(counter);
-			/*
-			User user = sql.findUser(usernameTextField.getText());
-			System.out.println(user.getUsername());
-			System.out.println(user.getPassword());
-			if(user == null)
-			{
-			    System.out.println("User not found");	
-			}
-			else
-			{
-			    if(user.getPassword() == passwordTextField.getText())	
-			    {
-			    	System.out.println("Login successful");
-			    }
-			    else
-			    {
-			    	System.out.println("Login failed");
-			    	System.out.println("user password: " + user.getPassword());
-			    }
-			}
-			
-		}
-		else if(e.getSource() == registerButton)
-		{
-			//TODO: Go to register page
-		}
-		
-	}
-	*/
-  
 }
