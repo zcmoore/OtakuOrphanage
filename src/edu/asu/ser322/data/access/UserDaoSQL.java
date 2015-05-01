@@ -1,4 +1,4 @@
-package edu.asu.ser322.data;
+package edu.asu.ser322.data.access;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,7 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 
+import edu.asu.ser322.data.StorageFactory;
 import edu.asu.ser322.data.StorageFactory.SQL;
+import edu.asu.ser322.data.model.Character;
+import edu.asu.ser322.data.model.User;
 
 /**
  * {@link UserDao} which uses an SQLite database as its persistent store. Note: the
@@ -112,8 +115,8 @@ public class UserDaoSQL implements UserDao
 				String resultPassword = results.getString("Password");
 				int resultWaifuID = results.getInt("Waifu");
 				
-				// TODO: get waifu from character DAO
-				Character waifu = null;
+				CharacterDao dao = DAOCollection.getCharacterDao();
+				Character waifu = dao.findCharacter(resultWaifuID);
 				
 				user = new User(resultUsername, resultPassword, waifu);
 			}
