@@ -10,7 +10,6 @@ import javax.swing.JTextField;
 
 import edu.asu.ser322.data.access.DAOCollection;
 import edu.asu.ser322.data.access.UserDao;
-import edu.asu.ser322.data.access.UserDaoSQL;
 import edu.asu.ser322.data.model.User;
 
 /**
@@ -28,7 +27,7 @@ public class LoginGUI extends JPanel // implements ActionListener
 	protected JTextField passwordTextField;
 	protected JButton loginButton;
 	protected JButton registerButton;
-	UserDao sql = new UserDaoSQL();
+	private UserDao userDao;
 	
 	// protected GroupLayout layout = new GroupLayout(this);
 	
@@ -40,6 +39,8 @@ public class LoginGUI extends JPanel // implements ActionListener
 	
 	private void init()
 	{
+		userDao = DAOCollection.getUserDao();
+		
 		animeDatabaseLogin = new JLabel("Anime Database");
 		userLabel = new JLabel("Username: ");
 		usernameTextField = new JTextField();
@@ -77,7 +78,7 @@ public class LoginGUI extends JPanel // implements ActionListener
 				int counter = 0;
 				counter++;
 				System.out.println(counter);
-				User user = sql.findUser(usernameTextField.getText());
+				User user = userDao.findUser(usernameTextField.getText());
 				System.out.println(user.getUsername());
 				System.out.println(user.getPassword());
 			}
