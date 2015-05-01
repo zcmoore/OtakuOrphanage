@@ -1,7 +1,8 @@
 package edu.asu.ser322.data;
 
 /**
- * Intermediate layer to communicate User data between a client and a persistent store.
+ * Intermediate layer to communicate {@link User} data between a client and a persistent
+ * store.
  * 
  * @author Moore, Zachary
  *
