@@ -10,11 +10,11 @@ package edu.asu.ser322.data;
  */
 public class Character
 {
-	private int id;
-	
-	public int getID()
-	{
-		return id;
-	}
-	
+    private int id;
+    
+    public int getID()
+    {
+        return id;
+    }
+    
 }
