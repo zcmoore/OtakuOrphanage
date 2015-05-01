@@ -112,8 +112,8 @@ public class UserDaoSQL implements UserDao
 				String resultPassword = results.getString("Password");
 				int resultWaifuID = results.getInt("Waifu");
 				
-				// TODO: get waifu from character DAO
-				Character waifu = null;
+				CharacterDao dao = DAOCollection.getCharacterDao();
+				Character waifu = dao.findCharacter(resultWaifuID);
 				
 				user = new User(resultUsername, resultPassword, waifu);
 			}
