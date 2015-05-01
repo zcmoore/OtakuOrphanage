@@ -113,7 +113,7 @@ class UserDaoSQL implements UserDao
 				// FIXME: This is a security risk...
 				String resultPassword = results.getString("Password");
 				//int resultWaifuID = results.getInt("Waifu");
-				
+				//FIXME: Causes Issue with login
 				//CharacterDao dao = DAOCollection.getCharacterDao();
 				//Character waifu = dao.findCharacter(resultWaifuID);
 				

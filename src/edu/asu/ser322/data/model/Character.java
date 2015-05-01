@@ -16,7 +16,7 @@ public class Character
 	private Gender gender;
 	private String archetype;
 	private String name;
-	private String hairColour;
+	private String hairColor;
 	private Date birthDate;
 	
 	public int getID()
@@ -64,14 +64,14 @@ public class Character
 		this.name = name;
 	}
 	
-	public String getHairColour()
+	public String getHairColor()
 	{
-		return hairColour;
+		return hairColor;
 	}
 	
-	public void setHairColour(String hairColour)
+	public void setHairColor(String hairColor)
 	{
-		this.hairColour = hairColour;
+		this.hairColor = hairColor;
 	}
 	
 	public Date getBirthDate()

@@ -1,5 +1,9 @@
 package edu.asu.ser322.data.model;
-
+/**
+ * 
+ * @author Benjamin Paothatat
+ *
+ */
 public class Studio {
 	private String studioName;
 	private String startDate;

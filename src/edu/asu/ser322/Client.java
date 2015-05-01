@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class Client extends JFrame
 {
 	public static final Dimension DEFAULT_FRAME_SIZE = new Dimension(1280, 720);
@@ -24,8 +25,8 @@ public class Client extends JFrame
 	public Client()
 	{
 		super(APPLICATION_NAME + " V" + VERSION + "." + REVISION);
-		loginGUI = new LoginGUI();
-		mainMenuGUI = new MainMenuGUI();
+		loginGUI = new LoginGUI(this);
+		mainMenuGUI = new MainMenuGUI(this);
 		panelCont.setLayout(cardLayout);
 		panelCont.add(loginGUI, LOGIN);
 		panelCont.add(mainMenuGUI, MAINMENU);
@@ -47,6 +48,11 @@ public class Client extends JFrame
 		int y = screenSize.height / 2 - this.getHeight() / 2;
 		
 		return new Point(x, y);
+	}
+	
+	public void showMainMenu()
+	{
+		cardLayout.show(panelCont, MAINMENU);
 	}
 
 }

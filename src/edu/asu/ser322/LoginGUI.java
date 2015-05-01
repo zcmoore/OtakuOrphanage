@@ -16,8 +16,9 @@ import edu.asu.ser322.data.model.User;
  * 
  * 
  * @author Benjamin Paothatat
- * @author Tmoney
+ * @author Cuahuctemoc Osorio
  */
+@SuppressWarnings("serial")
 public class LoginGUI extends JPanel // implements ActionListener
 {
 	protected JLabel animeDatabaseLogin;
@@ -29,12 +30,15 @@ public class LoginGUI extends JPanel // implements ActionListener
 	protected JButton registerButton;
 	private UserDao userDao;
 	public static final String MAINMENU = "1";
+	Client client;
+	MainMenuGUI mainMenu;
 
 	
 	// protected GroupLayout layout = new GroupLayout(this);
 	
-	public LoginGUI()
+	public LoginGUI(Client client)
 	{
+		this.client = client;
 		init();
 		layout();
 	}
@@ -82,6 +86,7 @@ public class LoginGUI extends JPanel // implements ActionListener
 					if(user.getPassword().equals(passwordTextField.getText()))
 					{
 						//TODO: Change panel to main menu
+						client.showMainMenu();
 						System.out.println("Sign in successful.");
 					}
 					else
