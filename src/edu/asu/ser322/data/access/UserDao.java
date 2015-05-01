@@ -1,4 +1,6 @@
-package edu.asu.ser322.data;
+package edu.asu.ser322.data.access;
+
+import edu.asu.ser322.data.model.User;
 
 /**
  * Intermediate layer to communicate {@link User} data between a client and a persistent

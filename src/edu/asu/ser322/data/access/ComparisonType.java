@@ -1,4 +1,4 @@
-package edu.asu.ser322.data;
+package edu.asu.ser322.data.access;
 
 public enum ComparisonType
 {

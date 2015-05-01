@@ -6,10 +6,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.asu.ser322.data.Character;
-import edu.asu.ser322.data.User;
-import edu.asu.ser322.data.UserDao;
-import edu.asu.ser322.data.UserDaoSQL;
+import edu.asu.ser322.data.access.UserDao;
+import edu.asu.ser322.data.access.UserDaoSQL;
+import edu.asu.ser322.data.model.Character;
+import edu.asu.ser322.data.model.User;
 
 public class TestUserDaoSQL
 {

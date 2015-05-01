@@ -1,6 +1,9 @@
-package edu.asu.ser322.data;
+package edu.asu.ser322.data.access;
 
 import java.util.List;
+
+import edu.asu.ser322.data.model.Character;
+import edu.asu.ser322.data.model.Gender;
 
 /**
  * Intermediate layer to communicate {@link Character} data between a client and a

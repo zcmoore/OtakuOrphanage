@@ -1,4 +1,4 @@
-package edu.asu.ser322.data;
+package edu.asu.ser322.data.model;
 /**
  * 
  * @author Benjamin Paothatat

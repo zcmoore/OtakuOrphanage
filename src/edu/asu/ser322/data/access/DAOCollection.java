@@ -1,4 +1,5 @@
-package edu.asu.ser322.data;
+package edu.asu.ser322.data.access;
+
 
 public class DAOCollection
 {
