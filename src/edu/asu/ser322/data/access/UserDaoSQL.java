@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 
-import edu.asu.ser322.data.StorageFactory;
 import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.User;
@@ -19,7 +18,7 @@ import edu.asu.ser322.data.model.User;
  * @author Moore, Zachary
  *
  */
-public class UserDaoSQL implements UserDao
+class UserDaoSQL implements UserDao
 {
 	/**
 	 * @return Connection to {@link SQL#CONNECTION_URL}, or null if a connection cannot be
