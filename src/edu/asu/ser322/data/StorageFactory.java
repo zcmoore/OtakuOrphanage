@@ -42,11 +42,10 @@ public class StorageFactory
 		try (Connection dbConnection = DriverManager.getConnection(SQL.CONNECTION_URL);
 				Statement sqlStatement = dbConnection.createStatement();)
 		{
-			
 			dbConnection.createStatement().execute("PRAGMA foreign_keys = ON");
 			String[] tableNames = new String[] { "Studios", "Employs", "People", "Staff",
 					"Episodes", "CharacterAppearances", "SeasonEpisodeMap",
-					"SeriesSeasonMap", "FranchiseSeriesMap", "StudioFranchiseMap",
+					"CharacterBirthDates", "FranchiseSeasonMap", "StudioFranchiseMap",
 					"Users", "Watched", "Series", "Seasons", "Characters",
 					"ActorAppearances", "Reviews", "Franchises", "ReviewMap" };
 			String sql;
@@ -73,6 +72,15 @@ public class StorageFactory
             "HairColor     TEXT," +
             "Archtype      TEXT," +
             "PRIMARY KEY (CharacterID));";
+            sqlStatement.execute(sql);
+
+            sql = "CREATE TABLE CharacterBirthDates(" +
+            "CharacterID   INTEGER," +
+            "Day           TEXT," +
+            "Month         TEXT," +
+            "Year          TEXT," +
+            "PRIMARY KEY (CharacterID)," +
+            "FOREIGN KEY(CharacterID) REFERENCES Characters(CharacterID));";
             sqlStatement.execute(sql);
            
             sql = "CREATE TABLE Users(" +
