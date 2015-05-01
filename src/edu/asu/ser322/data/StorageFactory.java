@@ -88,12 +88,6 @@ public class StorageFactory
             "Name          TEXT);";
             sqlStatement.execute(sql);
            
-            sql = "CREATE TABLE Series(" +
-            "SeriesID       INTEGER," +
-            "SeriesName     TEXT," +
-            "PRIMARY KEY (SeriesID));";
-            sqlStatement.execute(sql);
-           
             sql = "CREATE TABLE Reviews(" +
             "ReviewID        INTEGER," +
             "Description     TEXT," +
@@ -107,17 +101,16 @@ public class StorageFactory
             sqlStatement.execute(sql);
            
             sql = "CREATE TABLE Seasons(" +
-            "Series         INTEGER," +
+            "Series         TEXT," +
             "SeasonNumber   INTEGER," +
             "AirDate        TEXT," +
             "ShowName       TEXT," +
             "FinishDate     TEXT," +
-            "PRIMARY KEY (Series, SeasonNumber)," +
-            "FOREIGN KEY(Series) REFERENCES Series(SeriesID));";
+            "PRIMARY KEY (Series, SeasonNumber));";
             sqlStatement.execute(sql);
            
             sql = "CREATE TABLE Episodes(" +
-            "Series         INTEGER," +
+            "Series         TEXT," +
             "Season         INTEGER," +
             "EpisodeNumber  INTEGER," +
             "AirDate        TEXT," +
@@ -126,7 +119,7 @@ public class StorageFactory
             "ArtStyle       TEXT," +
             "Approprateness TEXT," +
             "PRIMARY KEY (Series, Season, EpisodeNumber)," +
-            "FOREIGN KEY(Series) REFERENCES Series(SeriesID)," +
+            "FOREIGN KEY(Series) REFERENCES Seasons(Series)," +
             "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber));";
             sqlStatement.execute(sql);
            
@@ -141,12 +134,12 @@ public class StorageFactory
             
             sql = "CREATE TABLE Staff(" +
             "Employee      INTEGER," +
-            "Series        INTEGER," +
+            "Series        TEXT," +
             "Season        INTEGER," +
             "Episode       INTEGER," +
             "Role          TEXT," +
             "PRIMARY KEY (Employee, Series, Season, Episode, Role)," +
-            "FOREIGN KEY(Series) REFERENCES Series(SeriesID)," +
+            "FOREIGN KEY(Series) REFERENCES Seasons(Series)," +
             "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber)," +
             "FOREIGN KEY(Episode) REFERENCES Episodes(EpisodeNumber)," +
             "FOREIGN KEY(Employee) REFERENCES People(PersonID));";
@@ -154,12 +147,12 @@ public class StorageFactory
            
             sql = "CREATE TABLE CharacterAppearances(" +
             "Character     INTEGER," +
-            "Series        INTEGER," +
+            "Series        TEXT," +
             "Season        INTEGER," +
             "Episode       INTEGER," +
             "Role          TEXT," +
             "PRIMARY KEY (Character, Series, Season, Episode)," +
-            "FOREIGN KEY(Series) REFERENCES Series(SeriesID)," +
+            "FOREIGN KEY(Series) REFERENCES Seasons(Series)," +
             "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber)," +
             "FOREIGN KEY(Episode) REFERENCES Episodes(EpisodeNumber)," +
             "FOREIGN KEY(Character) REFERENCES Characters(CharacterID));";
@@ -168,38 +161,32 @@ public class StorageFactory
             sql = "CREATE TABLE ActorAppearances(" +
             "Actor         INTEGER," +
             "Character     INTEGER," +
-            "Series        INTEGER," +
+            "Series        TEXT," +
             "Season        INTEGER," +
             "PRIMARY KEY (Actor, Character, Series, Season)," +
-            "FOREIGN KEY(Series) REFERENCES Series(SeriesID)," +
+            "FOREIGN KEY(Series) REFERENCES Seasons(Series)," +
             "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber)," +
             "FOREIGN KEY(Actor) REFERENCES People(PersonID)," +
             "FOREIGN KEY(Character) REFERENCES Characters(CharacterID));";
             sqlStatement.execute(sql);
            
             sql = "CREATE TABLE SeasonEpisodeMap(" +
-            "Series        INTEGER," +
+            "Series        TEXT," +
             "Season        INTEGER," +
             "Episode       INTEGER," +
             "PRIMARY KEY (Series, Season, Episode)," +
-            "FOREIGN KEY(Series) REFERENCES Series(SeriesID)," +
+            "FOREIGN KEY(Series) REFERENCES Seasons(Series)," +
             "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber)," +
             "FOREIGN KEY(Episode) REFERENCES Episodes(EpisodeNumber));";
             sqlStatement.execute(sql);
-           
-            sql = "CREATE TABLE SeriesSeasonMap(" +
-            "Series        INTEGER," +
-            "Season        INTEGER," +
-            "PRIMARY KEY (Series, Season)," +
-            "FOREIGN KEY(Series) REFERENCES Series(SeriesID)," +
-            "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber));";
-            sqlStatement.execute(sql);
             
-            sql = "CREATE TABLE FranchiseSeriesMap(" +
+            sql = "CREATE TABLE FranchiseSeasonMap(" +
             "Franchise     INTEGER," +
-            "Series        INTEGER," +
+            "Series        TEXT," +
+            "Season        INTEGER," +
             "PRIMARY KEY (Series, Franchise)," +
-            "FOREIGN KEY(Series) REFERENCES Series(SeriesID)," +
+            "FOREIGN KEY(Series) REFERENCES Seasons(Series)," +
+            "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber)," +
             "FOREIGN KEY(Franchise) REFERENCES Franchises(FranchiseID));";
             sqlStatement.execute(sql);
            
@@ -213,11 +200,11 @@ public class StorageFactory
             
             sql = "CREATE TABLE Watched(" +
             "User          TEXT," +
-            "Series        INTEGER," +
+            "Series        TEXT," +
             "Season        INTEGER," +
             "Episode       INTEGER," +
             "PRIMARY KEY (User, Series, Season, Episode)," +
-            "FOREIGN KEY(Series) REFERENCES Series(SeriesID)," +
+            "FOREIGN KEY(Series) REFERENCES Seasons(Series)," +
             "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber)," +
             "FOREIGN KEY(Episode) REFERENCES Episodes(EpisodeNumber));";
             sqlStatement.execute(sql);
