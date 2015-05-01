@@ -27,6 +27,7 @@ public class User
 		return username;
 	}
 	
+	
 	public User(String username, String password, Character waifu)
 	{
 		super();
