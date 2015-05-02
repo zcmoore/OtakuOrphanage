@@ -112,10 +112,10 @@ class UserDaoSQL implements UserDao
 				String resultUsername = results.getString("Username");
 				// FIXME: This is a security risk...
 				String resultPassword = results.getString("Password");
-				//int resultWaifuID = results.getInt("Waifu");
-				//FIXME: Causes Issue with login
-				//CharacterDao dao = DAOCollection.getCharacterDao();
-				//Character waifu = dao.findCharacter(resultWaifuID);
+			    int resultWaifuID = results.getInt("Waifu");
+			
+				CharacterDao dao = DAOCollection.getCharacterDao();
+				Character waifu = dao.findCharacter(resultWaifuID);
 				
 				user = new User(resultUsername, resultPassword, null);
 			}

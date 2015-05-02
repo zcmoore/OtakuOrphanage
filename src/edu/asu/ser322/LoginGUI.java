@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import edu.asu.ser322.data.access.DAOCollection;
@@ -25,7 +26,7 @@ public class LoginGUI extends JPanel // implements ActionListener
 	protected JLabel userLabel;
 	protected JLabel passwordLabel;
 	protected JTextField usernameTextField;
-	protected JTextField passwordTextField;
+	protected JPasswordField passwordTextField;
 	protected JButton loginButton;
 	protected JButton registerButton;
 	private UserDao userDao;
@@ -51,7 +52,7 @@ public class LoginGUI extends JPanel // implements ActionListener
 		userLabel = new JLabel("Username: ");
 		usernameTextField = new JTextField();
 		passwordLabel = new JLabel("Password: ");
-		passwordTextField = new JTextField();
+		passwordTextField = new JPasswordField();
 		loginButton = new JButton("Login");
 		registerButton = new JButton("Register");
 		
@@ -80,31 +81,18 @@ public class LoginGUI extends JPanel // implements ActionListener
 		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				User user = userDao.findUser(usernameTextField.getText());
-				if(user != null)
+				if(userDao.login(usernameTextField.getText(),passwordTextField.getText()))
 				{
-					if(user.getPassword().equals(passwordTextField.getText()))
-					{
-						//TODO: Change panel to main menu
-						client.showMainMenu();
-						System.out.println("Sign in successful.");
-					}
-					else
-					{
-						//TODO: Change panel to failed to sign in
-						System.out.println("Sign in failed.");
-					}
-				}
-				else
-				{
-					//TODO: Change panel to no such user and offer to register user
-					System.out.println("No such user.");
+					//TODO: Change panel to main menu
+					client.showMainMenu();
+					System.out.println("Sign in successful.");
 				}
 			}
 		});
 		add(loginButton);
 		
 		registerButton.setBounds(900, 500, 150, 75);
+		//TODO: Created register panel or take information from login page?
 		// registerButton.addActionListener(this);
 		add(registerButton);
 	}

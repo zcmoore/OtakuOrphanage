@@ -1,8 +1,13 @@
 package edu.asu.ser322;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class MainMenuGUI extends JPanel
@@ -13,7 +18,7 @@ public class MainMenuGUI extends JPanel
     private JLabel AccounInfoLabel;
 
     private JComboBox ListOfTables;
-    private ArrayList<String> LOT = ArrayList<String>();
+    private String[] LOT = {"Characters", "Series"};
 
     private JTextField searchTextBar;
 
@@ -29,11 +34,21 @@ public class MainMenuGUI extends JPanel
     
     private void init()
     {
-    	this.setBackground(Color.BLACK);
+    	TitleLabel = new JLabel("Anime Database");
+    	Settings = new JButton();
+    	SearchButton = new JButton();
+    	ListOfTables = new JComboBox<String>(LOT);
     }
     
     public void layout()
     {
+    	TitleLabel.setBounds(600, 20, 300, 30);
+    	add(TitleLabel);
     	
+    	Settings.setBounds(600, 20, 300, 30);
+    	add(Settings);
+    	add(SearchButton);
+    	ListOfTables.setSelectedIndex(0);
+    	add(ListOfTables);
     }
 }
