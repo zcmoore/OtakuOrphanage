@@ -83,9 +83,7 @@ public class LoginGUI extends JPanel // implements ActionListener
 			{
 				if(userDao.login(usernameTextField.getText(),passwordTextField.getText()))
 				{
-					//TODO: Change panel to main menu
 					client.showMainMenu();
-					System.out.println("Sign in successful.");
 				}
 			}
 		});

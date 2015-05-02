@@ -6,8 +6,15 @@ package edu.asu.ser322.data.model;
  */
 public class Series 
 {
+	public static final Series NULL_SERIES = new Series();
+
 	private int seriesId;
 	private String seriesName;
+	
+	public Series()
+	{
+		super();
+	}
 	
 	public Series(int seriesId, String seriesName)
 	{

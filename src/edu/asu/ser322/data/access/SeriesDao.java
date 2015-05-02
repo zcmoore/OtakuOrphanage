@@ -19,7 +19,7 @@ public interface SeriesDao {
 	 *            Target series' seriesname
 	 * @return the Series object, or null if a series cannot be found
 	 */
-    public boolean findSeries(String seriesname);
+    public Series findSeries(String seriesname);
     
     /**
 	 * Checks that a series is in the system
@@ -36,5 +36,5 @@ public interface SeriesDao {
 	 *            Target series's seriesname
 	 * @return true if the deletion was successful. False otherwise
 	 */
-    public boolean deleteSeries(String seriesname);
+    public boolean deleteSeries(int seriesID);
 }

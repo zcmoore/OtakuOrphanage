@@ -47,6 +47,8 @@ public class MainMenuGUI extends JPanel
     	
     	Settings.setBounds(600, 20, 300, 30);
     	add(Settings);
+    	
+    	add(searchTextBar);
     	add(SearchButton);
     	ListOfTables.setSelectedIndex(0);
     	add(ListOfTables);

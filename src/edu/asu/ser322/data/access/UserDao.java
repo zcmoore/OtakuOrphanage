@@ -51,7 +51,7 @@ public interface UserDao
 	/**
 	 * Deletes a user with the specified username
 	 * 
-	 * @param email
+	 * @param series
 	 *            Target user's username
 	 * @return true if the deletion was successful. False otherwise
 	 */
