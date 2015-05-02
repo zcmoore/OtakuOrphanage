@@ -15,26 +15,28 @@ public class Client extends JFrame
 	public static final String APPLICATION_NAME = "Otaku Orphanage";
 	public static final int VERSION = 1;
 	public static final int REVISION = 0;
+	/**Login panel Id*/
 	public static final String LOGIN = "0";
+	/**Main menu Id*/
 	public static final String MAINMENU = "1";
-	JPanel panelCont = new JPanel();
-	CardLayout cardLayout = new CardLayout();
-	LoginGUI loginGUI;
-	MainMenuGUI mainMenuGUI;
+	private final JPanel panelContainer = new JPanel();
+	private final CardLayout cardLayout = new CardLayout();
+	private final LoginGUI loginGUI;
+	private final MainMenuGUI mainMenuGUI;
 	
 	public Client()
 	{
 		super(APPLICATION_NAME + " V" + VERSION + "." + REVISION);
 		loginGUI = new LoginGUI(this);
 		mainMenuGUI = new MainMenuGUI(this);
-		panelCont.setLayout(cardLayout);
-		panelCont.add(loginGUI, LOGIN);
-		panelCont.add(mainMenuGUI, MAINMENU);
-		cardLayout.show(panelCont, LOGIN);
+		panelContainer.setLayout(cardLayout);
+		panelContainer.add(loginGUI, LOGIN);
+		panelContainer.add(mainMenuGUI, MAINMENU);
+		cardLayout.show(panelContainer, LOGIN);
 		this.pack();
 		this.invalidate();
 		
-		this.add(panelCont);
+		this.add(panelContainer);
 		setVisible(true);
 		this.setSize(DEFAULT_FRAME_SIZE);
 		this.setLocation(getCenteredPosition());
@@ -52,7 +54,7 @@ public class Client extends JFrame
 	
 	public void showMainMenu()
 	{
-		cardLayout.show(panelCont, MAINMENU);
+		cardLayout.show(panelContainer, MAINMENU);
 	}
 
 }
