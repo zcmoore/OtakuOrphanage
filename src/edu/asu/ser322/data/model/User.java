@@ -20,8 +20,6 @@ public class User
 	private String password;
 	private Character waifu;
 	
-	// TODO: Populate
-	
 	public String getUsername()
 	{
 		return username;
