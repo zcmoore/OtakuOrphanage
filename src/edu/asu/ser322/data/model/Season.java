@@ -17,7 +17,7 @@ public class Season {
     private Date airDate;
     private Date finishDate;
     
-    private List<Episodes> episodes;
+    private List<Episode> episodes;
     
 	public int getSeriesId() 
 	{
@@ -69,12 +69,12 @@ public class Season {
 		this.finishDate = finishDate;
 	}
 	
-	public List<Episodes> getEpisodes() 
+	public List<Episode> getEpisodes() 
 	{
 		return episodes;
 	}
 	
-	public void setEpisodes(List<Episodes> episodes)
+	public void setEpisodes(List<Episode> episodes)
 	{
 		this.episodes = episodes;
 	}
