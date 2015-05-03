@@ -106,6 +106,12 @@ public class LoginGUI extends JPanel // implements ActionListener
 		add(loginButton);
 		
 		registerButton.setBounds(1100, 580, 150, 75);
+		registerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				client.showRegisterPanel();
+			}
+		});
 		//TODO: Created register panel or take information from login page?
 		// registerButton.addActionListener(this);
 		add(registerButton);

@@ -19,19 +19,24 @@ public class Client extends JFrame
 	public static final String LOGIN = "0";
 	/**Main menu Id*/
 	public static final String MAINMENU = "1";
+	/**Register Page Id*/
+	public static final String REGISTERPANELID = "2";
 	private final JPanel panelContainer = new JPanel();
 	private final CardLayout cardLayout = new CardLayout();
 	private final LoginGUI loginGUI;
 	private final MainMenuGUI mainMenuGUI;
+	private final RegisterGUI registerGUI;
 	
 	public Client()
 	{
 		super(APPLICATION_NAME + " V" + VERSION + "." + REVISION);
 		loginGUI = new LoginGUI(this);
 		mainMenuGUI = new MainMenuGUI(this);
+		registerGUI = new RegisterGUI(this);
 		panelContainer.setLayout(cardLayout);
 		panelContainer.add(loginGUI, LOGIN);
 		panelContainer.add(mainMenuGUI, MAINMENU);
+		panelContainer.add(registerGUI, REGISTERPANELID);
 		cardLayout.show(panelContainer, LOGIN);
 		this.pack();
 		this.invalidate();
@@ -55,6 +60,11 @@ public class Client extends JFrame
 	public void showMainMenu()
 	{
 		cardLayout.show(panelContainer, MAINMENU);
+	}
+	
+	public void showRegisterPanel()
+	{
+		cardLayout.show(panelContainer, REGISTERPANELID);
 	}
 
 }
