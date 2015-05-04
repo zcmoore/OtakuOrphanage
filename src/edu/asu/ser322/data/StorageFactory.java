@@ -47,7 +47,7 @@ public class StorageFactory
 					"Episodes", "CharacterAppearances", "SeasonEpisodeMap",
 					"CharacterBirthDates", "FranchiseSeasonMap", "StudioFranchiseMap",
 					"Users", "Watched", "Series", "Seasons", "Characters",
-					"ActorAppearances", "Reviews", "Franchises", "ReviewMap" };
+					"ActorAppearances", "Reviews", "Franchises", "ReviewMap", "GenreMap" };
 			String sql;
 			
 			for (String tableName : tableNames)
@@ -115,6 +115,13 @@ public class StorageFactory
             "ShowName       TEXT," +
             "FinishDate     TEXT," +
             "PRIMARY KEY (Series, SeasonNumber));";
+            sqlStatement.execute(sql);
+           
+            sql = "CREATE TABLE GenreMap(" +
+            "Series         TEXT," +
+            "SeasonNumber   INTEGER," +
+            "Genre          TEXT," +
+            "PRIMARY KEY (Series, SeasonNumber, Genre));";
             sqlStatement.execute(sql);
            
             sql = "CREATE TABLE Episodes(" +
