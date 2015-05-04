@@ -8,6 +8,12 @@ public class Person
 {
     private int personId;
     private String name;
+    
+    public Person(int personIdInit, String nameInit)
+    {
+    	personId = personIdInit;
+    	name = nameInit;
+    }
     public int getPersonId()
     {
 		return personId;
