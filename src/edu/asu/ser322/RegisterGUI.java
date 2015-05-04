@@ -1,15 +1,22 @@
 package edu.asu.ser322;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import edu.asu.ser322.data.access.DAOCollection;
 import edu.asu.ser322.data.access.UserDao;
-import edu.asu.ser322.data.model.User;
 
 @SuppressWarnings("serial")
 public class RegisterGUI extends JPanel
@@ -28,6 +35,8 @@ public class RegisterGUI extends JPanel
 	
 	private UserDao userDao;
 	Client client;
+	
+	private BufferedImage img;
 	
 	public RegisterGUI(Client client)
 	{
@@ -57,7 +66,6 @@ public class RegisterGUI extends JPanel
 		enterPasswordTextField = new JTextField();
 		//TODO: search for own, or select in combo box from data?
 		enterWaifuTextField = new JTextField();
-		
 		becomeOtakuButton = new JButton(becomeOtakuButtonText);
 	}
 	
@@ -87,14 +95,51 @@ public class RegisterGUI extends JPanel
 		add(enterWaifuTextField);
 		
 		becomeOtakuButton.setBounds(1100,580, 150, 75);
-		becomeOtakuButton.addActionListener(new ActionListener() {
+		becomeOtakuButton.addActionListener(new ActionListener() 
+		{
 			public void actionPerformed(ActionEvent e)
 			{
-				client.showMainMenu();
+				String user = enterUserNameTextField.getText();
+				//FIXME: user Exists might be giving me errors
+				if(userDao.userExists(user))
+				{
+					//JOptionPane.showMessageDialog(client, "User Exists");
+					System.out.println("user exist");
+				}
+				else if(!userDao.userExists(user) && enterPasswordTextField.getText().trim() != "")
+				{
+					client.showMainMenu();
+				}
 			}
 		});
 		add(becomeOtakuButton);
 	}
-	
+	/*
+	public void addImageBackGround()
+    {
+        try 
+        {
+            img = ImageIO.read(new File("rec/IMAGETOLOAD.jpg"));
+        } 
+        catch (FileNotFoundException e)
+        {
+        	 e.printStackTrace();
+        }
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    protected void paintComponent(Graphics g) 
+    {
+    	super.paintComponent(g); 
+        if (img != null)
+        {
+          g.drawImage(img, 0,0,this.getWidth(),this.getHeight(),this);
+        }
+    }
+	*/
 }
 
