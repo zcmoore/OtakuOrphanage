@@ -25,7 +25,6 @@ public class User
 		return username;
 	}
 	
-	
 	public User(String username, String password, Character waifu)
 	{
 		super();
@@ -62,6 +61,11 @@ public class User
 	public void setWaifu(Character waifu)
 	{
 		this.waifu = waifu;
+	}
+	
+	public boolean validate()
+	{
+		return username != null && username.trim().length() > 0;
 	}
 	
 }
