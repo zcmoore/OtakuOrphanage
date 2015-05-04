@@ -1,6 +1,6 @@
 package edu.asu.ser322.data.model;
 
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -20,17 +20,23 @@ import java.util.List;
  */
 public class Studio
 {
+	public static final Studio NULL_STUDIO = new Studio();
 	private String name;
 	
 	/** If {@link #name} is changed, the original name will be stored here. */
 	private String previousName;
-	private Date startDate;
-	private Date closeDate;
+	private GregorianCalendar startDate;
+	private GregorianCalendar closeDate;
 	
 	private List<Person> generalStaff;
 	private List<Franchise> franchises;
 	
-	public Studio(String name, Date startDate)
+	public Studio()
+	{
+		super();
+	}
+	
+	public Studio(String name, GregorianCalendar startDate)
 	{
 		super();
 		this.name = name;
@@ -62,22 +68,22 @@ public class Studio
 		this.name = name;
 	}
 	
-	public Date getStartDate()
+	public GregorianCalendar getStartDate()
 	{
 		return startDate;
 	}
 	
-	public void setStartDate(Date startDate)
+	public void setStartDate(GregorianCalendar startDate)
 	{
 		this.startDate = startDate;
 	}
 	
-	public Date getCloseDate()
+	public GregorianCalendar getCloseDate()
 	{
 		return closeDate;
 	}
 	
-	public void setCloseDate(Date closeDate)
+	public void setCloseDate(GregorianCalendar closeDate)
 	{
 		this.closeDate = closeDate;
 	}
