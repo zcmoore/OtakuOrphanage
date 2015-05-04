@@ -41,8 +41,8 @@ public class SeasonDaoSQL implements SeasonDao
 	{
 		boolean result = false;
 		String sql = "INSERT INTO Seasons(SeriesName, SeasonNumber, ShowName, AirDateDay, AirDateMonth,"
-				+ "AirDateYear, FinishDateDay, FinishDateMonth, FinishDateYear, Genre, Appropriateness)"
-				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "AirDateYear, FinishDateDay, FinishDateMonth, FinishDateYear, Appropriateness)"
+				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try (Connection connection = createConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
@@ -62,10 +62,11 @@ public class SeasonDaoSQL implements SeasonDao
 			statement.setInt(7, calendar.get(Calendar.DAY_OF_MONTH));
 			statement.setInt(8, calendar.get(Calendar.MONTH));
 			statement.setInt(9, calendar.get(Calendar.YEAR));
-			statement.setString(10, season.getGenre());
-			statement.setString(11, season.getAppropriateness());
+			statement.setString(10, season.getAppropriateness());
 			
 			statement.execute();
+			
+			associateGenres(season);
 			result = true;
 		}
 		catch (Exception exception)
@@ -76,11 +77,65 @@ public class SeasonDaoSQL implements SeasonDao
 		return result;
 	}
 	
+	private void associateGenres(Season season)
+	{
+		for (String genre : season.getGenres())
+		{
+			associateGenre(season, genre);
+		}
+	}
+	
+	private void associateGenre(Season season, String genre)
+	{
+		String sql = "INSERT INTO GenreMap(Series, SeasonNumber, Genre)"
+				+ "VALUES(?, ?, ?)";
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, season.getSeriesName());
+			statement.setInt(2, season.getSeasonNumber());
+			statement.setString(3, genre);
+			
+			statement.execute();
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+	}
+	
 	@Override
 	public boolean updateSeason(Season season)
 	{
 		// TODO: Implement
 		return false;
+	}
+	
+	private List<String> getGenres(Season season)
+	{
+		String sql = "SELECT * FROM GenreMap WHERE Series=? AND SeasonNumber=?";
+		List<String> genres = new LinkedList<>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, season.getSeriesName());
+			statement.setInt(2, season.getSeasonNumber());
+			ResultSet results = statement.executeQuery();
+			
+			while (results.next())
+			{
+				String genre = results.getString("Genre");
+				genres.add(genre);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return genres;
 	}
 	
 	@Override
@@ -108,8 +163,10 @@ public class SeasonDaoSQL implements SeasonDao
 						results.getInt("FinishDateMonth"),
 						results.getInt("FinishDateDay"));
 				season.setFinishDate(finishDate);
-				season.setGenre(results.getString("Genre"));
 				season.setAppropriateness(results.getString("Appropriateness"));
+				
+				List<String> genres = getGenres(season);
+				season.setGenres(genres);
 				
 			}
 		}
@@ -145,8 +202,10 @@ public class SeasonDaoSQL implements SeasonDao
 						results.getInt("FinishDateMonth"),
 						results.getInt("FinishDateDay"));
 				insertedSeason.setFinishDate(finishDate);
-				insertedSeason.setGenre(results.getString("Genre"));
 				insertedSeason.setAppropriateness(results.getString("Appropriateness"));
+				
+				List<String> genres = getGenres(insertedSeason);
+				insertedSeason.setGenres(genres);
 				
 				seasons.add(insertedSeason);
 			}
@@ -183,8 +242,10 @@ public class SeasonDaoSQL implements SeasonDao
 						results.getInt("FinishDateMonth"),
 						results.getInt("FinishDateDay"));
 				insertedSeason.setFinishDate(finishDate);
-				insertedSeason.setGenre(results.getString("Genre"));
 				insertedSeason.setAppropriateness(results.getString("Appropriateness"));
+				
+				List<String> genres = getGenres(insertedSeason);
+				insertedSeason.setGenres(genres);
 				
 				seasons.add(insertedSeason);
 			}
@@ -221,8 +282,10 @@ public class SeasonDaoSQL implements SeasonDao
 						results.getInt("FinishDateMonth"),
 						results.getInt("FinishDateDay"));
 				insertedSeason.setFinishDate(finishDate);
-				insertedSeason.setGenre(results.getString("Genre"));
 				insertedSeason.setAppropriateness(results.getString("Appropriateness"));
+				
+				List<String> genres = getGenres(insertedSeason);
+				insertedSeason.setGenres(genres);
 				
 				seasons.add(insertedSeason);
 			}

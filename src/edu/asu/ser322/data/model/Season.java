@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Season
 {
-	public static final Season NULL_Season = new Season();
+	public static final Season NULL_SEASON = new Season();
 	
 	private String seriesName;
 	private int seasonNumber;
