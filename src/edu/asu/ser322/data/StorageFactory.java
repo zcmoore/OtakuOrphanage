@@ -210,11 +210,10 @@ public class StorageFactory
             "User          TEXT," +
             "Series        TEXT," +
             "Season        INTEGER," +
-            "Episode       INTEGER," +
-            "PRIMARY KEY (User, Series, Season, Episode)," +
+            "EpisodeCount  INTEGER," +
+            "PRIMARY KEY (User, Series, Season)," +
             "FOREIGN KEY(Series) REFERENCES Seasons(Series)," +
-            "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber)," +
-            "FOREIGN KEY(Episode) REFERENCES Episodes(EpisodeNumber));";
+            "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber));";
             sqlStatement.execute(sql);
             
             sql = "CREATE TABLE ReviewMap(" +
