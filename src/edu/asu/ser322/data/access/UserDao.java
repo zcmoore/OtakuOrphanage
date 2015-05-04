@@ -1,5 +1,6 @@
 package edu.asu.ser322.data.access;
 
+import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.User;
 
 /**
@@ -56,6 +57,17 @@ public interface UserDao
 	 * @return true if the deletion was successful. False otherwise
 	 */
 	public boolean deleteUser(String username);
+	
+	/**
+	 * Marks that a user has watched the specified number of episodes of the given season.
+	 * 
+	 * @param user
+	 * @param anime
+	 * @param episodeCount
+	 * @param rating
+	 * @return
+	 */
+	public boolean registerWatch(User user, Season anime, int episodeCount, int rating);
 	
 	/**
 	 * Finds a user and logs them in if password is correct. Note: this method is only

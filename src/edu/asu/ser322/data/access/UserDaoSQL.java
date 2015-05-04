@@ -8,6 +8,7 @@ import java.sql.Types;
 
 import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Character;
+import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.User;
 
 /**
@@ -112,12 +113,12 @@ class UserDaoSQL implements UserDao
 				String resultUsername = results.getString("Username");
 				// FIXME: This is a security risk...
 				String resultPassword = results.getString("Password");
-			    int resultWaifuID = results.getInt("Waifu");
-			
+				int resultWaifuID = results.getInt("Waifu");
+				
 				CharacterDao dao = DAOCollection.getCharacterDao();
 				Character waifu = dao.findCharacter(resultWaifuID);
 				
-				user = new User(resultUsername, resultPassword, null);
+				user = new User(resultUsername, resultPassword, waifu);
 			}
 		}
 		catch (Exception exception)
@@ -187,6 +188,85 @@ class UserDaoSQL implements UserDao
 	{
 		// TODO add actual implementation or documentation that explains otherwise
 		return login(username, password);
+	}
+	
+	@Override
+	public boolean registerWatch(User user, Season anime, int episodeCount, int rating)
+	{
+		String sql = "SELECT * FROM Watched WHERE User=? AND Series=? AND Season=?";
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, user.getUsername());
+			statement.setString(2, anime.getSeriesName());
+			statement.setInt(3, anime.getSeasonNumber());
+			ResultSet results = statement.executeQuery();
+			
+			if (results.next())
+				return updateWatch(user, anime, episodeCount, rating);
+			else
+				return addWatch(user, anime, episodeCount, rating);
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean addWatch(User user, Season anime, int episodeCount, int rating)
+	{
+		// TODO: validate user
+		boolean result = false;
+		String sql = "INSERT INTO Watched(User, Series, Season, EpisodeCount) VALUES(?, ?, ?, ?)";
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, user.getUsername());
+			statement.setString(2, anime.getSeriesName());
+			statement.setInt(3, anime.getSeasonNumber());
+			statement.setInt(4, episodeCount);
+			
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	private boolean updateWatch(User user, Season anime, int episodeCount, int rating)
+	{
+		// TODO: validate user
+		boolean result = false;
+		String sql = "INSERT INTO Users(Username, Password, Waifu) VALUES(?, ?, ?)";
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, user.getUsername());
+			statement.setString(2, user.getPassword());
+			
+			Character waifu = user.getWaifu();
+			if (waifu != null)
+				statement.setInt(3, waifu.getID());
+			else
+				statement.setNull(3, Types.INTEGER);
+			
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 }
