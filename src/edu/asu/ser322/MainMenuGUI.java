@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -21,33 +22,35 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-@SuppressWarnings("serial")
 public class MainMenuGUI extends JPanel
 {
-	Client client;
+	private Client client;
 	
-	private JLabel TitleLabel;
-	private JLabel AccounInfoLabel;
-	private JLabel pictureOfSelectedItem;
-	private JLabel infoOfSelectedItem;
+	private JLabel titleLabel;
+	private JLabel accountInfoLabel;
+	private JLabel selectedItemPictureLabel;
+	private JLabel selectedItemInfoLabel;
 	
-	private JComboBox ListOfTables;
+	private JComboBox tableList;
 	
 	private JTextField searchBarTextField;
 	
-	private JButton Settings;
-	private JButton SearchButton;
+	private JButton settingsButton;
+	private JButton searchButton;
 	
-	private JList ListOfTitlesHolder;
+	private JList titleHolderList;
 	
-	private ArrayList<String> ListOfTableArray = new ArrayList<String>();
-	private ArrayList<String> ListOfTitles = new ArrayList<String>();
+	private List<String> tableListData;
+	private List<String> titleListData;
 	
 	private BufferedImage img;
 	
 	public MainMenuGUI(Client client)
 	{
 		this.client = client;
+		this.tableListData = new ArrayList<>();
+		this.titleListData = new ArrayList<>();
+		
 		init();
 		layout();
 	}
@@ -56,63 +59,63 @@ public class MainMenuGUI extends JPanel
 	{
 		setOpaque(false);
 		addImageBackGround();
-		TitleLabel = new JLabel("Anime Database");
+		titleLabel = new JLabel("Anime Database");
 		
 		loadInfoOnShows();
 		
 		populateListOfTableArray();
-		ListOfTables = new JComboBox(ListOfTableArray.toArray());
+		tableList = new JComboBox<>(tableListData.toArray());
 		
 		searchBarTextField = new JTextField();
 		
-		SearchButton = new JButton("Search");
-		Settings = new JButton("Settings");
+		searchButton = new JButton("Search");
+		settingsButton = new JButton("Settings");
 		
-		ListOfTitlesHolder.setVisible(false);
+		titleHolderList.setVisible(false);
 		
-		pictureOfSelectedItem = new JLabel();
-		infoOfSelectedItem = new JLabel();
+		selectedItemPictureLabel = new JLabel();
+		selectedItemInfoLabel = new JLabel();
 	}
 	
 	public void layout()
 	{
-		TitleLabel.setBounds(600, 20, 300, 30);
-		add(TitleLabel);
+		titleLabel.setBounds(600, 20, 300, 30);
+		add(titleLabel);
 		
-		ListOfTables.setBounds(810, 60, 150, 30);
-		add(ListOfTables);
+		tableList.setBounds(810, 60, 150, 30);
+		add(tableList);
 		
 		searchBarTextField.setBounds(970, 60, 200, 30);
 		add(searchBarTextField);
 		
-		SearchButton.setBounds(1180, 60, 80, 30);
-		SearchButton.addActionListener(new ActionListener() {
+		searchButton.setBounds(1180, 60, 80, 30);
+		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
 				// TODO: Populate the JList with search results
-				ListOfTitlesHolder.setVisible(true);
+				titleHolderList.setVisible(true);
 				// loadInfoOnShows();
 			}
 		});
-		add(SearchButton);
+		add(searchButton);
 		
 		// TODO: function for the settings button has yet to be defined
 		// Settings.setBounds(30, 30, 100, 30);
 		// add(Settings);
 		
-		ListOfTitlesHolder.setBounds(50, 200, 250, 400);
-		add(ListOfTitlesHolder);
+		titleHolderList.setBounds(50, 200, 250, 400);
+		add(titleHolderList);
 		
-		pictureOfSelectedItem.setBounds(350, 200, 150, 200);
-		add(pictureOfSelectedItem);
+		selectedItemPictureLabel.setBounds(350, 200, 150, 200);
+		add(selectedItemPictureLabel);
 		
-		infoOfSelectedItem.setBounds(510, 200, 210, 200);
-		add(infoOfSelectedItem);
+		selectedItemInfoLabel.setBounds(510, 200, 210, 200);
+		add(selectedItemInfoLabel);
 	}
 	
 	public void populateListOfTitles(String title)
 	{
-		ListOfTitles.add(title);
+		titleListData.add(title);
 	}
 	
 	public void setInfoOfSelectedItem(String info)
@@ -120,35 +123,38 @@ public class MainMenuGUI extends JPanel
 		final String startTag = "<html><body style='width: ";
 		final String endTag = "px'>";
 		String infoOfShow = startTag + "200" + endTag + info;
-		infoOfSelectedItem.setText(infoOfShow);
+		selectedItemInfoLabel.setText(infoOfShow);
 	}
 	
 	public void setPictureOfSelectedItem(String picturePath)
 	{
 		ImageIcon icon = createImageIcon(picturePath);
-		pictureOfSelectedItem.setIcon(icon);
+		selectedItemPictureLabel.setIcon(icon);
 	}
 	
 	public ImageIcon createImageIcon(String path)
 	{
 		java.net.URL imageURL = MainMenuGUI.class.getResource(path);
 		ImageIcon returnIcon;
+		
 		if (imageURL != null)
 		{
-			return new ImageIcon(imageURL);
+			returnIcon = new ImageIcon(imageURL);
 		}
 		else
 		{
 			System.err.println("Couldn't find file: " + path);
-			return null;
+			returnIcon = null;
 		}
+		
+		return returnIcon;
 	}
 	
 	public void loadInfoOnShows()
 	{
-		ListOfTitlesHolder = new JList(ListOfTableArray.toArray());
-		ListOfTitlesHolder.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		ListOfTitlesHolder.addListSelectionListener(new ListSelectionListener() {
+		titleHolderList = new JList<>(tableListData.toArray());
+		titleHolderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		titleHolderList.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e)
 			{
@@ -165,13 +171,13 @@ public class MainMenuGUI extends JPanel
 	
 	public void populateListOfTableArray()
 	{
-		ListOfTableArray.add("Character");
-		ListOfTableArray.add("Episode");
-		ListOfTableArray.add("Franchise");
-		ListOfTableArray.add("People");
-		ListOfTableArray.add("Seasons");
-		ListOfTableArray.add("Series");
-		ListOfTableArray.add("Studio");
+		tableListData.add("Character");
+		tableListData.add("Episode");
+		tableListData.add("Franchise");
+		tableListData.add("People");
+		tableListData.add("Seasons");
+		tableListData.add("Series");
+		tableListData.add("Studio");
 	}
 	
 	public void addImageBackGround()
