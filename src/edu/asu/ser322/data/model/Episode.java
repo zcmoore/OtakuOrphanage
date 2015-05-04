@@ -12,7 +12,8 @@ import java.util.List;
  */
 public class Episode {
 
-	private int seasonID;
+	private String seriesName;
+	private int seasonNumber;
 	private int episodeNumber;
 	private Date airDate;
 	private String name;
@@ -22,14 +23,34 @@ public class Episode {
 	
 	private List<Character> characters;
 	
-	public int getSeasonID() 
+	public String getSeriesName() 
 	{
-		return seasonID;
+		return seriesName;
 	}
 	
-	public void setSeasonID(int seasonID) 
+	public void setSeriesName(String seriesName) 
 	{
-		this.seasonID = seasonID;
+		this.seriesName = seriesName;
+	}
+	
+	public int getSeasonNumber() 
+	{
+		return seasonNumber;
+	}
+
+	public void setSeasonNumber(int seasonNumber)
+	{
+		this.seasonNumber = seasonNumber;
+	}
+	
+	public int getEpisodeNumber() 
+	{
+		return episodeNumber;
+	}
+
+	public void setEpisodeNumber(int episodeNumber) 
+	{
+		this.episodeNumber = episodeNumber;
 	}
 	
 	public Date getAirDate() 
@@ -82,24 +103,12 @@ public class Episode {
 		this.approprateness = approprateness;
 	}
 
-	public int getEpisodeNumber() 
-	{
-		return episodeNumber;
-	}
-
-	public void setEpisodeNumber(int episodeNumber) 
-	{
-		this.episodeNumber = episodeNumber;
-	}
-
 	public List<Character> getCharacters() {
 		return characters;
 	}
 
 	public void setCharacters(List<Character> characters) {
 		this.characters = characters;
-	}
-	
-	
+	}	
 	
 }
