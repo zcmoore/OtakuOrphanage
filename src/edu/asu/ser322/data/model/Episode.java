@@ -11,6 +11,8 @@ import java.util.List;
  *
  */
 public class Episode {
+	
+	public static final Episode NULL_EPISODE = new Episode();
 
 	private String seriesName;
 	private int seasonNumber;
@@ -22,6 +24,18 @@ public class Episode {
 	private String approprateness;
 	
 	private List<Character> characters;
+	
+	public Episode()
+	{
+		super();
+	}
+	
+	public Episode(String seriesName, int seasonNumber, int episodeNumber)
+	{
+		this.seriesName = seriesName;
+		this.seasonNumber = seasonNumber;
+		this.episodeNumber = episodeNumber;
+	}
 	
 	public String getSeriesName() 
 	{
