@@ -1,35 +1,37 @@
 package edu.asu.ser322.data.model;
+
 /**
  * 
  * @author Benjamin Paothatat
  *
  */
-public class Person 
+public class Person
 {
-    private int personId;
-    private String name;
-    
-    public Person(int personIdInit, String nameInit)
-    {
-    	personId = personIdInit;
-    	name = nameInit;
-    }
-    public int getPersonId()
-    {
-		return personId;
-	}
-    
-	public void setPersonId(int personId) 
+	private int id;
+	private String name;
+	
+	public Person(int personIdInit, String nameInit)
 	{
-		this.personId = personId;
+		id = personIdInit;
+		name = nameInit;
 	}
 	
-	public String getName() 
+	public int getID()
+	{
+		return id;
+	}
+	
+	public void setID(int id)
+	{
+		this.id = id;
+	}
+	
+	public String getName()
 	{
 		return name;
 	}
 	
-	public void setName(String name) 
+	public void setName(String name)
 	{
 		this.name = name;
 	}
