@@ -9,13 +9,16 @@ public class DAOCollection
 	
 	public static CharacterDao getCharacterDao()
 	{
-		// TODO
-		throw new UnsupportedOperationException();
+		return new CharacterDaoSQL();
 	}
 	
 	public static SeasonDao getSeasonDao()
 	{
-		// TODO
-		throw new UnsupportedOperationException();
+		return new SeasonDaoSQL();
+	}
+	
+	public static FranchiseDao getFranchiseDao()
+	{
+		return new FranchiseDaoSQL();
 	}
 }
