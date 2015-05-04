@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,8 +35,9 @@ public class SeasonDaoSQL implements SeasonDao
 		
 		return connection;
 	}
+	
 	@Override
-	public boolean addSeason(Season season) 
+	public boolean addSeason(Season season)
 	{
 		boolean result = false;
 		String sql = "INSERT INTO Seasons(SeriesName, SeasonNumber, ShowName, AirDateDay, AirDateMonth,"
@@ -44,18 +47,23 @@ public class SeasonDaoSQL implements SeasonDao
 		try (Connection connection = createConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
+			Calendar calendar = new GregorianCalendar();
+			
 			statement.setString(1, season.getName());
 			statement.setInt(2, season.getSeasonNumber());
 			statement.setString(3, season.getName());
-			statement.setInt(4, season.getAirDate().getDay());
-			statement.setInt(5, season.getAirDate().getMonth());
-			statement.setInt(6, season.getAirDate().getYear());
-			statement.setInt(7, season.getFinishDate().getDay());
-			statement.setInt(8, season.getFinishDate().getMonth());
-			statement.setInt(9, season.getFinishDate().getYear());
+			
+			calendar.setTime(season.getAirDate());
+			statement.setInt(4, calendar.get(Calendar.DAY_OF_MONTH));
+			statement.setInt(5, calendar.get(Calendar.MONTH));
+			statement.setInt(6, calendar.get(Calendar.YEAR));
+			
+			calendar.setTime(season.getAirDate());
+			statement.setInt(7, calendar.get(Calendar.DAY_OF_MONTH));
+			statement.setInt(8, calendar.get(Calendar.MONTH));
+			statement.setInt(9, calendar.get(Calendar.YEAR));
 			statement.setString(10, season.getGenre());
 			statement.setString(11, season.getAppropriateness());
-		
 			
 			statement.execute();
 			result = true;
@@ -67,16 +75,16 @@ public class SeasonDaoSQL implements SeasonDao
 		
 		return result;
 	}
-
+	
 	@Override
-	public boolean updateSeason(Season season) 
+	public boolean updateSeason(Season season)
 	{
-		//TODO: Implement
+		// TODO: Implement
 		return false;
 	}
-
+	
 	@Override
-	public Season findSeason(String seriesname, int seasonnumber) 
+	public Season findSeason(String seriesname, int seasonnumber)
 	{
 		String sql = "SELECT * FROM Seasons WHERE SeriesName= ? AND SeasonNumber = ?";
 		Season season = Season.NULL_SEASON;
@@ -90,27 +98,31 @@ public class SeasonDaoSQL implements SeasonDao
 			
 			while (results.next())
 			{
-				season = new Season(results.getString("SeriesName"), results.getInt("SeasonNumber"));
+				season = new Season(results.getString("SeriesName"),
+						results.getInt("SeasonNumber"));
 				season.setName(results.getString("ShowName"));
-				Date airDate = new Date(results.getInt("AirDateYear"), results.getInt("AirDateMonth"), results.getInt("AirDateDay"));
+				Date airDate = new Date(results.getInt("AirDateYear"),
+						results.getInt("AirDateMonth"), results.getInt("AirDateDay"));
 				season.setAirDate(airDate);
-				Date finishDate = new Date(results.getInt("FinishDateYear"), results.getInt("FinishDateMonth"), results.getInt("FinishDateDay"));
+				Date finishDate = new Date(results.getInt("FinishDateYear"),
+						results.getInt("FinishDateMonth"),
+						results.getInt("FinishDateDay"));
 				season.setFinishDate(finishDate);
 				season.setGenre(results.getString("Genre"));
 				season.setAppropriateness(results.getString("Appropriateness"));
-
+				
 			}
 		}
 		catch (Exception exception)
 		{
 			exception.printStackTrace();
 		}
-	
+		
 		return season;
 	}
 	
 	@Override
-	public List<Season> findSeason(String seriesname) 
+	public List<Season> findSeason(String seriesname)
 	{
 		String sql = "SELECT * FROM Seasons WHERE SeriesName=?";
 		List<Season> seasons = new LinkedList<Season>();
@@ -123,15 +135,19 @@ public class SeasonDaoSQL implements SeasonDao
 			
 			while (results.next())
 			{
-				Season insertedSeason = new Season(results.getString("SeriesName"), results.getInt("SeasonNumber"));
+				Season insertedSeason = new Season(results.getString("SeriesName"),
+						results.getInt("SeasonNumber"));
 				insertedSeason.setName(results.getString("ShowName"));
-				Date airDate = new Date(results.getInt("AirDateYear"), results.getInt("AirDateMonth"), results.getInt("AirDateDay"));
+				Date airDate = new Date(results.getInt("AirDateYear"),
+						results.getInt("AirDateMonth"), results.getInt("AirDateDay"));
 				insertedSeason.setAirDate(airDate);
-				Date finishDate = new Date(results.getInt("FinishDateYear"), results.getInt("FinishDateMonth"), results.getInt("FinishDateDay"));
+				Date finishDate = new Date(results.getInt("FinishDateYear"),
+						results.getInt("FinishDateMonth"),
+						results.getInt("FinishDateDay"));
 				insertedSeason.setFinishDate(finishDate);
 				insertedSeason.setGenre(results.getString("Genre"));
 				insertedSeason.setAppropriateness(results.getString("Appropriateness"));
-
+				
 				seasons.add(insertedSeason);
 			}
 		}
@@ -139,12 +155,12 @@ public class SeasonDaoSQL implements SeasonDao
 		{
 			exception.printStackTrace();
 		}
-	
+		
 		return seasons;
 	}
-
+	
 	@Override
-	public List<Season> seasonsByAirYear(int airYear) 
+	public List<Season> seasonsByAirYear(int airYear)
 	{
 		String sql = "SELECT * FROM Seasons WHERE AirDateYear=?";
 		List<Season> seasons = new LinkedList<Season>();
@@ -157,15 +173,19 @@ public class SeasonDaoSQL implements SeasonDao
 			
 			while (results.next())
 			{
-				Season insertedSeason = new Season(results.getString("SeriesName"), results.getInt("SeasonNumber"));
+				Season insertedSeason = new Season(results.getString("SeriesName"),
+						results.getInt("SeasonNumber"));
 				insertedSeason.setName(results.getString("ShowName"));
-				Date airDate = new Date(results.getInt("AirDateYear"), results.getInt("AirDateMonth"), results.getInt("AirDateDay"));
+				Date airDate = new Date(results.getInt("AirDateYear"),
+						results.getInt("AirDateMonth"), results.getInt("AirDateDay"));
 				insertedSeason.setAirDate(airDate);
-				Date finishDate = new Date(results.getInt("FinishDateYear"), results.getInt("FinishDateMonth"), results.getInt("FinishDateDay"));
+				Date finishDate = new Date(results.getInt("FinishDateYear"),
+						results.getInt("FinishDateMonth"),
+						results.getInt("FinishDateDay"));
 				insertedSeason.setFinishDate(finishDate);
 				insertedSeason.setGenre(results.getString("Genre"));
 				insertedSeason.setAppropriateness(results.getString("Appropriateness"));
-
+				
 				seasons.add(insertedSeason);
 			}
 		}
@@ -173,12 +193,12 @@ public class SeasonDaoSQL implements SeasonDao
 		{
 			exception.printStackTrace();
 		}
-	
+		
 		return seasons;
 	}
-
+	
 	@Override
-	public List<Season> seasonsByGenre(String genre) 
+	public List<Season> seasonsByGenre(String genre)
 	{
 		String sql = "SELECT * FROM Seasons WHERE Genre=?";
 		List<Season> seasons = new LinkedList<Season>();
@@ -191,15 +211,19 @@ public class SeasonDaoSQL implements SeasonDao
 			
 			while (results.next())
 			{
-				Season insertedSeason = new Season(results.getString("SeriesName"), results.getInt("SeasonNumber"));
+				Season insertedSeason = new Season(results.getString("SeriesName"),
+						results.getInt("SeasonNumber"));
 				insertedSeason.setName(results.getString("ShowName"));
-				Date airDate = new Date(results.getInt("AirDateYear"), results.getInt("AirDateMonth"), results.getInt("AirDateDay"));
+				Date airDate = new Date(results.getInt("AirDateYear"),
+						results.getInt("AirDateMonth"), results.getInt("AirDateDay"));
 				insertedSeason.setAirDate(airDate);
-				Date finishDate = new Date(results.getInt("FinishDateYear"), results.getInt("FinishDateMonth"), results.getInt("FinishDateDay"));
+				Date finishDate = new Date(results.getInt("FinishDateYear"),
+						results.getInt("FinishDateMonth"),
+						results.getInt("FinishDateDay"));
 				insertedSeason.setFinishDate(finishDate);
 				insertedSeason.setGenre(results.getString("Genre"));
 				insertedSeason.setAppropriateness(results.getString("Appropriateness"));
-
+				
 				seasons.add(insertedSeason);
 			}
 		}
@@ -207,12 +231,13 @@ public class SeasonDaoSQL implements SeasonDao
 		{
 			exception.printStackTrace();
 		}
-	
+		
 		return seasons;
 	}
-
+	
 	@Override
-	public boolean removeSeason(String seriesName, int seasonNumber) {
+	public boolean removeSeason(String seriesName, int seasonNumber)
+	{
 		boolean result = false;
 		String sql = "DELETE FROM Seasons WHERE SeriesName = ? AND SeasonNumber = ?";
 		
@@ -221,7 +246,7 @@ public class SeasonDaoSQL implements SeasonDao
 		{
 			statement.setString(1, seriesName);
 			statement.setInt(2, seasonNumber);
-		
+			
 			statement.execute();
 			result = true;
 		}
@@ -232,5 +257,12 @@ public class SeasonDaoSQL implements SeasonDao
 		
 		return result;
 	}
-
+	
+	@Override
+	public List<Season> seasonsBYear(String genre)
+	{
+		// TODO Auto-generated method stub return null;
+		throw new UnsupportedOperationException("The method is not implemented yet.");
+	}
+	
 }
