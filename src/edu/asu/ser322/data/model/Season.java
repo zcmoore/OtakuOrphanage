@@ -9,82 +9,83 @@ import java.util.List;
  * @author Benjamin Paothatat
  *
  */
-		
-public class Season {
+
+public class Season
+{
 	public static final Season NULL_Season = new Season();
 	
-    private String seriesName;
-    private int seasonNumber;
-    private String name;
-    private Date airDate;
-    private Date finishDate;
-    private String Genre;
-    private String appropriateness;
-    
-    private List<Episode> episodes;
-    
-    public Season()
-    {
-        super();	
-    }
-    
-    public Season(String id, int seasonNumber)
-    {
-    	this.seriesName = id;
-    	this.seasonNumber = seasonNumber;
-    }
-    
-	public String getSeriesId() 
+	private String seriesName;
+	private int seasonNumber;
+	private String name;
+	private Date airDate;
+	private Date finishDate;
+	private List<String> genres;
+	private String appropriateness;
+	
+	private List<Episode> episodes;
+	
+	public Season()
+	{
+		super();
+	}
+	
+	public Season(String id, int seasonNumber)
+	{
+		this.seriesName = id;
+		this.seasonNumber = seasonNumber;
+	}
+	
+	public String getSeriesName()
 	{
 		return seriesName;
 	}
 	
-	public void setSeriesId(String seriesId) 
+	public void setSeriesName(String seriesId)
 	{
 		this.seriesName = seriesId;
 	}
 	
-	public int getSeasonNumber() 
+	public int getSeasonNumber()
 	{
 		return seasonNumber;
 	}
 	
-	public void setSeasonNumber(int seasonNumber) 
+	public void setSeasonNumber(int seasonNumber)
 	{
 		this.seasonNumber = seasonNumber;
 	}
 	
-	public String getName() 
+	public String getName()
 	{
 		return name;
 	}
 	
-	public void setName(String name) 
+	public void setName(String name)
 	{
 		this.name = name;
 	}
 	
-	public Date getAirDate() 
+	public Date getAirDate()
 	{
 		return airDate;
 	}
 	
-	public void setAirDate(Date airDate) 
+	public void setAirDate(Date airDate)
 	{
 		this.airDate = airDate;
 	}
 	
-	public Date getFinishDate() 
+	public Date getFinishDate()
 	{
 		return finishDate;
 	}
 	
-	public void setFinishDate(Date finishDate) 
+	public void setFinishDate(Date finishDate)
 	{
 		this.finishDate = finishDate;
 	}
 	
-	public List<Episode> getEpisodes() 
+	public List<Episode> getEpisodes()
 	{
 		return episodes;
 	}
@@ -93,27 +94,25 @@ public class Season {
 	{
 		this.episodes = episodes;
 	}
-
-	public String getGenre() 
-	{
-		return Genre;
-	}
-
-	public void setGenre(String genre) 
-	{
-		Genre = genre;
-	}
-
-	public String getAppropriateness() 
+	
+	public String getAppropriateness()
 	{
 		return appropriateness;
 	}
-
-	public void setAppropriateness(String appropriateness) 
+	
+	public void setAppropriateness(String appropriateness)
 	{
 		this.appropriateness = appropriateness;
 	}
-    
-    
-    
+	
+	public List<String> getGenres()
+	{
+		return genres;
+	}
+	
+	public void setGenres(List<String> genres)
+	{
+		this.genres = genres;
+	}
+	
 }
