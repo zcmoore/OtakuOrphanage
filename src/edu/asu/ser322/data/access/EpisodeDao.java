@@ -2,6 +2,7 @@ package edu.asu.ser322.data.access;
 
 import java.util.List;
 
+import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.User;
 
@@ -10,11 +11,11 @@ public interface EpisodeDao
 	/**
 	 * Add an episode to the persistent store
 	 * 
-	 * @param seriesName
-	 *            seasonNumber episodeNumber Episode data to add. Must be valid
+	 * @param episode
+	 *            Target to be added
 	 * @return true if the episode was added successfully
 	 */
-	public boolean addEpisode(String seriesName, int seasonNumber, int episodeNumber);
+	public boolean addEpisode(Episode episode);
 	
 	/**
 	 * Updates an episode in the persistent store
@@ -60,7 +61,7 @@ public interface EpisodeDao
 	 *            characterId Target episode and character
 	 * @return true if the addition was successful. False otherwise
 	 */
-	public boolean addCharacterApperance(Episode episode, int characterId);
+	public boolean addCharacterApperance(Episode episode, Character character);
 	
 	/**
 	 * Deletes a characters appearance from the persistent store
@@ -69,7 +70,7 @@ public interface EpisodeDao
 	 *            characterId Target episode and character
 	 * @return true if the deletion was successful. False otherwise
 	 */
-	public boolean removeCharacterApperance(Episode episode, int characterId);
+	public boolean removeCharacterApperance(Episode episode, Character character);
 	
 	/**
 	 * List of characters in episode from the persistent store

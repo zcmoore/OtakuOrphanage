@@ -3,6 +3,8 @@ package edu.asu.ser322.data.model;
 import java.util.Date;
 import java.util.List;
 
+
+
 /**
  * 
  * Model of an episode
@@ -18,10 +20,11 @@ public class Episode {
 	private int seasonNumber;
 	private int episodeNumber;
 	private Date airDate;
-	private String name;
+	private String EpisodeName;
 	private String type;
 	private String artStyle;
 	private String approprateness;
+	
 	
 	private List<Character> characters;
 	
@@ -77,14 +80,14 @@ public class Episode {
 		this.airDate = airDate;
 	}
 
-	public String getName() 
+	public String getEpisodeName() 
 	{
-		return name;
+		return EpisodeName;
 	}
 
-	public void setName(String name) 
+	public void setEpisodeName(String name) 
 	{
-		this.name = name;
+		this.EpisodeName = name;
 	}
 
 	public String getArtStyle() 
