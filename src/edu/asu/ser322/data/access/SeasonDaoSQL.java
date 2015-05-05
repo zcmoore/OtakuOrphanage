@@ -315,4 +315,55 @@ public class SeasonDaoSQL implements SeasonDao
 		throw new UnsupportedOperationException("The method is not implemented yet.");
 	}
 	
+	@Override
+	public List<Season> findSeasonsInSeries(String seriesname)
+	{
+		String sql = "SELECT * FROM Seasons WHERE SeriesName=?";
+		List<Season> seasons = new LinkedList<>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, seriesname);
+			ResultSet results = statement.executeQuery();
+			
+			while (results.next())
+			{
+				Season season = parseSeason(results);
+				seasons.add(season);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return seasons;
+	}
+	
+	@Override
+	public List<String> listSeries()
+	{
+		String sql = "SELECT DISTINCT FROM (SELECT SeriesName FROM Seasons)";
+		List<String> seriesList = new LinkedList<>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			ResultSet results = statement.executeQuery();
+			
+			while (results.next())
+			{
+				String series = results.getString("SeriesName");
+				seriesList.add(series);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return seriesList;
+	}
+	
 }

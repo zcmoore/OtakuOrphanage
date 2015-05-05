@@ -79,4 +79,8 @@ public interface SeasonDao
 	public Season findSeason(String seriesname, int seasonnumber);
 	
 	public List<Season> seasonsByGenre(String genre);
+
+	List<Season> findSeasonsInSeries(String seriesname);
+
+	List<String> listSeries();
 }
