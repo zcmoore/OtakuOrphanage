@@ -15,8 +15,52 @@ import java.util.List;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Gender;
 
+/**
+ * {@link CharacterDao} which uses an SQLite database as its persistent store.
+ * <p>
+ * Adjacent classes may use {@link #parseCharacter(ResultSet)} to retrieve a
+ * {@link Character} from an SQL {@link ResultSet}.
+ * 
+ * @author Moore, Zachary
+ *
+ */
 public class CharacterDaoSQL implements CharacterDao
 {
+	/**
+	 * @param result
+	 *            A ResultSet currently pointing to the desired row. The row is expected
+	 *            to be in the Characters table, and be valid.
+	 * @return A Character representing the given row specified by the given ResultSet
+	 * @throws SQLException
+	 *             if the expected column names are not found, most commonly because the
+	 *             ResultSet is from a different table
+	 */
+	protected Character parseCharacter(ResultSet result) throws SQLException
+	{
+		int year = result.getInt("DOBYear");
+		int month = result.getInt("DOBMonth");
+		int day = result.getInt("DOBDay");
+		int id = result.getInt("CharacterID");
+		String archetype = result.getString("Archetype");
+		String name = result.getString("Name");
+		String genderString = result.getString("Gender");
+		Gender gender = Gender.valueOf(genderString);
+		String hairColour = result.getString("HairColor");
+		
+		Calendar calendar = new GregorianCalendar();
+		calendar.set(year, month, day);
+		Date dobDate = calendar.getTime();
+		
+		Character character = new Character();
+		character.setBirthDate(dobDate);
+		character.setId(id);
+		character.setArchetype(archetype);
+		character.setName(name);
+		character.setGender(gender);
+		character.setHairColor(hairColour);
+		
+		return character;
+	}
 	
 	@Override
 	public boolean addCharacter(Character character)
@@ -52,27 +96,22 @@ public class CharacterDaoSQL implements CharacterDao
 	}
 	
 	@Override
-	public boolean updateCharacter(Character character)
+	public boolean characterExists(int id)
+	{
+		return findCharacter(id) != Character.NULL_CHARACTER;
+	}
+	
+	@Override
+	public boolean deleteCharacter(Character character)
 	{
 		boolean result = false;
-		String sql = "UPDATE Characters set Name = ?, Gender = ?, DOBDay = ?, DOBMonth = ?, DOBYear = ?, HairColor = ?, "
-				+ "Archetype = ? WHERE CharacterID = ?";
+		String sql = "DELETE FROM Characters WHERE CharacterID = ?";
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			Date dobDate = character.getBirthDate();
-			Calendar calender = new GregorianCalendar();
-			calender.setTime(dobDate);
+			statement.setInt(1, character.getId());
 			
-			statement.setString(1, character.getName());
-			statement.setString(2, character.getGender().name());
-			statement.setInt(3, calender.get(Calendar.DAY_OF_MONTH));
-			statement.setInt(4, calender.get(Calendar.MONTH));
-			statement.setInt(5, calender.get(Calendar.DATE));
-			statement.setString(6, character.getHairColor());
-			statement.setString(7, character.getArchetype());
-			statement.setInt(8, character.getId());
 			statement.execute();
 			result = true;
 		}
@@ -85,40 +124,60 @@ public class CharacterDaoSQL implements CharacterDao
 	}
 	
 	@Override
-	public List<Character> findCharactersByName(String name)
+	public boolean deleteCharacter(int id)
 	{
-		String sql = "SELECT * FROM Characters WHERE Name = ?";
-		List<Character> characters = new LinkedList<Character>();
+		boolean result = false;
+		String sql = "DELETE FROM Characters WHERE CharacterID=?";
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setString(1, name);
-			ResultSet result = statement.executeQuery();
-			
-			while (result.next())
-			{
-				Character character = parseCharacter(result);
-				characters.add(character);
-			}
+			statement.setInt(1, id);
+			statement.execute();
+			result = true;
 		}
 		catch (Exception exception)
 		{
 			exception.printStackTrace();
 		}
-		return characters;
+		
+		return result;
 	}
 	
 	@Override
-	public List<Character> findCharactersByHairColour(String colour)
+	public Character findCharacter(int id)
 	{
-		String sql = "SELECT * FROM Characters WHERE HairColor = ?";
+		String sql = "SELECT * FROM Characters WHERE CharacterID = ?";
+		Character character = Character.NULL_CHARACTER;
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setInt(1, id);
+			ResultSet result = statement.executeQuery();
+			
+			if (result.next())
+				character = parseCharacter(result);
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return character;
+	}
+	
+	@Override
+	public List<Character> findCharactersByAge(int age, ComparisonType comparisonType)
+	{
+		String sql = "SELECT * FROM Characters WHERE Age "
+				+ comparisonType.symbolicRepresentation() + " ?";
 		List<Character> characters = new LinkedList<Character>();
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setString(1, colour);
+			statement.setInt(1, age);
 			ResultSet result = statement.executeQuery();
 			
 			while (result.next())
@@ -131,6 +190,7 @@ public class CharacterDaoSQL implements CharacterDao
 		{
 			exception.printStackTrace();
 		}
+		
 		return characters;
 	}
 	
@@ -186,14 +246,15 @@ public class CharacterDaoSQL implements CharacterDao
 	}
 	
 	@Override
-	public List<Character> listAll()
+	public List<Character> findCharactersByHairColour(String colour)
 	{
-		String sql = "SELECT * FROM Characters";
+		String sql = "SELECT * FROM Characters WHERE HairColor = ?";
 		List<Character> characters = new LinkedList<Character>();
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
+			statement.setString(1, colour);
 			ResultSet result = statement.executeQuery();
 			
 			while (result.next())
@@ -206,21 +267,19 @@ public class CharacterDaoSQL implements CharacterDao
 		{
 			exception.printStackTrace();
 		}
-		
 		return characters;
 	}
 	
 	@Override
-	public List<Character> findCharactersByAge(int age, ComparisonType comparisonType)
+	public List<Character> findCharactersByName(String name)
 	{
-		String sql = "SELECT * FROM Characters WHERE Age "
-				+ comparisonType.symbolicRepresentation() + " ?";
+		String sql = "SELECT * FROM Characters WHERE Name = ?";
 		List<Character> characters = new LinkedList<Character>();
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setInt(1, age);
+			statement.setString(1, name);
 			ResultSet result = statement.executeQuery();
 			
 			while (result.next())
@@ -233,7 +292,6 @@ public class CharacterDaoSQL implements CharacterDao
 		{
 			exception.printStackTrace();
 		}
-		
 		return characters;
 	}
 	
@@ -264,94 +322,53 @@ public class CharacterDaoSQL implements CharacterDao
 		return characters;
 	}
 	
-	private Character parseCharacter(ResultSet result) throws SQLException
-	{
-		int year = result.getInt("DOBYear");
-		int month = result.getInt("DOBMonth");
-		int day = result.getInt("DOBDay");
-		int id = result.getInt("CharacterID");
-		String archetype = result.getString("Archetype");
-		String name = result.getString("Name");
-		String genderString = result.getString("Gender");
-		Gender gender = Gender.valueOf(genderString);
-		String hairColour = result.getString("HairColor");
-		
-		Calendar calendar = new GregorianCalendar();
-		calendar.set(year, month, day);
-		Date dobDate = calendar.getTime();
-		
-		Character character = new Character();
-		character.setBirthDate(dobDate);
-		character.setId(id);
-		character.setArchetype(archetype);
-		character.setName(name);
-		character.setGender(gender);
-		character.setHairColor(hairColour);
-		
-		return character;
-	}
-	
 	@Override
-	public Character findCharacter(int id)
+	public List<Character> listAll()
 	{
-		String sql = "SELECT * FROM Characters WHERE CharacterID = ?";
-		Character character = Character.NULL_CHARACTER;
+		String sql = "SELECT * FROM Characters";
+		List<Character> characters = new LinkedList<Character>();
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setInt(1, id);
 			ResultSet result = statement.executeQuery();
 			
-			if (result.next())
-				character = parseCharacter(result);
+			while (result.next())
+			{
+				Character character = parseCharacter(result);
+				characters.add(character);
+			}
 		}
 		catch (Exception exception)
 		{
 			exception.printStackTrace();
 		}
 		
-		return character;
+		return characters;
 	}
 	
 	@Override
-	public boolean characterExists(int id)
-	{
-		return findCharacter(id) != Character.NULL_CHARACTER;
-	}
-	
-	@Override
-	public boolean deleteCharacter(int id)
+	public boolean updateCharacter(Character character)
 	{
 		boolean result = false;
-		String sql = "DELETE FROM Characters WHERE CharacterID=?";
+		String sql = "UPDATE Characters set Name = ?, Gender = ?, DOBDay = ?, DOBMonth = ?, DOBYear = ?, HairColor = ?, "
+				+ "Archetype = ? WHERE CharacterID = ?";
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setInt(1, id);
-			statement.execute();
-			result = true;
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return result;
-	}
-	
-	@Override
-	public boolean deleteCharacter(Character character)
-	{
-		boolean result = false;
-		String sql = "DELETE FROM Characters WHERE CharacterID = ?";
-		
-		try (Connection connection = createDatabaseConnection();
-				PreparedStatement statement = connection.prepareStatement(sql);)
-		{
-			statement.setInt(1, character.getId());
+			Date dobDate = character.getBirthDate();
+			Calendar calender = new GregorianCalendar();
+			calender.setTime(dobDate);
 			
+			statement.setString(1, character.getName());
+			statement.setString(2, character.getGender().name());
+			statement.setInt(3, calender.get(Calendar.DAY_OF_MONTH));
+			statement.setInt(4, calender.get(Calendar.MONTH));
+			statement.setInt(5, calender.get(Calendar.DATE));
+			statement.setString(6, character.getHairColor());
+			statement.setString(7, character.getArchetype());
+			statement.setInt(8, character.getId());
 			statement.execute();
 			result = true;
 		}

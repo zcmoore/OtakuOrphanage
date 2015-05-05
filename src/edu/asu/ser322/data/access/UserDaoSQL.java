@@ -14,9 +14,10 @@ import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.User;
 
 /**
- * {@link UserDao} which uses an SQLite database as its persistent store. Note: the
- * current version of this code is not secure, as it is vulnerable to various attacks
- * including injection, and <b>should not be used in production.</b>
+ * {@link UserDao} which uses an SQLite database as its persistent store.
+ * <p>
+ * Note: the current version of this code is not secure, as it is vulnerable to various
+ * attacks including injection, and <b>should not be used in production.</b>
  * 
  * @author Moore, Zachary
  *
