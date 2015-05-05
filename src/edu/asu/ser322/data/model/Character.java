@@ -12,12 +12,19 @@ import java.util.Date;
  */
 public class Character
 {
+	public static final Character NULL_CHARACTER = new Character();
+	
 	private int id;
 	private Gender gender;
 	private String archetype;
 	private String name;
 	private String hairColor;
 	private Date birthDate;
+	
+	public Character()
+	{
+		super();
+	}
 	
 	public int getID()
 	{
@@ -89,5 +96,4 @@ public class Character
 		// TODO calculate age from DOB
 		throw new UnsupportedOperationException();
 	}
-	
 }
