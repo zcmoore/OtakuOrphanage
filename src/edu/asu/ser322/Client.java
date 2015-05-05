@@ -74,7 +74,7 @@ public class Client extends JFrame
 
 	public void showLogin()
 	{
-		cardLayout.show(panelContainer, LOGIN);
+		cardLayout.show(panelContainer, LOGIN_PANEL_ID);
 	}
 
 }
