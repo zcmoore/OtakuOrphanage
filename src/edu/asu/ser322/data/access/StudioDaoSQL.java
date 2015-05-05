@@ -1,7 +1,8 @@
 package edu.asu.ser322.data.access;
 
+import static edu.asu.ser322.data.StorageFactory.createDatabaseConnection;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
@@ -10,7 +11,6 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Studio;
 
 /**
@@ -22,27 +22,6 @@ import edu.asu.ser322.data.model.Studio;
 
 public class StudioDaoSQL implements StudioDao
 {
-	/**
-	 * @return Connection to {@link SQL#CONNECTION_URL}, or null if a connection cannot be
-	 *         established.
-	 */
-	private Connection createConnection()
-	{
-		Connection connection = null;
-		
-		try
-		{
-			Class.forName(SQL.DRIVER_PATH);
-			connection = DriverManager.getConnection(SQL.CONNECTION_URL);
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return connection;
-	}
-	
 	@Override
 	public boolean addStudio(Studio studio)
 	{
@@ -50,7 +29,7 @@ public class StudioDaoSQL implements StudioDao
 		String sql = "INSERT INTO Studios(StudioName, StartDateDay, StartDateMonth, StartDateYear,"
 				+ "CloseDateDay, CloseDateMonth, CloseDateYear) VALUES(?, ?, ?, ?, ?, ?, ?)";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql))
 		{
 			statement.setString(1, studio.getName());
@@ -87,7 +66,7 @@ public class StudioDaoSQL implements StudioDao
 		String sql = "UPDATE Studios set StartDateDay = ?, StartDateMonth = ?, StartDateYear = ?,"
 				+ "CloseDateDay = ?, CloseDateMonth = ?, CloseDateYear = ? WHERE  StudioName = ?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			Date startDate = studio.getStartDate();
@@ -123,7 +102,7 @@ public class StudioDaoSQL implements StudioDao
 		String sql = "SELECT * FROM Studios WHERE StudioName=?";
 		Studio studio = Studio.NULL_STUDIO;
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, studioName);
@@ -159,7 +138,7 @@ public class StudioDaoSQL implements StudioDao
 		String sql = "SELECT * FROM Studios WHERE StudioName=?";
 		List<Studio> studios = new LinkedList<>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			ResultSet result = statement.executeQuery();
@@ -204,7 +183,7 @@ public class StudioDaoSQL implements StudioDao
 		boolean result = false;
 		String sql = "DELETE FROM Studios WHERE StudioName=?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, studioName);

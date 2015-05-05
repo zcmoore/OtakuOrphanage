@@ -1,7 +1,8 @@
 package edu.asu.ser322.data.access;
 
+import static edu.asu.ser322.data.StorageFactory.createDatabaseConnection;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
@@ -10,7 +11,6 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Gender;
@@ -22,27 +22,6 @@ import edu.asu.ser322.data.model.Gender;
  */
 public class EpisodeDaoSQL implements EpisodeDao
 {
-	/**
-	 * @return Connection to {@link SQL#CONNECTION_URL}, or null if a connection cannot be
-	 *         established.
-	 */
-	private Connection createConnection()
-	{
-		Connection connection = null;
-		
-		try
-		{
-			Class.forName(SQL.DRIVER_PATH);
-			connection = DriverManager.getConnection(SQL.CONNECTION_URL);
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return connection;
-	}
-	
 	@Override
 	public boolean addEpisode(Episode episode)
 	{
@@ -50,7 +29,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 		String sql = "INSERT INTO Episodes(SeriesName, SeasonNumber, ShowName, AirDateDay, AirDateMonth"
 				+ "AirDateYear, ArtStyle, Approprateness, EpisodeName, Type) VALUES(?, ?, ?, ?, ? , ?, ?, ?, ?)";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			Date airDate = episode.getAirDate();
@@ -85,7 +64,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 		String sql = "UPDATE Episodes set AirDateDay = ?, AirDateMonth = ?, AireDateYear = ?,"
 				+ "ArtSytle = ?, Approprateness = ?, EpisodeName = ?, Type = ? WHERE  SeriesName = ?, SeasonNumber = ?, EpisodeNumber = ?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(8, episode.getSeriesName());
@@ -120,7 +99,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 		String sql = "SELECT * FROM Studios WHERE EpisodeName=?";
 		List<Episode> episodes = new LinkedList<Episode>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, episodeName);
@@ -158,7 +137,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 		String sql = "SELECT * FROM Episodes";
 		List<Episode> episodes = new LinkedList<Episode>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			ResultSet result = statement.executeQuery();
@@ -202,7 +181,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 		boolean result = false;
 		String sql = "DELETE FROM Episodes WHERE SeriesName = ?, SeasonNumber = ?, EpisodeNumber = ?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, episode.getSeriesName());
@@ -226,7 +205,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 		boolean result = false;
 		String sql = "INSERT INTO CharacterAppearances(Character, Series, Season, Episode, Role) VALUES(?, ?, ?, ?, ?)";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, character.getId());
@@ -250,7 +229,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 		boolean result = false;
 		String sql = "DELETE FROM CharacterAppearances Character = ?, Series = ?, Season = ?, Episode = ?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, character.getId());
@@ -276,7 +255,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 				+ "AND characters.CharacterID = appearance.Character";
 		List<Character> characters = new LinkedList<Character>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, episode.getSeriesName());

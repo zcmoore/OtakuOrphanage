@@ -1,7 +1,8 @@
 package edu.asu.ser322.data.access;
 
+import static edu.asu.ser322.data.StorageFactory.createDatabaseConnection;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,33 +12,11 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Gender;
 
 public class CharacterDaoSQL implements CharacterDao
 {
-	
-	/**
-	 * @return Connection to {@link SQL#CONNECTION_URL}, or null if a connection cannot be
-	 *         established.
-	 */
-	private Connection createConnection()
-	{
-		Connection connection = null;
-		
-		try
-		{
-			Class.forName(SQL.DRIVER_PATH);
-			connection = DriverManager.getConnection(SQL.CONNECTION_URL);
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return connection;
-	}
 	
 	@Override
 	public boolean addCharacter(Character character)
@@ -46,7 +25,7 @@ public class CharacterDaoSQL implements CharacterDao
 		String sql = "INSERT INTO Characters(CharacterID, Name, Gender, DOBDay, DOBMonth, DOBYear, HairColor, Archetype) "
 				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			Date dobDate = character.getBirthDate();
@@ -79,7 +58,7 @@ public class CharacterDaoSQL implements CharacterDao
 		String sql = "UPDATE Characters set Name = ?, Gender = ?, DOBDay = ?, DOBMonth = ?, DOBYear = ?, HairColor = ?, "
 				+ "Archetype = ? WHERE CharacterID = ?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			Date dobDate = character.getBirthDate();
@@ -111,7 +90,7 @@ public class CharacterDaoSQL implements CharacterDao
 		String sql = "SELECT * FROM Characters WHERE Name = ?";
 		List<Character> characters = new LinkedList<Character>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, name);
@@ -136,7 +115,7 @@ public class CharacterDaoSQL implements CharacterDao
 		String sql = "SELECT * FROM Characters WHERE HairColor = ?";
 		List<Character> characters = new LinkedList<Character>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, colour);
@@ -161,7 +140,7 @@ public class CharacterDaoSQL implements CharacterDao
 		String sql = "SELECT * FROM Characters WHERE Archetype = ?";
 		List<Character> characters = new LinkedList<Character>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, archetype);
@@ -186,7 +165,7 @@ public class CharacterDaoSQL implements CharacterDao
 		String sql = "SELECT * FROM Characters WHERE Gender = ?";
 		List<Character> characters = new LinkedList<Character>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, gender.name().toUpperCase());
@@ -212,7 +191,7 @@ public class CharacterDaoSQL implements CharacterDao
 		String sql = "SELECT * FROM Characters";
 		List<Character> characters = new LinkedList<Character>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			ResultSet result = statement.executeQuery();
@@ -238,7 +217,7 @@ public class CharacterDaoSQL implements CharacterDao
 				+ comparisonType.symbolicRepresentation() + " ?";
 		List<Character> characters = new LinkedList<Character>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, age);
@@ -266,7 +245,7 @@ public class CharacterDaoSQL implements CharacterDao
 				+ "ON Users.Waifu = Characters.CharacterId;";
 		List<Character> characters = new LinkedList<Character>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			ResultSet result = statement.executeQuery();
@@ -318,7 +297,7 @@ public class CharacterDaoSQL implements CharacterDao
 		String sql = "SELECT * FROM Characters WHERE CharacterID = ?";
 		Character character = Character.NULL_CHARACTER;
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, id);
@@ -347,7 +326,7 @@ public class CharacterDaoSQL implements CharacterDao
 		boolean result = false;
 		String sql = "DELETE FROM Characters WHERE CharacterID=?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, id);
@@ -368,7 +347,7 @@ public class CharacterDaoSQL implements CharacterDao
 		boolean result = false;
 		String sql = "DELETE FROM Characters WHERE CharacterID = ?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, character.getId());

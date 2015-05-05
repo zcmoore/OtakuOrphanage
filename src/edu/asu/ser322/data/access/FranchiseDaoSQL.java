@@ -1,13 +1,13 @@
 package edu.asu.ser322.data.access;
 
+import static edu.asu.ser322.data.StorageFactory.createDatabaseConnection;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Franchise;
 
 /**
@@ -17,34 +17,13 @@ import edu.asu.ser322.data.model.Franchise;
  */
 public class FranchiseDaoSQL implements FranchiseDao
 {
-	/**
-	 * @return Connection to {@link SQL#CONNECTION_URL}, or null if a connection cannot be
-	 *         established.
-	 */
-	private Connection createConnection()
-	{
-		Connection connection = null;
-		
-		try
-		{
-			Class.forName(SQL.DRIVER_PATH);
-			connection = DriverManager.getConnection(SQL.CONNECTION_URL);
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return connection;
-	}
-	
 	@Override
 	public boolean addFranchise(Franchise franchise)
 	{
 		boolean result = false;
 		String sql = "INSERT INTO Franchises(FranchiseID, FranchiseName) VALUES(?, ?)";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, franchise.getId());
@@ -74,7 +53,7 @@ public class FranchiseDaoSQL implements FranchiseDao
 		String sql = "SELECT * FROM Franchises WHERE FranchiseName=?";
 		Franchise franchise = Franchise.NULL_FRANCHISE;
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, name);
@@ -103,7 +82,7 @@ public class FranchiseDaoSQL implements FranchiseDao
 		String sql = "SELECT * FROM Franchises";
 		List<Franchise> franchises = new LinkedList<>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			ResultSet results = statement.executeQuery();
@@ -131,7 +110,7 @@ public class FranchiseDaoSQL implements FranchiseDao
 		boolean result = false;
 		String sql = "DELETE FROM Franchises WHERE Username=?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, name);

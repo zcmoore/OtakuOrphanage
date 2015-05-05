@@ -21,6 +21,27 @@ public class StorageFactory
 	}
 	
 	/**
+	 * @return Connection to {@link SQL#CONNECTION_URL}, or null if a connection cannot be
+	 *         established.
+	 */
+	public static Connection createDatabaseConnection()
+	{
+		Connection connection = null;
+		
+		try
+		{
+			Class.forName(SQL.DRIVER_PATH);
+			connection = DriverManager.getConnection(SQL.CONNECTION_URL);
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return connection;
+	}
+	
+	/**
 	 * Creates an SQLite database and places the store in the root project folder. If the
 	 * database already exists, it will be overwritten.
 	 * 

@@ -1,7 +1,8 @@
 package edu.asu.ser322.data.access;
 
+import static edu.asu.ser322.data.StorageFactory.createDatabaseConnection;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,32 +12,10 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Season;
 
 public class SeasonDaoSQL implements SeasonDao
 {
-	/**
-	 * @return Connection to {@link SQL#CONNECTION_URL}, or null if a connection cannot be
-	 *         established.
-	 */
-	private Connection createConnection()
-	{
-		Connection connection = null;
-		
-		try
-		{
-			Class.forName(SQL.DRIVER_PATH);
-			connection = DriverManager.getConnection(SQL.CONNECTION_URL);
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return connection;
-	}
-	
 	@Override
 	public boolean addSeason(Season season)
 	{
@@ -45,7 +24,7 @@ public class SeasonDaoSQL implements SeasonDao
 				+ "AirDateYear, FinishDateDay, FinishDateMonth, FinishDateYear, Appropriateness)"
 				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			Calendar calendar = new GregorianCalendar();
@@ -91,7 +70,7 @@ public class SeasonDaoSQL implements SeasonDao
 		String sql = "INSERT INTO GenreMap(Series, SeasonNumber, Genre)"
 				+ "VALUES(?, ?, ?)";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, season.getSeriesName());
@@ -118,7 +97,7 @@ public class SeasonDaoSQL implements SeasonDao
 		String sql = "SELECT * FROM GenreMap WHERE Series=? AND SeasonNumber=?";
 		List<String> genres = new LinkedList<>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, season.getSeriesName());
@@ -145,7 +124,7 @@ public class SeasonDaoSQL implements SeasonDao
 		String sql = "SELECT * FROM Seasons WHERE SeriesName= ? AND SeasonNumber = ?";
 		Season season = Season.NULL_SEASON;
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, seriesname);
@@ -213,7 +192,7 @@ public class SeasonDaoSQL implements SeasonDao
 		String sql = "SELECT * FROM Seasons WHERE SeriesName=?";
 		List<Season> seasons = new LinkedList<Season>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, seriesname);
@@ -239,7 +218,7 @@ public class SeasonDaoSQL implements SeasonDao
 		String sql = "SELECT * FROM Seasons WHERE AirDateYear=?";
 		List<Season> seasons = new LinkedList<Season>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, airYear);
@@ -265,7 +244,7 @@ public class SeasonDaoSQL implements SeasonDao
 		String sql = "SELECT * FROM Seasons";
 		List<Season> seasons = new LinkedList<Season>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			ResultSet results = statement.executeQuery();
@@ -290,7 +269,7 @@ public class SeasonDaoSQL implements SeasonDao
 		String sql = "SELECT * FROM Seasons WHERE Genre=?";
 		List<Season> seasons = new LinkedList<Season>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, genre);
@@ -316,7 +295,7 @@ public class SeasonDaoSQL implements SeasonDao
 		boolean result = false;
 		String sql = "DELETE FROM Seasons WHERE SeriesName = ? AND SeasonNumber = ?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, seriesName);
@@ -346,7 +325,7 @@ public class SeasonDaoSQL implements SeasonDao
 		String sql = "SELECT * FROM Seasons WHERE SeriesName=?";
 		List<Season> seasons = new LinkedList<>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, seriesname);
@@ -372,7 +351,7 @@ public class SeasonDaoSQL implements SeasonDao
 		String sql = "SELECT DISTINCT FROM (SELECT SeriesName FROM Seasons)";
 		List<String> seriesList = new LinkedList<>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			ResultSet results = statement.executeQuery();

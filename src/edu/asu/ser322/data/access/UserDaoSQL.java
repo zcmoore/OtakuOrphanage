@@ -1,14 +1,14 @@
 package edu.asu.ser322.data.access;
 
+import static edu.asu.ser322.data.StorageFactory.createDatabaseConnection;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.User;
@@ -23,27 +23,6 @@ import edu.asu.ser322.data.model.User;
  */
 class UserDaoSQL implements UserDao
 {
-	/**
-	 * @return Connection to {@link SQL#CONNECTION_URL}, or null if a connection cannot be
-	 *         established.
-	 */
-	private Connection createConnection()
-	{
-		Connection connection = null;
-		
-		try
-		{
-			Class.forName(SQL.DRIVER_PATH);
-			connection = DriverManager.getConnection(SQL.CONNECTION_URL);
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return connection;
-	}
-	
 	@Override
 	public boolean addUser(User user)
 	{
@@ -53,7 +32,7 @@ class UserDaoSQL implements UserDao
 		boolean result = false;
 		String sql = "INSERT INTO Users(Username, Password, Waifu) VALUES(?, ?, ?)";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, user.getUsername());
@@ -85,7 +64,7 @@ class UserDaoSQL implements UserDao
 		boolean result = false;
 		String sql = "UPDATE Users set Password=?, Waifu=?, WHERE Username=?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, user.getPassword());
@@ -108,7 +87,7 @@ class UserDaoSQL implements UserDao
 		String sql = "SELECT * FROM Users WHERE Username=?";
 		User user = User.NULL_USER;
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, username);
@@ -141,7 +120,7 @@ class UserDaoSQL implements UserDao
 		String sql = "SELECT * FROM Users WHERE Username=?";
 		List<User> users = new LinkedList<>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			ResultSet results = statement.executeQuery();
@@ -180,7 +159,7 @@ class UserDaoSQL implements UserDao
 		boolean result = false;
 		String sql = "DELETE FROM Users WHERE Username=?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, username);
@@ -202,7 +181,7 @@ class UserDaoSQL implements UserDao
 		String sql = "SELECT * FROM Users WHERE Username=?";
 		boolean result = false;
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, username);
@@ -234,7 +213,7 @@ class UserDaoSQL implements UserDao
 	{
 		String sql = "SELECT * FROM Watched WHERE User=? AND Series=? AND Season=?";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, user.getUsername());
@@ -262,7 +241,7 @@ class UserDaoSQL implements UserDao
 		boolean result = false;
 		String sql = "INSERT INTO Watched(User, Series, Season, EpisodeCount) VALUES(?, ?, ?, ?)";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, user.getUsername());
@@ -289,7 +268,7 @@ class UserDaoSQL implements UserDao
 		boolean result = false;
 		String sql = "INSERT INTO Users(Username, Password, Waifu) VALUES(?, ?, ?)";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, user.getUsername());

@@ -1,7 +1,8 @@
 package edu.asu.ser322.data.access;
 
+import static edu.asu.ser322.data.StorageFactory.createDatabaseConnection;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Person;
 import edu.asu.ser322.data.model.Season;
@@ -21,34 +21,13 @@ import edu.asu.ser322.data.model.Season;
  */
 public class PeopleDaoSQL implements PeopleDao
 {
-	/**
-	 * @return Connection to {@link SQL#CONNECTION_URL}, or null if a connection cannot be
-	 *         established.
-	 */
-	private Connection createConnection()
-	{
-		Connection connection = null;
-		
-		try
-		{
-			Class.forName(SQL.DRIVER_PATH);
-			connection = DriverManager.getConnection(SQL.CONNECTION_URL);
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return connection;
-	}
-	
 	@Override
 	public boolean addPerson(String name)
 	{
 		boolean result = false;
 		String sql = "INSERT INTO People(Name) VALUES(?)";
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, name);
@@ -70,7 +49,7 @@ public class PeopleDaoSQL implements PeopleDao
 		String sql = "SELECT * FROM People WHERE Name=?";
 		List<Person> people = new LinkedList<Person>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, name);
@@ -98,7 +77,7 @@ public class PeopleDaoSQL implements PeopleDao
 		String sql = "SELECT * FROM People";
 		List<Person> people = new LinkedList<Person>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			ResultSet results = statement.executeQuery();
@@ -134,7 +113,7 @@ public class PeopleDaoSQL implements PeopleDao
 				+ "act.Actor = ?)";
 		List<Season> seasons = new LinkedList<>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, person.getID());
@@ -165,7 +144,7 @@ public class PeopleDaoSQL implements PeopleDao
 				+ "character.CharacterID = act.Character AND act.Actor = ?)";
 		List<Character> characters = new LinkedList<>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, person.getID());
@@ -198,7 +177,7 @@ public class PeopleDaoSQL implements PeopleDao
 				+ "GROUP BY Characters.Archetype;";
 		Map<String, Integer> distribution = new HashMap<>();
 		
-		try (Connection connection = createConnection();
+		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, person.getID());
