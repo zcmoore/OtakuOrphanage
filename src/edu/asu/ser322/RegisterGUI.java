@@ -135,7 +135,7 @@ public class RegisterGUI extends JPanel
 				}
 				else
 				{
-					// TODO: account for Waifu
+					// TODO: initialize user with Waifu
 					User user = new User(username, password, null);
 					UserDao dao = DAOCollection.getUserDao();
 					dao.addUser(user);
