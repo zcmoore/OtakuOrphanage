@@ -2,12 +2,14 @@ package edu.asu.ser322.data.access;
 
 import edu.asu.ser322.data.model.Studio;
 import edu.asu.ser322.data.model.User;
+
 /**
  * 
  * @author Benjamin Paothatat
+ * @author Moor, Zachary
  *
  */
-public interface StudioDao 
+public interface StudioDao
 {
 	/**
 	 * Add a studio to the persistent store
@@ -56,19 +58,19 @@ public interface StudioDao
 	/**
 	 * Adds an employee to the persistent store
 	 * 
-	 * @param studioname personname
-	 *            Target studio's name and person' name
+	 * @param studioname
+	 *            personname Target studio's name and person' name
 	 * @return true if the deletion was successful. False otherwise
 	 */
-	public boolean addEmployee(String studioname, String personname);
+	public boolean addEmployee(String studioname, String personname, String role);
 	
 	/**
 	 * Removes an employee from the persistent store
 	 * 
-	 * @param studioname personname
-	 *            Target studio's name and person' name
+	 * @param studioname
+	 *            personname Target studio's name and person' name
 	 * @return true if the deletion was successful. False otherwise
 	 */
-	public boolean removeEmployee(String studioname, String personname);
+	public boolean removeEmployee(String studioname, String personname, String role);
 	
 }
