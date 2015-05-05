@@ -53,15 +53,14 @@ public class MainMenuGUI extends JPanel
 	private JButton settingsButton;
 	private JButton searchButton;
 	private JButton logoutButton;
-	//private JList titleHolderList;
 	private JTable results;
 	private List<String> ListOfEntities;
 	private List<Character> searchResultsOfCharacter;
 	private List<Franchise> searchResultsOfFranchise;
 	private List<User> searchResultsOfUsers;
 	private List<Season> searchResultsOfSeason;
-	//private List<Episode> searchResultsOfEpisodes;
-	//private List<Studio> searchResultsOfStudio;
+	// private List<Episode> searchResultsOfEpisodes;
+	// private List<Studio> searchResultsOfStudio;
 	private DefaultTableModel tableModel;
 	Vector<String> columnNames = new Vector<String>();
 	Vector<Vector<String>> rowValues = new Vector<Vector<String>>();
@@ -83,7 +82,6 @@ public class MainMenuGUI extends JPanel
 		setOpaque(false);
 		addImageBackGround();
 		titleLabel = new JLabel("Anime Database");
-		//informationSelectedListener();
 		populateListOfTableArray();
 		tableList = new JComboBox<>(ListOfEntities.toArray());
 		searchBarTextField = new JTextField();
@@ -93,8 +91,6 @@ public class MainMenuGUI extends JPanel
 		tableModel = new DefaultTableModel();
 		results = new JTable(tableModel);
 		JScrollPane spTable = new JScrollPane(results);
-		//columnNames = new Vector<String>();
-		//rowValues = new Vector<String>();
 		
 		selectedItemPictureLabel = new JLabel();
 		selectedItemInfoLabel = new JLabel();
@@ -103,15 +99,53 @@ public class MainMenuGUI extends JPanel
 			public void actionPerformed(ActionEvent e)
 			{
 				// TODO: Populate the JList with search results
-				//titleHolderList.setVisible(true);
-				// loadInfoOnShows();
-				if(tableList.getSelectedItem().toString().equals("Character"))
+				if (tableList.getSelectedItem().toString().equals("Character"))
 				{
 					clearAllVectors();
+					if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
+							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					{
+						
+					}
+					else if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
+							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					{
+						
+					}
+					else if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
+							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					{
+						
+					}
+					else if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
+							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					{
+						
+					}
+					else if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
+							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					{
+						
+					}
+					else if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
+							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					{
+						
+					}
+					
+						
+						
+					searchResultsOfCharacter = DAOCollection.getCharacterDao()
+							.findCharactersByName(searchBarTextField.getText());
 					
 					
-					searchResultsOfCharacter = DAOCollection.getCharacterDao().findCharactersByName(searchBarTextField.getText());
-					
+					if(searchResultsOfCharacter.size() != 0)
+					{
+						for(int j=0;j<searchResultsOfCharacter.size();j++)
+						{
+							;
+						}
+					}
 					
 					columnNames.add("CharacterID");
 					columnNames.add("Name");
@@ -120,42 +154,44 @@ public class MainMenuGUI extends JPanel
 					columnNames.add("Hair Color");
 					columnNames.add("Birthday Day");
 					
-					//tableModel = new DefaultTableModel();
-					for(int i = 0; i < searchResultsOfCharacter.size(); i++)
+					for (int i = 0; i < searchResultsOfCharacter.size(); i++)
 					{
-						//int id = searchResultsOfCharacter.get(i).getId();
-						String ID = Integer.toString(searchResultsOfCharacter.get(i).getId());
+						String ID = Integer.toString(searchResultsOfCharacter.get(i)
+								.getId());
 						String name = searchResultsOfCharacter.get(i).getName();
-						String gender = searchResultsOfCharacter.get(i).getGender().toString();
+						String gender = searchResultsOfCharacter.get(i).getGender()
+								.toString();
 						String archetype = searchResultsOfCharacter.get(i).getArchetype();
 						String hairColor = searchResultsOfCharacter.get(i).getHairColor();
-					    String dob = searchResultsOfCharacter.get(i).getBirthDate().toString();
-					    vector.add(ID);
-					    vector.add(name);
-					    vector.add(gender);
-					    vector.add(archetype);
-					    vector.add(hairColor);
-					    vector.add(dob);
-					    rowValues.add(vector);
+						String dob = searchResultsOfCharacter.get(i).getBirthDate()
+								.toString();
+						vector.add(ID);
+						vector.add(name);
+						vector.add(gender);
+						vector.add(archetype);
+						vector.add(hairColor);
+						vector.add(dob);
+						rowValues.add(vector);
 					}
 					
 					repaint();
 					tableModel.setDataVector(rowValues, columnNames);
 				}
-				else if(tableList.getSelectedItem().toString().equals("Franchise"))
+				else if (tableList.getSelectedItem().toString().equals("Franchise"))
 				{
 					clearAllVectors();
-					searchResultsOfFranchise.add(DAOCollection.getFranchiseDao().findFranchise(searchBarTextField.getText()));
+					searchResultsOfFranchise.add(DAOCollection.getFranchiseDao()
+							.findFranchise(searchBarTextField.getText()));
 				}
-				else if(tableList.getSelectedItem().toString().equals("User"))
-				{
-					clearAllVectors();
-				}
-				else if(tableList.getSelectedItem().toString().equals("Seasons"))
+				else if (tableList.getSelectedItem().toString().equals("User"))
 				{
 					clearAllVectors();
 				}
-
+				else if (tableList.getSelectedItem().toString().equals("Seasons"))
+				{
+					clearAllVectors();
+				}
+				
 			}
 		});
 		
@@ -189,18 +225,16 @@ public class MainMenuGUI extends JPanel
 		// Settings.setBounds(30, 30, 100, 30);
 		// add(Settings);
 		
-	   
-		
 		results.setBounds(50, 200, 600, 250);
 		add(results);
 		
-		selectedItemPictureLabel.setBounds(350, 200, 150, 200);
+		selectedItemPictureLabel.setBounds(50, 300, 150, 200);
 		add(selectedItemPictureLabel);
 		
-		selectedItemInfoLabel.setBounds(510, 200, 210, 200);
+		selectedItemInfoLabel.setBounds(210, 300, 210, 200);
 		add(selectedItemInfoLabel);
 	}
-
+	
 	public void clearAllVectors()
 	{
 		columnNames.clear();
@@ -240,39 +274,15 @@ public class MainMenuGUI extends JPanel
 		return returnIcon;
 	}
 	
-	/*
-	public void informationSelectedListener()
-	{
-		//titleHolderList = new JList(ListOfEntities.toArray());
-		//titleHolderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		//titleHolderList.addListSelectionListener(new ListSelectionListener() {
-			//@Override
-			//public void valueChanged(ListSelectionEvent e)
-			//{
-				// TODO: Here is where we will get the info for the titles that
-				// we have
-				// selected
-				
-				// setInfoOfSelectedItem(String of info);
-				// setPictureOfSelectedItem(String path to image);
-				
-			}
-		//});
-		
-	//}
-	 * 
-	 */
-	
 	public void populateListOfTableArray()
 	{
 		ListOfEntities.add("Character");
-		//ListOfEntities.add("Episode");
 		ListOfEntities.add("Franchise");
 		ListOfEntities.add("User");
 		ListOfEntities.add("Seasons");
-		//ListOfEntities.add("Studio");
+		// ListOfEntities.add("Episode");
+		// ListOfEntities.add("Studio");
 	}
-	
 	
 	public void addImageBackGround()
 	{
