@@ -1,6 +1,9 @@
 package edu.asu.ser322;
 
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -9,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,41 +34,55 @@ import edu.asu.ser322.data.model.User;
 @SuppressWarnings("serial")
 public class RegisterGUI extends JPanel
 {
-
+	
 	private JLabel RegisterPageTitle;
 	private JLabel enterUserNameLabel;
 	private JLabel enterPasswordLabel;
 	// private JLabel enterWaifuLabel;
-
+	
 	private JTextField enterUserNameTextField;
 	private JPasswordField enterPasswordTextField;
 	// private JTextField enterWaifuTextField;
-
+	
 	private JButton becomeOtakuButton;
 	private JButton backToLogin;
-
+	
 	private DAOCollection daoCollection;
 	private UserDao userDao;
 	Client client;
-
+	
 	private BufferedImage img;
-
+	
 	public RegisterGUI(Client client)
 	{
 		this.client = client;
 		init();
 		layout();
 	}
-
+	
 	private void init()
 	{
+		Font terrorFont;
+		try
+		{
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			terrorFont = Font.createFont(Font.TRUETYPE_FONT, new File("terror_pro.ttf"));
+			ge.registerFont(terrorFont);
+			terrorFont = terrorFont.deriveFont(16.0f);
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			terrorFont = getFont();
+		}
+		
 		setOpaque(false);
 		addImageBackGround();
-
+		
 		userDao = DAOCollection.getUserDao();
-
+		
 		String registerPageTitleLabel = "<html>\n"
-				+ "<font size=+4><font color=#00FFFF>Register</font>";
+				+ "<font><font color=red>Register</font>";
 		String enterUserNameLabelText = "<html>\n"
 				+ "<font size=+1><font color=red>Enter Username:</font>";
 		String enterPasswordLabelText = "<html>\n"
@@ -72,42 +90,57 @@ public class RegisterGUI extends JPanel
 		String enterWaifuLabelText = "<html>\n"
 				+ "<font size=+1><font color=red>Waifu:</font>";
 		String becomeOtakuButtonText = "<html>\n"
-				+ "<font color=red>Welcome to the Orphanage</font>";
+				+ "<center><font color=red>Welcome to the Orphanage</font></center>";
 		String backToLoginButtonText = "<html>\n" + "<font color=red>Back</font>";
-
+		
 		RegisterPageTitle = new JLabel(registerPageTitleLabel);
+		RegisterPageTitle.setFont(terrorFont.deriveFont(48.0f));
 		enterUserNameLabel = new JLabel(enterUserNameLabelText);
 		enterPasswordLabel = new JLabel(enterPasswordLabelText);
 		// enterWaifuLabel = new JLabel(enterWaifuLabelText);
-
+		
 		enterUserNameTextField = new JTextField();
 		enterPasswordTextField = new JPasswordField();
 		// TODO: search for own, or select in combo box from data?
 		// enterWaifuTextField = new JTextField();
 		becomeOtakuButton = new JButton(becomeOtakuButtonText);
+		becomeOtakuButton.setBorder(BorderFactory.createEmptyBorder());
+		becomeOtakuButton.setContentAreaFilled(false);
+		becomeOtakuButton.setHorizontalTextPosition(JButton.CENTER);
+		becomeOtakuButton.setHorizontalAlignment(JButton.CENTER);
+		becomeOtakuButton.setFont(terrorFont.deriveFont(20.0f));
+		
 		backToLogin = new JButton(backToLoginButtonText);
-
+		backToLogin.setBorder(BorderFactory.createEmptyBorder());
+		backToLogin.setContentAreaFilled(false);
+		backToLogin.setHorizontalTextPosition(JButton.CENTER);
+		backToLogin.setHorizontalAlignment(JButton.CENTER);
+		backToLogin.setFont(terrorFont.deriveFont(32.0f));
+		
 		becomeOtakuButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
 				String username = enterUserNameTextField.getText();
 				String password = String.valueOf(enterPasswordTextField.getPassword());
 				password = password.trim();
-
+				
 				if (userDao.userExists(username))
 				{
 					JOptionPane.showMessageDialog(client,
-							"User Exists,\nPlease choose another Username", "User exists", JOptionPane.WARNING_MESSAGE);
+							"User Exists,\nPlease choose another Username",
+							"User exists", JOptionPane.WARNING_MESSAGE);
 				}
 				else if (password == null || password.trim().length() <= 0)
 				{
 					JOptionPane.showMessageDialog(client,
-							"Username is blank,\nPlease enter a Username", "Username Blank", JOptionPane.WARNING_MESSAGE);
+							"Username is blank,\nPlease enter a Username",
+							"Username Blank", JOptionPane.WARNING_MESSAGE);
 				}
 				else if (!userDao.userExists(username) && password.trim().length() == 0)
 				{
 					JOptionPane.showMessageDialog(client,
-							"You need a Password,\nPlease enter a password", "Password Blank", JOptionPane.WARNING_MESSAGE);
+							"You need a Password,\nPlease enter a password",
+							"Password Blank", JOptionPane.WARNING_MESSAGE);
 				}
 				else
 				{
@@ -116,12 +149,12 @@ public class RegisterGUI extends JPanel
 					UserDao dao = DAOCollection.getUserDao();
 					dao.addUser(user);
 					Session.login(username, password);
-
+					
 					client.showMainMenu();
 				}
 			}
 		});
-
+		
 		backToLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
@@ -129,39 +162,39 @@ public class RegisterGUI extends JPanel
 			}
 		});
 	}
-
+	
 	public void layout()
 	{
 		setLayout(null);
-
+		
 		RegisterPageTitle.setBounds(580, 20, 500, 80);
 		add(RegisterPageTitle);
-
+		
 		enterUserNameLabel.setBounds(400, 120, 150, 30);
 		add(enterUserNameLabel);
-
+		
 		enterUserNameTextField.setBounds(560, 120, 150, 30);
 		add(enterUserNameTextField);
-
+		
 		enterPasswordLabel.setBounds(400, 160, 150, 30);
 		add(enterPasswordLabel);
-
+		
 		enterPasswordTextField.setBounds(560, 160, 150, 30);
 		add(enterPasswordTextField);
-
+		
 		// enterWaifuLabel.setBounds(500, 200, 150, 30);
 		// add(enterWaifuLabel);
-
+		
 		// enterWaifuTextField.setBounds(560, 200, 150, 30);
 		// add(enterWaifuTextField);
-
+		
 		becomeOtakuButton.setBounds(1100, 580, 150, 75);
 		add(becomeOtakuButton);
-
+		
 		backToLogin.setBounds(50, 580, 150, 75);
 		add(backToLogin);
 	}
-
+	
 	public void addImageBackGround()
 	{
 		try
@@ -177,7 +210,7 @@ public class RegisterGUI extends JPanel
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	protected void paintComponent(Graphics g)
 	{
@@ -187,5 +220,5 @@ public class RegisterGUI extends JPanel
 			g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
 		}
 	}
-
+	
 }
