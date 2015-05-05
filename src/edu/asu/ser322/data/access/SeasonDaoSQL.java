@@ -313,13 +313,6 @@ public class SeasonDaoSQL implements SeasonDao
 	}
 	
 	@Override
-	public List<Season> seasonsBYear(String genre)
-	{
-		// TODO Auto-generated method stub return null;
-		throw new UnsupportedOperationException("The method is not implemented yet.");
-	}
-	
-	@Override
 	public List<Season> findSeasonsInSeries(String seriesname)
 	{
 		String sql = "SELECT * FROM Seasons WHERE SeriesName=?";

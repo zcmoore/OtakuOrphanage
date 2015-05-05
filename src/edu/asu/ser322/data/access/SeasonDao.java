@@ -50,16 +50,6 @@ public interface SeasonDao
 	public List<Season> seasonsByAirYear(int airYear);
 	
 	/**
-	 * Finds the seasons that consist of a specified genre and loads them from the
-	 * persistent store
-	 * 
-	 * @param genre
-	 *            Target seasons' genre
-	 * @return the a list of seasons, or null if a series cannot be found
-	 */
-	public List<Season> seasonsBYear(String genre);
-	
-	/**
 	 * Remove a season from the persistent store
 	 * 
 	 * @param seriesName
@@ -78,6 +68,14 @@ public interface SeasonDao
 	 */
 	public Season findSeason(String seriesname, int seasonnumber);
 	
+	/**
+	 * Finds the seasons that consist of a specified genre and loads them from the
+	 * persistent store
+	 * 
+	 * @param genre
+	 *            Target seasons' genre
+	 * @return the a list of seasons, or null if a series cannot be found
+	 */
 	public List<Season> seasonsByGenre(String genre);
 	
 	List<Season> findSeasonsInSeries(String seriesname);
