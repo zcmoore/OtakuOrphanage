@@ -164,6 +164,7 @@ public class PeopleDaoSQL implements PeopleDao
 	@Override
 	public Map<String, Integer> getArchetypeDistributionOf(Person person)
 	{
+		// TODO: verify
 		String sql = "SELECT Characters.Archetype AS Archetype, COUNT(Characters.CharacterId) AS NumberOfRoles FROM "
 				+ "ActorAppearances INNER JOIN Characters "
 				+ "ON ActorAppearances.Actor = ? AND ActorAppearances.Character = Characters.CharacterId "
