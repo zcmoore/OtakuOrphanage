@@ -42,7 +42,6 @@ public class LoginGUI extends JPanel // implements ActionListener
 	
 	Client client;
 	MainMenuGUI mainMenu;
-
 	
 	// protected GroupLayout layout = new GroupLayout(this);
 	
@@ -56,14 +55,16 @@ public class LoginGUI extends JPanel // implements ActionListener
 	private void init()
 	{
 		setOpaque(false);
-    	addImageBackGround();
-    	
+		addImageBackGround();
+		
 		userDao = DAOCollection.getUserDao();
 		
-		String animeDatabaseLoginText = "<html>\n" + "<font size=+4><font color=#00FFFF>Otaku Orphanage</font>";
-		String userLabelText = "<html>\n" + "<font size=+2><font color=red>Username:</font>";
-		String passwordLabelText = "<html>\n" + "<font size=+2><font color=red>Password:</font>";
-		
+		String animeDatabaseLoginText = "<html>\n"
+				+ "<font size=+4><font color=#00FFFF>Otaku Orphanage</font>";
+		String userLabelText = "<html>\n"
+				+ "<font size=+2><font color=red>Username:</font>";
+		String passwordLabelText = "<html>\n"
+				+ "<font size=+2><font color=red>Password:</font>";
 		
 		animeDatabaseLogin = new JLabel(animeDatabaseLoginText);
 		userLabel = new JLabel(userLabelText);
@@ -72,6 +73,26 @@ public class LoginGUI extends JPanel // implements ActionListener
 		passwordTextField = new JPasswordField();
 		loginButton = new JButton("Login");
 		registerButton = new JButton("Register");
+		
+		loginButton.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				if (userDao.login(usernameTextField.getText(),
+						passwordTextField.getText()))
+				{
+					client.showMainMenu();
+				}
+			}
+		});
+		
+		registerButton.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				client.showRegisterPanel();
+			}
+		});
 	}
 	
 	public void layout()
@@ -92,54 +113,37 @@ public class LoginGUI extends JPanel // implements ActionListener
 		
 		passwordTextField.setBounds(240, 220, 200, 30);
 		add(passwordTextField);
-		//FIXME: Implement the button differently
+		
 		loginButton.setBounds(900, 580, 150, 75);
-		loginButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				if(userDao.login(usernameTextField.getText(),passwordTextField.getText()))
-				{
-					client.showMainMenu();
-				}
-			}
-		});
 		add(loginButton);
 		
 		registerButton.setBounds(1100, 580, 150, 75);
-		registerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				client.showRegisterPanel();
-			}
-		});
-		//TODO: Created register panel or take information from login page?
-		// registerButton.addActionListener(this);
 		add(registerButton);
 	}
 	
 	public void addImageBackGround()
-    {
-        try 
-        {
-            img = ImageIO.read(new File("rec/LoginBackground.jpg"));
-        } 
-        catch (FileNotFoundException e)
-        {
-        	 e.printStackTrace();
-        }
-        catch (IOException e) 
-        {
-            e.printStackTrace();
-        }
-    }
-    
-    @Override
-    protected void paintComponent(Graphics g) 
-    {
-    	super.paintComponent(g); 
-        if (img != null)
-        {
-          g.drawImage(img, 0,0,this.getWidth(),this.getHeight(),this);
-        }
-    }
+	{
+		try
+		{
+			img = ImageIO.read(new File("rec/LoginBackground.jpg"));
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	protected void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		if (img != null)
+		{
+			g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
+		}
+	}
 }

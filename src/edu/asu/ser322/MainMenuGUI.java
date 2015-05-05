@@ -22,6 +22,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+/**
+ * 
+ * @author Cuahuc
+ *
+ */
+
 public class MainMenuGUI extends JPanel
 {
 	private Client client;
@@ -30,19 +36,13 @@ public class MainMenuGUI extends JPanel
 	private JLabel accountInfoLabel;
 	private JLabel selectedItemPictureLabel;
 	private JLabel selectedItemInfoLabel;
-	
 	private JComboBox tableList;
-	
 	private JTextField searchBarTextField;
-	
 	private JButton settingsButton;
 	private JButton searchButton;
-	
 	private JList titleHolderList;
-	
 	private List<String> tableListData;
 	private List<String> titleListData;
-	
 	private BufferedImage img;
 	
 	public MainMenuGUI(Client client)
@@ -75,6 +75,16 @@ public class MainMenuGUI extends JPanel
 		
 		selectedItemPictureLabel = new JLabel();
 		selectedItemInfoLabel = new JLabel();
+		
+		searchButton.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				// TODO: Populate the JList with search results
+				titleHolderList.setVisible(true);
+				// loadInfoOnShows();
+			}
+		});
 	}
 	
 	public void layout()
@@ -89,14 +99,6 @@ public class MainMenuGUI extends JPanel
 		add(searchBarTextField);
 		
 		searchButton.setBounds(1180, 60, 80, 30);
-		searchButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				// TODO: Populate the JList with search results
-				titleHolderList.setVisible(true);
-				// loadInfoOnShows();
-			}
-		});
 		add(searchButton);
 		
 		// TODO: function for the settings button has yet to be defined
@@ -158,7 +160,8 @@ public class MainMenuGUI extends JPanel
 			@Override
 			public void valueChanged(ListSelectionEvent e)
 			{
-				// TODO: Here is where we will get the info for the titles that we have
+				// TODO: Here is where we will get the info for the titles that
+				// we have
 				// selected
 				
 				// setInfoOfSelectedItem(String of info);
