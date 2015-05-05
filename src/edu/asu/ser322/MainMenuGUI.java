@@ -18,11 +18,13 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 import edu.asu.ser322.data.access.DAOCollection;
 import edu.asu.ser322.data.model.Episode;
@@ -51,7 +53,7 @@ public class MainMenuGUI extends JPanel
 	private JButton settingsButton;
 	private JButton searchButton;
 	private JButton logoutButton;
-	private JList titleHolderList;
+	//private JList titleHolderList;
 	private JTable results;
 	private List<String> ListOfEntities;
 	private List<Character> searchResultsOfCharacter;
@@ -60,6 +62,7 @@ public class MainMenuGUI extends JPanel
 	private List<Franchise> searchResultsOfFranchise;
 	private List<Studio> searchResultsOfStudio;
 	private List<Person> searchResultsOfPerson;
+	private DefaultTableModel tableModel;
 	
 	private BufferedImage img;
 	
@@ -84,6 +87,8 @@ public class MainMenuGUI extends JPanel
 		searchButton = new JButton("Search");
 		logoutButton = new JButton("Logout");
 		settingsButton = new JButton("Settings");
+		results = new JTable(tableModel);
+		JScrollPane spTable = new JScrollPane(results);
 		
 		//searchResultsOfCharacter = new LinkedList<Character>();
 		//searchResultsOfSeason = new LinkedList<Season>();
@@ -92,7 +97,7 @@ public class MainMenuGUI extends JPanel
 		//searchResultsOfStudio = new LinkedList<Studio>();
 		//searchResultsOfPerson = new LinkedList<Person>();
 		
-		titleHolderList.setVisible(false);
+		//titleHolderList.setVisible(false);
 		
 		selectedItemPictureLabel = new JLabel();
 		selectedItemInfoLabel = new JLabel();
@@ -101,13 +106,25 @@ public class MainMenuGUI extends JPanel
 			public void actionPerformed(ActionEvent e)
 			{
 				// TODO: Populate the JList with search results
-				titleHolderList.setVisible(true);
+				//titleHolderList.setVisible(true);
 				// loadInfoOnShows();
 				if(tableList.getSelectedItem().toString().equals("Character"))
 				{
-					searchResultsOfCharacter = DAOCollection.getCharacterDao().findCharactersByName(searchBarTextField.getText());
-					System.out.println(searchResultsOfCharacter.get(0).getName());
 					
+					searchResultsOfCharacter = DAOCollection.getCharacterDao().findCharactersByName(searchBarTextField.getText());
+					String[] columnNames = {"CharacterID", "Name", "Gender", "Archetype", "Hair Color", "Birthday Day"};
+					tableModel = new DefaultTableModel(columnNames, searchResultsOfCharacter.size());
+					for(int i = 0; i < searchResultsOfCharacter.size(); i++)
+					{
+						int id = searchResultsOfCharacter.get(i).getId();
+						String name = searchResultsOfCharacter.get(i).getName();
+						String gender = searchResultsOfCharacter.get(i).getGender().toString();
+						String archetype = searchResultsOfCharacter.get(i).getHairColor();
+					    String dob = searchResultsOfCharacter.get(i).getBirthDate().toString();
+						Object[] data = {id, name, gender, archetype, dob};
+						tableModel.addRow(data);
+					}
+					results = new JTable(tableModel);
 				}
 			}
 		});
@@ -142,8 +159,10 @@ public class MainMenuGUI extends JPanel
 		// Settings.setBounds(30, 30, 100, 30);
 		// add(Settings);
 		
-		titleHolderList.setBounds(50, 200, 250, 400);
-		add(titleHolderList);
+	   
+		
+		results.setBounds(50, 200, 400, 250);
+		add(results);
 		
 		selectedItemPictureLabel.setBounds(350, 200, 150, 200);
 		add(selectedItemPictureLabel);
@@ -187,12 +206,12 @@ public class MainMenuGUI extends JPanel
 	
 	public void informationSelectedListener()
 	{
-		titleHolderList = new JList(ListOfEntities.toArray());
-		titleHolderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		titleHolderList.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e)
-			{
+		//titleHolderList = new JList(ListOfEntities.toArray());
+		//titleHolderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		//titleHolderList.addListSelectionListener(new ListSelectionListener() {
+			//@Override
+			//public void valueChanged(ListSelectionEvent e)
+			//{
 				// TODO: Here is where we will get the info for the titles that
 				// we have
 				// selected
@@ -201,9 +220,9 @@ public class MainMenuGUI extends JPanel
 				// setPictureOfSelectedItem(String path to image);
 				
 			}
-		});
+		//});
 		
-	}
+	//}
 	
 	public void populateListOfTableArray()
 	{
