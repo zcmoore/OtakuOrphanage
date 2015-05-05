@@ -21,7 +21,7 @@ public class Franchise
 	
 	public Franchise()
 	{
-	    super();	
+		super();
 	}
 	
 	public Franchise(int id, String name)

@@ -37,7 +37,7 @@ public class FranchiseDaoSQL implements FranchiseDao
 	}
 	
 	@Override
-	public boolean addFranchise(Franchise franchise) 
+	public boolean addFranchise(Franchise franchise)
 	{
 		boolean result = false;
 		String sql = "INSERT INTO Franchises(FranchiseID, FranchiseName) VALUES(?, ?)";
@@ -58,15 +58,17 @@ public class FranchiseDaoSQL implements FranchiseDao
 		
 		return result;
 	}
-
+	
 	@Override
-	public boolean updateFranchise(Franchise franchise) {
+	public boolean updateFranchise(Franchise franchise)
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 	@Override
-	public Franchise findFranchise(String name) {
+	public Franchise findFranchise(String name)
+	{
 		String sql = "SELECT * FROM Franchises WHERE FranchiseName=?";
 		Franchise franchise = Franchise.NULL_FRANCHISE;
 		
@@ -80,9 +82,9 @@ public class FranchiseDaoSQL implements FranchiseDao
 			{
 				int resultId = results.getInt("FranchiseID");
 				String resultName = results.getString("FranchiseName");
-			
+				
 				franchise = new Franchise(resultId, resultName);
-			
+				
 			}
 		}
 		catch (Exception exception)
@@ -92,9 +94,10 @@ public class FranchiseDaoSQL implements FranchiseDao
 		
 		return franchise;
 	}
-
+	
 	@Override
-	public boolean deleteFranchise(String name) {
+	public boolean deleteFranchise(String name)
+	{
 		boolean result = false;
 		String sql = "DELETE FROM Franchises WHERE Username=?";
 		
@@ -113,5 +116,5 @@ public class FranchiseDaoSQL implements FranchiseDao
 		
 		return result;
 	}
-
+	
 }

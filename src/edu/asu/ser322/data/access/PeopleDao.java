@@ -41,8 +41,8 @@ public interface PeopleDao
 	public boolean personExists(String name);
 	
 	List<Season> getSeasonsActedBy(Person person);
-
+	
 	List<Character> getCharactersActedBy(Person person);
-
+	
 	Map<String, Integer> getArchetypeDistributionOf(Person person);
 }

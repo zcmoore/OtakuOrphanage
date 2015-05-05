@@ -1,13 +1,15 @@
 package edu.asu.ser322.data.access;
 
 import edu.asu.ser322.data.model.Franchise;
+
 /**
- * Intermediate layer to communicate {@link Franchise} data between a client and a persistent
- * store.
+ * Intermediate layer to communicate {@link Franchise} data between a client and a
+ * persistent store.
+ * 
  * @author Benjamin Paothatat
  *
  */
-public interface FranchiseDao 
+public interface FranchiseDao
 {
 	/**
 	 * Add a franchise to the persistent store
@@ -23,9 +25,9 @@ public interface FranchiseDao
 	 * 
 	 * @param franchise
 	 *            Target to update.
-	 * @return true if the franchise was updated successfully. False if the update failed, if
-	 *         the specified franchise does not exist in the persistent store, or if the user
-	 *         is invalid.
+	 * @return true if the franchise was updated successfully. False if the update failed,
+	 *         if the specified franchise does not exist in the persistent store, or if
+	 *         the user is invalid.
 	 */
 	public boolean updateFranchise(Franchise franchise);
 	
@@ -34,7 +36,8 @@ public interface FranchiseDao
 	 * 
 	 * @param name
 	 *            Target franchise's name
-	 * @return the franchise object, or {@link Franchise#NULL_FRANCHISE} if a franchise cannot be found
+	 * @return the franchise object, or {@link Franchise#NULL_FRANCHISE} if a franchise
+	 *         cannot be found
 	 */
 	public Franchise findFranchise(String name);
 	

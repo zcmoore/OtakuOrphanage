@@ -128,14 +128,15 @@ public class EpisodeDaoSQL implements EpisodeDao
 			statement.setString(1, episodeName);
 			ResultSet result = statement.executeQuery();
 			
-			while(result.next())
+			while (result.next())
 			{
-			    Calendar calendar = new GregorianCalendar();
-			    calendar.set(result.getInt("AirDateYear"), result.getInt("AirDateMonth"), result.getInt("AirDateDay"));
+				Calendar calendar = new GregorianCalendar();
+				calendar.set(result.getInt("AirDateYear"), result.getInt("AirDateMonth"),
+						result.getInt("AirDateDay"));
 				Date airDate = calendar.getTime();
-
 				
-				Episode insteredEpisode = new Episode(result.getString("SeriesName"), result.getInt("SeasonNumber"), result.getInt("EpisodeNumber"));
+				Episode insteredEpisode = new Episode(result.getString("SeriesName"),
+						result.getInt("SeasonNumber"), result.getInt("EpisodeNumber"));
 				insteredEpisode.setAirDate(airDate);
 				insteredEpisode.setType("Type");
 				insteredEpisode.setApproprateness("Approprateness");
@@ -247,16 +248,18 @@ public class EpisodeDaoSQL implements EpisodeDao
 			statement.setInt(3, episode.getEpisodeNumber());
 			ResultSet results = statement.executeQuery();
 			
-			while(results.next())
+			while (results.next())
 			{
 				Calendar calendar = new GregorianCalendar();
-			    calendar.set(results.getInt("DOBYear"), results.getInt("DOBMonth"), results.getInt("DOBDay"));
+				calendar.set(results.getInt("DOBYear"), results.getInt("DOBMonth"),
+						results.getInt("DOBDay"));
 				Date airDate = calendar.getTime();
 				
 				Character insteredCharacter = new Character();
 				insteredCharacter.setArchetype(results.getString("Archtype"));
 				insteredCharacter.setBirthDate(airDate);
-				insteredCharacter.setGender(Gender.valueOf(results.getString("Gender").toUpperCase()));
+				insteredCharacter.setGender(Gender.valueOf(results.getString("Gender")
+						.toUpperCase()));
 				insteredCharacter.setHairColor(results.getString("HairColor"));
 				insteredCharacter.setName(results.getString("Name"));
 				insteredCharacter.setId(results.getInt("CharacterId"));

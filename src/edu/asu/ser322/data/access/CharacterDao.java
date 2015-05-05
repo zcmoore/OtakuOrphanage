@@ -57,7 +57,7 @@ public interface CharacterDao
 	 * @return A list of characters who are claimed as waifus by one or more users
 	 */
 	public List<Character> getWaifus();
-
+	
 	public Character findCharacter(int id);
 	
 	public boolean characterExists(int id);

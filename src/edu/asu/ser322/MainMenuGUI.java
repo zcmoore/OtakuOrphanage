@@ -102,46 +102,55 @@ public class MainMenuGUI extends JPanel
 				if (tableList.getSelectedItem().toString().equals("Character"))
 				{
 					clearAllVectors();
-					if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
-							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					if (DAOCollection.getCharacterDao().characterExists(
+							DAOCollection.getCharacterDao()
+									.findCharactersByName(searchBarTextField.getText())
+									.get(0).getId()))
 					{
 						
 					}
-					else if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
-							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					else if (DAOCollection.getCharacterDao().characterExists(
+							DAOCollection.getCharacterDao()
+									.findCharactersByName(searchBarTextField.getText())
+									.get(0).getId()))
 					{
 						
 					}
-					else if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
-							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					else if (DAOCollection.getCharacterDao().characterExists(
+							DAOCollection.getCharacterDao()
+									.findCharactersByName(searchBarTextField.getText())
+									.get(0).getId()))
 					{
 						
 					}
-					else if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
-							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					else if (DAOCollection.getCharacterDao().characterExists(
+							DAOCollection.getCharacterDao()
+									.findCharactersByName(searchBarTextField.getText())
+									.get(0).getId()))
 					{
 						
 					}
-					else if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
-							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					else if (DAOCollection.getCharacterDao().characterExists(
+							DAOCollection.getCharacterDao()
+									.findCharactersByName(searchBarTextField.getText())
+									.get(0).getId()))
 					{
 						
 					}
-					else if(DAOCollection.getCharacterDao().characterExists(DAOCollection.getCharacterDao()
-							.findCharactersByName(searchBarTextField.getText()).get(0).getId()))
+					else if (DAOCollection.getCharacterDao().characterExists(
+							DAOCollection.getCharacterDao()
+									.findCharactersByName(searchBarTextField.getText())
+									.get(0).getId()))
 					{
 						
 					}
 					
-						
-						
 					searchResultsOfCharacter = DAOCollection.getCharacterDao()
 							.findCharactersByName(searchBarTextField.getText());
 					
-					
-					if(searchResultsOfCharacter.size() != 0)
+					if (searchResultsOfCharacter.size() != 0)
 					{
-						for(int j=0;j<searchResultsOfCharacter.size();j++)
+						for (int j = 0; j < searchResultsOfCharacter.size(); j++)
 						{
 							;
 						}

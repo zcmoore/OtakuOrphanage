@@ -26,7 +26,7 @@ public class Client extends JFrame
 	private final LoginGUI loginGUI;
 	private final MainMenuGUI mainMenuGUI;
 	private final RegisterGUI registerGUI;
-
+	
 	public Client()
 	{
 		super(APPLICATION_NAME + " V" + VERSION + "." + REVISION);
@@ -40,41 +40,41 @@ public class Client extends JFrame
 		cardLayout.show(panelContainer, LOGIN_PANEL_ID);
 		this.pack();
 		this.invalidate();
-
+		
 		this.add(panelContainer);
 		setVisible(true);
 		this.setSize(DEFAULT_FRAME_SIZE);
 		this.setLocation(getCenteredPosition());
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
-
+	
 	private Point getCenteredPosition()
 	{
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = screenSize.width / 2 - this.getWidth() / 2;
 		int y = screenSize.height / 2 - this.getHeight() / 2;
-
+		
 		return new Point(x, y);
 	}
-
+	
 	public void showMainMenu()
 	{
 		cardLayout.show(panelContainer, MAIN_MENU_ID);
 	}
-
+	
 	public void showLoginPanel()
 	{
 		cardLayout.show(panelContainer, LOGIN_PANEL_ID);
 	}
-
+	
 	public void showRegisterPanel()
 	{
 		cardLayout.show(panelContainer, REGISTER_PANEL_ID);
 	}
-
+	
 	public void showLogin()
 	{
 		cardLayout.show(panelContainer, LOGIN_PANEL_ID);
 	}
-
+	
 }
