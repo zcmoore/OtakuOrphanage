@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
+import java.util.LinkedList;
+import java.util.List;
 
 import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Character;
@@ -45,7 +47,9 @@ class UserDaoSQL implements UserDao
 	@Override
 	public boolean addUser(User user)
 	{
-		// TODO: validate user
+		if (!user.validate())
+			return false;
+		
 		boolean result = false;
 		String sql = "INSERT INTO Users(Username, Password, Waifu) VALUES(?, ?, ?)";
 		
@@ -75,7 +79,9 @@ class UserDaoSQL implements UserDao
 	@Override
 	public boolean updateUser(User user)
 	{
-		// TODO: validate user
+		if (!user.validate())
+			return false;
+		
 		boolean result = false;
 		String sql = "UPDATE Users set Password=?, Waifu=?, WHERE Username=?";
 		
@@ -127,6 +133,39 @@ class UserDaoSQL implements UserDao
 		}
 		
 		return user;
+	}
+	
+	@Override
+	public List<User> listAll()
+	{
+		String sql = "SELECT * FROM Users WHERE Username=?";
+		List<User> users = new LinkedList<>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			ResultSet results = statement.executeQuery();
+			
+			while (results.next())
+			{
+				String resultUsername = results.getString("Username");
+				// FIXME: This is a security risk...
+				String resultPassword = results.getString("Password");
+				int resultWaifuID = results.getInt("Waifu");
+				
+				CharacterDao dao = DAOCollection.getCharacterDao();
+				Character waifu = dao.findCharacter(resultWaifuID);
+				
+				User user = new User(resultUsername, resultPassword, waifu);
+				users.add(user);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return users;
 	}
 	
 	@Override
@@ -217,7 +256,9 @@ class UserDaoSQL implements UserDao
 	
 	public boolean addWatch(User user, Season anime, int episodeCount, int rating)
 	{
-		// TODO: validate user
+		if (!user.validate())
+			return false;
+		
 		boolean result = false;
 		String sql = "INSERT INTO Watched(User, Series, Season, EpisodeCount) VALUES(?, ?, ?, ?)";
 		
@@ -242,7 +283,9 @@ class UserDaoSQL implements UserDao
 	
 	private boolean updateWatch(User user, Season anime, int episodeCount, int rating)
 	{
-		// TODO: validate user
+		if (!user.validate())
+			return false;
+		
 		boolean result = false;
 		String sql = "INSERT INTO Users(Username, Password, Waifu) VALUES(?, ?, ?)";
 		

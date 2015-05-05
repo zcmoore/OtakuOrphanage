@@ -45,4 +45,6 @@ public interface PeopleDao
 	List<Character> getCharactersActedBy(Person person);
 	
 	Map<String, Integer> getArchetypeDistributionOf(Person person);
+
+	List<Person> listAll();
 }

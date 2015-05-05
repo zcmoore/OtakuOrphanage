@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
+import java.util.List;
 
 import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Studio;
@@ -149,6 +151,45 @@ public class StudioDaoSQL implements StudioDao
 			exception.printStackTrace();
 		}
 		return studio;
+	}
+	
+	@Override
+	public List<Studio> listAll()
+	{
+		String sql = "SELECT * FROM Studios WHERE StudioName=?";
+		List<Studio> studios = new LinkedList<>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			ResultSet result = statement.executeQuery();
+			
+			while (result.next())
+			{
+				// TODO: Cleanup
+				Calendar calendar = new GregorianCalendar();
+				calendar.set(result.getInt("StartDateYear"),
+						result.getInt("StartDateMonth"), result.getInt("StartDateDay"));
+				Date startDate = calendar.getTime();
+				
+				calendar.set(result.getInt("CloseDateYear"),
+						result.getInt("CloseDateMonth"), result.getInt("CloseDateDay"));
+				Date closeDate = calendar.getTime();
+				
+				Studio studio = new Studio(result.getString("StudioName"), startDate,
+						closeDate);
+				
+				studios.add(studio);
+			}
+			
+			statement.execute();
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return studios;
 	}
 	
 	@Override

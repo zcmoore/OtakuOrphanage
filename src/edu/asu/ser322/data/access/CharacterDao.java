@@ -65,4 +65,6 @@ public interface CharacterDao
 	public boolean deleteCharacter(int id);
 	
 	public boolean deleteCharacter(Character chracter);
+	
+	List<Character> listAll();
 }

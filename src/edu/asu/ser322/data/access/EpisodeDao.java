@@ -79,6 +79,8 @@ public interface EpisodeDao
 	 *            Target episode
 	 * @return list of character objects or an empty list
 	 */
-	public List<Character> characters(Episode episode);
+	public List<Character> listCharactersIn(Episode episode);
+
+	List<Episode> listAll();
 	
 }

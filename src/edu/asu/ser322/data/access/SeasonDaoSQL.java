@@ -260,6 +260,31 @@ public class SeasonDaoSQL implements SeasonDao
 	}
 	
 	@Override
+	public List<Season> listAll()
+	{
+		String sql = "SELECT * FROM Seasons";
+		List<Season> seasons = new LinkedList<Season>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			ResultSet results = statement.executeQuery();
+			
+			while (results.next())
+			{
+				Season season = parseSeason(results);
+				seasons.add(season);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return seasons;
+	}
+	
+	@Override
 	public List<Season> seasonsByGenre(String genre)
 	{
 		String sql = "SELECT * FROM Seasons WHERE Genre=?";

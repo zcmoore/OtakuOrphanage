@@ -4,9 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Types;
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +14,6 @@ import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Gender;
-import edu.asu.ser322.data.model.Studio;
 
 /**
  * 
@@ -155,6 +153,44 @@ public class EpisodeDaoSQL implements EpisodeDao
 	}
 	
 	@Override
+	public List<Episode> listAll()
+	{
+		String sql = "SELECT * FROM Episodes";
+		List<Episode> episodes = new LinkedList<Episode>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			ResultSet result = statement.executeQuery();
+			
+			while (result.next())
+			{
+				Calendar calendar = new GregorianCalendar();
+				calendar.set(result.getInt("AirDateYear"), result.getInt("AirDateMonth"),
+						result.getInt("AirDateDay"));
+				Date airDate = calendar.getTime();
+				
+				Episode insteredEpisode = new Episode(result.getString("SeriesName"),
+						result.getInt("SeasonNumber"), result.getInt("EpisodeNumber"));
+				insteredEpisode.setAirDate(airDate);
+				insteredEpisode.setType("Type");
+				insteredEpisode.setApproprateness("Approprateness");
+				insteredEpisode.setEpisodeName("EpisodeName");
+				insteredEpisode.setArtStyle("ArtStyle");
+				episodes.add(insteredEpisode);
+			}
+			
+			statement.execute();
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return episodes;
+	}
+	
+	@Override
 	public boolean episodeExists(String episodeName)
 	{
 		return !(findEpisode(episodeName).isEmpty());
@@ -233,7 +269,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 	}
 	
 	@Override
-	public List<Character> characters(Episode episode)
+	public List<Character> listCharactersIn(Episode episode)
 	{
 		String sql = "SELECT * FROM Characters characters WHERE"
 				+ "(SELECT * FROM CharacterAppearances appearance WHERE Series = ?, Season = ?, Episode = ?"

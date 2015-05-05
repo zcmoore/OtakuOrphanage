@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Franchise;
@@ -93,6 +95,34 @@ public class FranchiseDaoSQL implements FranchiseDao
 		}
 		
 		return franchise;
+	}
+	
+	@Override
+	public List<Franchise> listAll()
+	{
+		String sql = "SELECT * FROM Franchises";
+		List<Franchise> franchises = new LinkedList<>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			ResultSet results = statement.executeQuery();
+			
+			if (results.next())
+			{
+				int resultId = results.getInt("FranchiseID");
+				String resultName = results.getString("FranchiseName");
+				
+				Franchise franchise = new Franchise(resultId, resultName);
+				franchises.add(franchise);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return franchises;
 	}
 	
 	@Override

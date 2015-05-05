@@ -202,6 +202,32 @@ public class CharacterDaoSQL implements CharacterDao
 		{
 			exception.printStackTrace();
 		}
+		
+		return characters;
+	}
+	
+	@Override
+	public List<Character> listAll()
+	{
+		String sql = "SELECT * FROM Characters";
+		List<Character> characters = new LinkedList<Character>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			ResultSet result = statement.executeQuery();
+			
+			while (result.next())
+			{
+				Character character = parseCharacter(result);
+				characters.add(character);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
 		return characters;
 	}
 	
@@ -228,6 +254,7 @@ public class CharacterDaoSQL implements CharacterDao
 		{
 			exception.printStackTrace();
 		}
+		
 		return characters;
 	}
 	
@@ -254,6 +281,7 @@ public class CharacterDaoSQL implements CharacterDao
 		{
 			exception.printStackTrace();
 		}
+		
 		return characters;
 	}
 	

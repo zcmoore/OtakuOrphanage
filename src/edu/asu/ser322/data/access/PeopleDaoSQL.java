@@ -93,6 +93,33 @@ public class PeopleDaoSQL implements PeopleDao
 	}
 	
 	@Override
+	public List<Person> listAll()
+	{
+		String sql = "SELECT * FROM People";
+		List<Person> people = new LinkedList<Person>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			ResultSet results = statement.executeQuery();
+			
+			while (results.next())
+			{
+				int resultPersonId = results.getInt("PersonID");
+				String resultName = results.getString("Name");
+				Person person = new Person(resultPersonId, resultName);
+				people.add(person);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return people;
+	}
+	
+	@Override
 	public boolean personExists(String name)
 	{
 		return !(findPerson(name).isEmpty());

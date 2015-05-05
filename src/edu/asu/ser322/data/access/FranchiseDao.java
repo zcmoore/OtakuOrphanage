@@ -1,5 +1,7 @@
 package edu.asu.ser322.data.access;
 
+import java.util.List;
+
 import edu.asu.ser322.data.model.Franchise;
 
 /**
@@ -49,4 +51,6 @@ public interface FranchiseDao
 	 * @return true if the deletion was successful. False otherwise
 	 */
 	public boolean deleteFranchise(String name);
+
+	List<Franchise> listAll();
 }

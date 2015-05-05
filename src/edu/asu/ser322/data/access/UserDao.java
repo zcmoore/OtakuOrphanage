@@ -1,5 +1,7 @@
 package edu.asu.ser322.data.access;
 
+import java.util.List;
+
 import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.User;
 
@@ -93,4 +95,6 @@ public interface UserDao
 	 * @return true if the logout was successful
 	 */
 	public boolean logout(String username, String password);
+
+	List<User> listAll();
 }
