@@ -234,8 +234,27 @@ public class CharacterDaoSQL implements CharacterDao
 	@Override
 	public List<Character> getWaifus()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// TODO: verify
+		String sql = "SELECT * FROM Users INNER JOIN Characters "
+				+ "ON Users.Waifu = Characters.CharacterId;";
+		List<Character> characters = new LinkedList<Character>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			ResultSet result = statement.executeQuery();
+			
+			while (result.next())
+			{
+				Character character = parseCharacter(result);
+				characters.add(character);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return characters;
 	}
 	
 	private Character parseCharacter(ResultSet result) throws SQLException
