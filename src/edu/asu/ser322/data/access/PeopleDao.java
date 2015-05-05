@@ -2,13 +2,16 @@ package edu.asu.ser322.data.access;
 
 import java.util.List;
 
+import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Person;
+import edu.asu.ser322.data.model.Season;
+
 /**
  * 
  * @author Benjamin Paothatat
  *
  */
-public interface PeopleDao 
+public interface PeopleDao
 {
 	/**
 	 * Add a person to the persistent store
@@ -18,7 +21,6 @@ public interface PeopleDao
 	 * @return true if the person was added successfully
 	 */
 	public boolean addPerson(String name);
-	
 	
 	/**
 	 * Finds the people with the given name, and loads it from the persistent store
@@ -36,4 +38,8 @@ public interface PeopleDao
 	 * @return true if a person with the specified name exists
 	 */
 	public boolean personExists(String name);
+	
+	List<Season> getSeasonsActedBy(Person person);
+
+	List<Character> getCharactersActedBy(Person person);
 }
