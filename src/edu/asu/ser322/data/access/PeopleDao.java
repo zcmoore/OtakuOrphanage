@@ -1,6 +1,7 @@
 package edu.asu.ser322.data.access;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Person;
@@ -42,4 +43,6 @@ public interface PeopleDao
 	List<Season> getSeasonsActedBy(Person person);
 
 	List<Character> getCharactersActedBy(Person person);
+
+	Map<String, Integer> getArchetypeDistributionOf(Person person);
 }

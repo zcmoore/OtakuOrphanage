@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Character;
@@ -157,6 +159,36 @@ public class PeopleDaoSQL implements PeopleDao
 		}
 		
 		return characters;
+	}
+	
+	@Override
+	public Map<String, Integer> getArchetypeDistributionOf(Person person)
+	{
+		String sql = "SELECT Characters.Archetype AS Archetype, COUNT(Characters.CharacterId) AS NumberOfRoles FROM "
+				+ "ActorAppearances INNER JOIN Characters "
+				+ "ON ActorAppearances.Actor = ? AND ActorAppearances.Character = Characters.CharacterId "
+				+ "GROUP BY Characters.Archetype;";
+		Map<String, Integer> distribution = new HashMap<>();
+		
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setInt(1, person.getID());
+			ResultSet results = statement.executeQuery();
+			
+			while (results.next())
+			{
+				String archetype = results.getString("Archetype");
+				int numberOfRoles = results.getInt("NumberOfRoles");
+				distribution.put(archetype, Integer.valueOf(numberOfRoles));
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return distribution;
 	}
 	
 }
