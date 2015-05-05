@@ -7,32 +7,32 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import edu.asu.ser322.data.access.DAOCollection;
+import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Franchise;
 import edu.asu.ser322.data.model.Person;
 import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.Studio;
-import edu.asu.ser322.data.model.Character;
+import edu.asu.ser322.data.model.User;
 
 /**
  * 
@@ -57,12 +57,15 @@ public class MainMenuGUI extends JPanel
 	private JTable results;
 	private List<String> ListOfEntities;
 	private List<Character> searchResultsOfCharacter;
-	private List<Season> searchResultsOfSeason;
-	private List<Episode> searchResultsOfEpisodes;
 	private List<Franchise> searchResultsOfFranchise;
-	private List<Studio> searchResultsOfStudio;
-	private List<Person> searchResultsOfPerson;
+	private List<User> searchResultsOfUsers;
+	private List<Season> searchResultsOfSeason;
+	//private List<Episode> searchResultsOfEpisodes;
+	//private List<Studio> searchResultsOfStudio;
 	private DefaultTableModel tableModel;
+	Vector<String> columnNames = new Vector<String>();
+	Vector<Vector<String>> rowValues = new Vector<Vector<String>>();
+	Vector<String> vector = new Vector<String>();
 	
 	private BufferedImage img;
 	
@@ -80,24 +83,18 @@ public class MainMenuGUI extends JPanel
 		setOpaque(false);
 		addImageBackGround();
 		titleLabel = new JLabel("Anime Database");
-		informationSelectedListener();
+		//informationSelectedListener();
 		populateListOfTableArray();
 		tableList = new JComboBox<>(ListOfEntities.toArray());
 		searchBarTextField = new JTextField();
 		searchButton = new JButton("Search");
 		logoutButton = new JButton("Logout");
 		settingsButton = new JButton("Settings");
+		tableModel = new DefaultTableModel();
 		results = new JTable(tableModel);
 		JScrollPane spTable = new JScrollPane(results);
-		
-		//searchResultsOfCharacter = new LinkedList<Character>();
-		//searchResultsOfSeason = new LinkedList<Season>();
-		//searchResultsOfEpisodes = new LinkedList<Episode>();
-		//searchResultsOfFranchise = new LinkedList<Franchise>();
-		//searchResultsOfStudio = new LinkedList<Studio>();
-		//searchResultsOfPerson = new LinkedList<Person>();
-		
-		//titleHolderList.setVisible(false);
+		//columnNames = new Vector<String>();
+		//rowValues = new Vector<String>();
 		
 		selectedItemPictureLabel = new JLabel();
 		selectedItemInfoLabel = new JLabel();
@@ -110,22 +107,55 @@ public class MainMenuGUI extends JPanel
 				// loadInfoOnShows();
 				if(tableList.getSelectedItem().toString().equals("Character"))
 				{
+					clearAllVectors();
+					
 					
 					searchResultsOfCharacter = DAOCollection.getCharacterDao().findCharactersByName(searchBarTextField.getText());
-					String[] columnNames = {"CharacterID", "Name", "Gender", "Archetype", "Hair Color", "Birthday Day"};
-					tableModel = new DefaultTableModel(columnNames, searchResultsOfCharacter.size());
+					
+					
+					columnNames.add("CharacterID");
+					columnNames.add("Name");
+					columnNames.add("Gender");
+					columnNames.add("Archetype");
+					columnNames.add("Hair Color");
+					columnNames.add("Birthday Day");
+					
+					//tableModel = new DefaultTableModel();
 					for(int i = 0; i < searchResultsOfCharacter.size(); i++)
 					{
-						int id = searchResultsOfCharacter.get(i).getId();
+						//int id = searchResultsOfCharacter.get(i).getId();
+						String ID = Integer.toString(searchResultsOfCharacter.get(i).getId());
 						String name = searchResultsOfCharacter.get(i).getName();
 						String gender = searchResultsOfCharacter.get(i).getGender().toString();
-						String archetype = searchResultsOfCharacter.get(i).getHairColor();
+						String archetype = searchResultsOfCharacter.get(i).getArchetype();
+						String hairColor = searchResultsOfCharacter.get(i).getHairColor();
 					    String dob = searchResultsOfCharacter.get(i).getBirthDate().toString();
-						Object[] data = {id, name, gender, archetype, dob};
-						tableModel.addRow(data);
+					    vector.add(ID);
+					    vector.add(name);
+					    vector.add(gender);
+					    vector.add(archetype);
+					    vector.add(hairColor);
+					    vector.add(dob);
+					    rowValues.add(vector);
 					}
-					results = new JTable(tableModel);
+					
+					repaint();
+					tableModel.setDataVector(rowValues, columnNames);
 				}
+				else if(tableList.getSelectedItem().toString().equals("Franchise"))
+				{
+					clearAllVectors();
+					searchResultsOfFranchise.add(DAOCollection.getFranchiseDao().findFranchise(searchBarTextField.getText()));
+				}
+				else if(tableList.getSelectedItem().toString().equals("User"))
+				{
+					clearAllVectors();
+				}
+				else if(tableList.getSelectedItem().toString().equals("Seasons"))
+				{
+					clearAllVectors();
+				}
+
 			}
 		});
 		
@@ -161,7 +191,7 @@ public class MainMenuGUI extends JPanel
 		
 	   
 		
-		results.setBounds(50, 200, 400, 250);
+		results.setBounds(50, 200, 600, 250);
 		add(results);
 		
 		selectedItemPictureLabel.setBounds(350, 200, 150, 200);
@@ -171,6 +201,12 @@ public class MainMenuGUI extends JPanel
 		add(selectedItemInfoLabel);
 	}
 
+	public void clearAllVectors()
+	{
+		columnNames.clear();
+		vector.clear();
+		rowValues.clear();
+	}
 	
 	public void setInfoOfSelectedItem(String info)
 	{
@@ -204,6 +240,7 @@ public class MainMenuGUI extends JPanel
 		return returnIcon;
 	}
 	
+	/*
 	public void informationSelectedListener()
 	{
 		//titleHolderList = new JList(ListOfEntities.toArray());
@@ -223,15 +260,17 @@ public class MainMenuGUI extends JPanel
 		//});
 		
 	//}
+	 * 
+	 */
 	
 	public void populateListOfTableArray()
 	{
 		ListOfEntities.add("Character");
-		ListOfEntities.add("Episode");
+		//ListOfEntities.add("Episode");
 		ListOfEntities.add("Franchise");
-		ListOfEntities.add("Person");
+		ListOfEntities.add("User");
 		ListOfEntities.add("Seasons");
-		ListOfEntities.add("Studio");
+		//ListOfEntities.add("Studio");
 	}
 	
 	
