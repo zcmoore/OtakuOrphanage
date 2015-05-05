@@ -21,7 +21,7 @@ import edu.asu.ser322.data.access.UserDao;
 import edu.asu.ser322.data.model.User;
 
 /**
- * 
+ *
  * @author Cuahuc
  * @author Moore, Zachary
  *
@@ -30,37 +30,39 @@ import edu.asu.ser322.data.model.User;
 @SuppressWarnings("serial")
 public class RegisterGUI extends JPanel
 {
-	
+
 	private JLabel RegisterPageTitle;
 	private JLabel enterUserNameLabel;
 	private JLabel enterPasswordLabel;
-	private JLabel enterWaifuLabel;
-	
+	// private JLabel enterWaifuLabel;
+
 	private JTextField enterUserNameTextField;
 	private JPasswordField enterPasswordTextField;
-	private JTextField enterWaifuTextField;
-	
+	// private JTextField enterWaifuTextField;
+
 	private JButton becomeOtakuButton;
-	
+	private JButton backToLogin;
+
+	private DAOCollection daoCollection;
 	private UserDao userDao;
 	Client client;
-	
+
 	private BufferedImage img;
-	
+
 	public RegisterGUI(Client client)
 	{
 		this.client = client;
 		init();
 		layout();
 	}
-	
+
 	private void init()
 	{
 		setOpaque(false);
 		addImageBackGround();
-		
+
 		userDao = DAOCollection.getUserDao();
-		
+
 		String registerPageTitleLabel = "<html>\n"
 				+ "<font size=+4><font color=#00FFFF>Register</font>";
 		String enterUserNameLabelText = "<html>\n"
@@ -71,34 +73,41 @@ public class RegisterGUI extends JPanel
 				+ "<font size=+1><font color=red>Waifu:</font>";
 		String becomeOtakuButtonText = "<html>\n"
 				+ "<font color=red>Welcome to the Orphanage</font>";
-		
+		String backToLoginButtonText = "<html>\n" + "<font color=red>Back</font>";
+
 		RegisterPageTitle = new JLabel(registerPageTitleLabel);
 		enterUserNameLabel = new JLabel(enterUserNameLabelText);
 		enterPasswordLabel = new JLabel(enterPasswordLabelText);
-		enterWaifuLabel = new JLabel(enterWaifuLabelText);
-		
+		// enterWaifuLabel = new JLabel(enterWaifuLabelText);
+
 		enterUserNameTextField = new JTextField();
 		enterPasswordTextField = new JPasswordField();
 		// TODO: search for own, or select in combo box from data?
-		enterWaifuTextField = new JTextField();
+		// enterWaifuTextField = new JTextField();
 		becomeOtakuButton = new JButton(becomeOtakuButtonText);
-		
+		backToLogin = new JButton(backToLoginButtonText);
+
 		becomeOtakuButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
 				String username = enterUserNameTextField.getText();
 				String password = String.valueOf(enterPasswordTextField.getPassword());
 				password = password.trim();
-				
+
 				if (userDao.userExists(username))
 				{
 					JOptionPane.showMessageDialog(client,
-							"User Exists,\nPlease choose another Username");
+							"User Exists,\nPlease choose another Username", "User exists", JOptionPane.WARNING_MESSAGE);
 				}
 				else if (password == null || password.trim().length() <= 0)
 				{
 					JOptionPane.showMessageDialog(client,
-							"You need a Password,\nPlease enter a password");
+							"Username is blank,\nPlease enter a Username", "Username Blank", JOptionPane.WARNING_MESSAGE);
+				}
+				else if (!userDao.userExists(user) && password.trim().length() == 0)
+				{
+					JOptionPane.showMessageDialog(client,
+							"You need a Password,\nPlease enter a password", "Password Blank", JOptionPane.WARNING_MESSAGE);
 				}
 				else
 				{
@@ -107,42 +116,52 @@ public class RegisterGUI extends JPanel
 					UserDao dao = DAOCollection.getUserDao();
 					dao.addUser(user);
 					Session.login(username, password);
-					
+
 					client.showMainMenu();
 				}
 			}
 		});
+
+		backToLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				client.showLogin();
+			}
+		});
 	}
-	
+
 	public void layout()
 	{
 		setLayout(null);
-		
+
 		RegisterPageTitle.setBounds(580, 20, 500, 80);
 		add(RegisterPageTitle);
-		
+
 		enterUserNameLabel.setBounds(400, 120, 150, 30);
 		add(enterUserNameLabel);
-		
+
 		enterUserNameTextField.setBounds(560, 120, 150, 30);
 		add(enterUserNameTextField);
-		
+
 		enterPasswordLabel.setBounds(400, 160, 150, 30);
 		add(enterPasswordLabel);
-		
+
 		enterPasswordTextField.setBounds(560, 160, 150, 30);
 		add(enterPasswordTextField);
-		
-		enterWaifuLabel.setBounds(500, 200, 150, 30);
-		add(enterWaifuLabel);
-		
-		enterWaifuTextField.setBounds(560, 200, 150, 30);
-		add(enterWaifuTextField);
-		
+
+		// enterWaifuLabel.setBounds(500, 200, 150, 30);
+		// add(enterWaifuLabel);
+
+		// enterWaifuTextField.setBounds(560, 200, 150, 30);
+		// add(enterWaifuTextField);
+
 		becomeOtakuButton.setBounds(1100, 580, 150, 75);
 		add(becomeOtakuButton);
+
+		backToLogin.setBounds(50, 580, 150, 75);
+		add(backToLogin);
 	}
-	
+
 	public void addImageBackGround()
 	{
 		try
@@ -158,7 +177,7 @@ public class RegisterGUI extends JPanel
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	protected void paintComponent(Graphics g)
 	{
@@ -168,5 +187,5 @@ public class RegisterGUI extends JPanel
 			g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
 		}
 	}
-	
+
 }
