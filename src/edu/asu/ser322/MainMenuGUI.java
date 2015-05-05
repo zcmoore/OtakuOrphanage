@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -17,10 +18,19 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import edu.asu.ser322.data.access.DAOCollection;
+import edu.asu.ser322.data.model.Episode;
+import edu.asu.ser322.data.model.Franchise;
+import edu.asu.ser322.data.model.Person;
+import edu.asu.ser322.data.model.Season;
+import edu.asu.ser322.data.model.Studio;
+import edu.asu.ser322.data.model.Character;
 
 /**
  * 
@@ -42,15 +52,21 @@ public class MainMenuGUI extends JPanel
 	private JButton searchButton;
 	private JButton logoutButton;
 	private JList titleHolderList;
-	private List<String> tableListData;
-	private List<String> titleListData;
+	private JTable results;
+	private List<String> ListOfEntities;
+	private List<Character> searchResultsOfCharacter;
+	private List<Season> searchResultsOfSeason;
+	private List<Episode> searchResultsOfEpisodes;
+	private List<Franchise> searchResultsOfFranchise;
+	private List<Studio> searchResultsOfStudio;
+	private List<Person> searchResultsOfPerson;
+	
 	private BufferedImage img;
 	
 	public MainMenuGUI(Client client)
 	{
 		this.client = client;
-		this.tableListData = new ArrayList<>();
-		this.titleListData = new ArrayList<>();
+		this.ListOfEntities = new ArrayList<>();
 		
 		init();
 		layout();
@@ -61,17 +77,20 @@ public class MainMenuGUI extends JPanel
 		setOpaque(false);
 		addImageBackGround();
 		titleLabel = new JLabel("Anime Database");
-		
-		loadInfoOnShows();
-		
+		informationSelectedListener();
 		populateListOfTableArray();
-		tableList = new JComboBox<>(tableListData.toArray());
-		
+		tableList = new JComboBox<>(ListOfEntities.toArray());
 		searchBarTextField = new JTextField();
-		
 		searchButton = new JButton("Search");
 		logoutButton = new JButton("Logout");
 		settingsButton = new JButton("Settings");
+		
+		//searchResultsOfCharacter = new LinkedList<Character>();
+		//searchResultsOfSeason = new LinkedList<Season>();
+		//searchResultsOfEpisodes = new LinkedList<Episode>();
+		//searchResultsOfFranchise = new LinkedList<Franchise>();
+		//searchResultsOfStudio = new LinkedList<Studio>();
+		//searchResultsOfPerson = new LinkedList<Person>();
 		
 		titleHolderList.setVisible(false);
 		
@@ -84,6 +103,12 @@ public class MainMenuGUI extends JPanel
 				// TODO: Populate the JList with search results
 				titleHolderList.setVisible(true);
 				// loadInfoOnShows();
+				if(tableList.getSelectedItem().toString().equals("Character"))
+				{
+					searchResultsOfCharacter = DAOCollection.getCharacterDao().findCharactersByName(searchBarTextField.getText());
+					System.out.println(searchResultsOfCharacter.get(0).getName());
+					
+				}
 			}
 		});
 		
@@ -126,11 +151,7 @@ public class MainMenuGUI extends JPanel
 		selectedItemInfoLabel.setBounds(510, 200, 210, 200);
 		add(selectedItemInfoLabel);
 	}
-	
-	public void populateListOfTitles(String title)
-	{
-		titleListData.add(title);
-	}
+
 	
 	public void setInfoOfSelectedItem(String info)
 	{
@@ -164,9 +185,9 @@ public class MainMenuGUI extends JPanel
 		return returnIcon;
 	}
 	
-	public void loadInfoOnShows()
+	public void informationSelectedListener()
 	{
-		titleHolderList = new JList<>(tableListData.toArray());
+		titleHolderList = new JList(ListOfEntities.toArray());
 		titleHolderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		titleHolderList.addListSelectionListener(new ListSelectionListener() {
 			@Override
@@ -186,14 +207,14 @@ public class MainMenuGUI extends JPanel
 	
 	public void populateListOfTableArray()
 	{
-		tableListData.add("Character");
-		tableListData.add("Episode");
-		tableListData.add("Franchise");
-		tableListData.add("People");
-		tableListData.add("Seasons");
-		tableListData.add("Series");
-		tableListData.add("Studio");
+		ListOfEntities.add("Character");
+		ListOfEntities.add("Episode");
+		ListOfEntities.add("Franchise");
+		ListOfEntities.add("Person");
+		ListOfEntities.add("Seasons");
+		ListOfEntities.add("Studio");
 	}
+	
 	
 	public void addImageBackGround()
 	{
