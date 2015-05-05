@@ -37,7 +37,7 @@ public class CharacterDaoSQL implements CharacterDao {
 	public boolean addCharacter(Character character) 
 	{
 		boolean result = false;
-		String sql = "INSERT INTO Characters(CharacterID, Name, Gender, DOB, HairColor, Archtype) "
+		String sql = "INSERT INTO Characters(CharacterID, Name, Gender, DOB, HairColor, Archetype) "
 						+ "VALUES(?, ?, ?, ?, ?, ?)";
 		
 		try (Connection connection = createConnection();

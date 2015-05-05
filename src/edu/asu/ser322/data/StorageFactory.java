@@ -70,7 +70,7 @@ public class StorageFactory
             "Gender        TEXT," +
             "DOB           TEXT," +
             "HairColor     TEXT," +
-            "Archtype      TEXT," +
+            "Archetype      TEXT," +
             "PRIMARY KEY (CharacterID));";
             sqlStatement.execute(sql);
 
