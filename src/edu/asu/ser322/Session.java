@@ -27,4 +27,17 @@ public class Session
 		return success;
 	}
 	
+	public static boolean logout()
+	{
+		String username = activeUser.getUsername();
+		String password = activeUser.getPassword();
+		UserDao dao = DAOCollection.getUserDao();
+		boolean success = dao.logout(username, password);
+		
+		if (success)
+			activeUser = null;
+		
+		return success;
+	}
+	
 }

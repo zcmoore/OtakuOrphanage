@@ -40,6 +40,7 @@ public class MainMenuGUI extends JPanel
 	private JTextField searchBarTextField;
 	private JButton settingsButton;
 	private JButton searchButton;
+	private JButton logoutButton;
 	private JList titleHolderList;
 	private List<String> tableListData;
 	private List<String> titleListData;
@@ -69,6 +70,7 @@ public class MainMenuGUI extends JPanel
 		searchBarTextField = new JTextField();
 		
 		searchButton = new JButton("Search");
+		logoutButton = new JButton("Logout");
 		settingsButton = new JButton("Settings");
 		
 		titleHolderList.setVisible(false);
@@ -76,13 +78,20 @@ public class MainMenuGUI extends JPanel
 		selectedItemPictureLabel = new JLabel();
 		selectedItemInfoLabel = new JLabel();
 		
-		searchButton.addActionListener(new ActionListener() 
-		{
+		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
 				// TODO: Populate the JList with search results
 				titleHolderList.setVisible(true);
 				// loadInfoOnShows();
+			}
+		});
+		
+		logoutButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				Session.logout();
+				client.showLoginPanel();
 			}
 		});
 	}
@@ -100,6 +109,9 @@ public class MainMenuGUI extends JPanel
 		
 		searchButton.setBounds(1180, 60, 80, 30);
 		add(searchButton);
+		
+		logoutButton.setBounds(1180, 15, 80, 30);
+		add(logoutButton);
 		
 		// TODO: function for the settings button has yet to be defined
 		// Settings.setBounds(30, 30, 100, 30);
