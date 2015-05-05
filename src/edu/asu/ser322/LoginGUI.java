@@ -15,15 +15,12 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import edu.asu.ser322.data.access.DAOCollection;
-import edu.asu.ser322.data.access.UserDao;
-import edu.asu.ser322.data.model.User;
-
 /**
  * 
  * 
  * @author Benjamin Paothatat
  * @author Cuahuctemoc Osorio
+ * @author Moore, Zachary
  */
 @SuppressWarnings("serial")
 public class LoginGUI extends JPanel // implements ActionListener
@@ -35,7 +32,6 @@ public class LoginGUI extends JPanel // implements ActionListener
 	private JPasswordField passwordTextField;
 	private JButton loginButton;
 	private JButton registerButton;
-	private UserDao userDao;
 	public static final String MAINMENU = "1";
 	
 	private BufferedImage img;
@@ -57,8 +53,6 @@ public class LoginGUI extends JPanel // implements ActionListener
 		setOpaque(false);
 		addImageBackGround();
 		
-		userDao = DAOCollection.getUserDao();
-		
 		String animeDatabaseLoginText = "<html>\n"
 				+ "<font size=+4><font color=#00FFFF>Otaku Orphanage</font>";
 		String userLabelText = "<html>\n"
@@ -74,20 +68,21 @@ public class LoginGUI extends JPanel // implements ActionListener
 		loginButton = new JButton("Login");
 		registerButton = new JButton("Register");
 		
-		loginButton.addActionListener(new ActionListener() 
-		{
+		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				if (userDao.login(usernameTextField.getText(),
-						passwordTextField.getText()))
+				String username = usernameTextField.getText();
+				String password = String.valueOf(passwordTextField.getPassword());
+				password = password.trim();
+				
+				if (Session.login(username, password))
 				{
 					client.showMainMenu();
 				}
 			}
 		});
 		
-		registerButton.addActionListener(new ActionListener() 
-		{
+		registerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
 				client.showRegisterPanel();
