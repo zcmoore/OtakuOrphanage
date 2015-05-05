@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -55,9 +56,9 @@ public class CharacterDaoSQL implements CharacterDao
 			statement.setInt(1, character.getId());
 			statement.setString(2, character.getName());
 			statement.setString(3, character.getGender().toString());
-			statement.setInt(4, calender.get(calender.DATE));
-			statement.setInt(5, calender.get(calender.MONTH));
-			statement.setInt(6, calender.get(calender.DATE));
+			statement.setInt(4, calender.get(Calendar.DAY_OF_MONTH));
+			statement.setInt(5, calender.get(Calendar.MONTH));
+			statement.setInt(6, calender.get(Calendar.DATE));
 			statement.setString(7, character.getHairColor());
 			statement.setString(8, character.getArchetype());
 			statement.execute();
@@ -85,14 +86,14 @@ public class CharacterDaoSQL implements CharacterDao
 			Calendar calender = new GregorianCalendar();
 			calender.setTime(dobDate);
 			
-			statement.setInt(8, character.getId());
 			statement.setString(1, character.getName());
 			statement.setString(2, character.getGender().name());
-			statement.setInt(3, calender.get(calender.DATE));
-			statement.setInt(4, calender.get(calender.MONTH));
-			statement.setInt(5, calender.get(calender.DATE));
+			statement.setInt(3, calender.get(Calendar.DAY_OF_MONTH));
+			statement.setInt(4, calender.get(Calendar.MONTH));
+			statement.setInt(5, calender.get(Calendar.DATE));
 			statement.setString(6, character.getHairColor());
 			statement.setString(7, character.getArchetype());
+			statement.setInt(8, character.getId());
 			statement.execute();
 			result = true;
 		}
@@ -118,22 +119,9 @@ public class CharacterDaoSQL implements CharacterDao
 			
 			while (result.next())
 			{
-				Calendar calendar = new GregorianCalendar();
-				calendar.set(result.getInt("DOBYear"), result.getInt("DOBMonth"),
-						result.getInt("DOBDay"));
-				Date dobDate = calendar.getTime();
-				
-				Character insteredCharacter = new Character();
-				insteredCharacter.setBirthDate(dobDate);
-				insteredCharacter.setId(result.getInt("CharacterID"));
-				insteredCharacter.setArchetype(result.getString("Archetype"));
-				insteredCharacter.setName(result.getString("Name"));
-				insteredCharacter.setGender(Gender.valueOf(result.getString("Gender")));
-				insteredCharacter.setHairColor(result.getString("HairColor"));
-				characters.add(insteredCharacter);
+				Character character = parseCharacter(result);
+				characters.add(character);
 			}
-			
-			statement.execute();
 		}
 		catch (Exception exception)
 		{
@@ -156,22 +144,9 @@ public class CharacterDaoSQL implements CharacterDao
 			
 			while (result.next())
 			{
-				Calendar calendar = new GregorianCalendar();
-				calendar.set(result.getInt("DOBYear"), result.getInt("DOBMonth"),
-						result.getInt("DOBDay"));
-				Date dobDate = calendar.getTime();
-				
-				Character insteredCharacter = new Character();
-				insteredCharacter.setBirthDate(dobDate);
-				insteredCharacter.setId(result.getInt("CharacterID"));
-				insteredCharacter.setArchetype(result.getString("Archetype"));
-				insteredCharacter.setName(result.getString("Name"));
-				insteredCharacter.setGender(Gender.valueOf(result.getString("Gender")));
-				insteredCharacter.setHairColor(result.getString("HairColor"));
-				characters.add(insteredCharacter);
+				Character character = parseCharacter(result);
+				characters.add(character);
 			}
-			
-			statement.execute();
 		}
 		catch (Exception exception)
 		{
@@ -194,22 +169,9 @@ public class CharacterDaoSQL implements CharacterDao
 			
 			while (result.next())
 			{
-				Calendar calendar = new GregorianCalendar();
-				calendar.set(result.getInt("DOBYear"), result.getInt("DOBMonth"),
-						result.getInt("DOBDay"));
-				Date dobDate = calendar.getTime();
-				
-				Character insteredCharacter = new Character();
-				insteredCharacter.setBirthDate(dobDate);
-				insteredCharacter.setId(result.getInt("CharacterID"));
-				insteredCharacter.setArchetype(result.getString("Archetype"));
-				insteredCharacter.setName(result.getString("Name"));
-				insteredCharacter.setGender(Gender.valueOf(result.getString("Gender")));
-				insteredCharacter.setHairColor(result.getString("HairColor"));
-				characters.add(insteredCharacter);
+				Character character = parseCharacter(result);
+				characters.add(character);
 			}
-			
-			statement.execute();
 		}
 		catch (Exception exception)
 		{
@@ -232,22 +194,9 @@ public class CharacterDaoSQL implements CharacterDao
 			
 			while (result.next())
 			{
-				Calendar calendar = new GregorianCalendar();
-				calendar.set(result.getInt("DOBYear"), result.getInt("DOBMonth"),
-						result.getInt("DOBDay"));
-				Date dobDate = calendar.getTime();
-				
-				Character insteredCharacter = new Character();
-				insteredCharacter.setBirthDate(dobDate);
-				insteredCharacter.setId(result.getInt("CharacterID"));
-				insteredCharacter.setArchetype(result.getString("Archetype"));
-				insteredCharacter.setName(result.getString("Name"));
-				insteredCharacter.setGender(Gender.valueOf(result.getString("Gender")));
-				insteredCharacter.setHairColor(result.getString("HairColor"));
-				characters.add(insteredCharacter);
+				Character character = parseCharacter(result);
+				characters.add(character);
 			}
-			
-			statement.execute();
 		}
 		catch (Exception exception)
 		{
@@ -271,22 +220,9 @@ public class CharacterDaoSQL implements CharacterDao
 			
 			while (result.next())
 			{
-				Calendar calendar = new GregorianCalendar();
-				calendar.set(result.getInt("DOBYear"), result.getInt("DOBMonth"),
-						result.getInt("DOBDay"));
-				Date dobDate = calendar.getTime();
-				
-				Character insteredCharacter = new Character();
-				insteredCharacter.setBirthDate(dobDate);
-				insteredCharacter.setId(result.getInt("CharacterID"));
-				insteredCharacter.setArchetype(result.getString("Archetype"));
-				insteredCharacter.setName(result.getString("Name"));
-				insteredCharacter.setGender(Gender.valueOf(result.getString("Gender")));
-				insteredCharacter.setHairColor(result.getString("HairColor"));
-				characters.add(insteredCharacter);
+				Character character = parseCharacter(result);
+				characters.add(character);
 			}
-			
-			statement.execute();
 		}
 		catch (Exception exception)
 		{
@@ -302,6 +238,33 @@ public class CharacterDaoSQL implements CharacterDao
 		return null;
 	}
 	
+	private Character parseCharacter(ResultSet result) throws SQLException
+	{
+		int year = result.getInt("DOBYear");
+		int month = result.getInt("DOBMonth");
+		int day = result.getInt("DOBDay");
+		int id = result.getInt("CharacterID");
+		String archetype = result.getString("Archetype");
+		String name = result.getString("Name");
+		String genderString = result.getString("Gender");
+		Gender gender = Gender.valueOf(genderString);
+		String hairColour = result.getString("HairColor");
+		
+		Calendar calendar = new GregorianCalendar();
+		calendar.set(year, month, day);
+		Date dobDate = calendar.getTime();
+		
+		Character character = new Character();
+		character.setBirthDate(dobDate);
+		character.setId(id);
+		character.setArchetype(archetype);
+		character.setName(name);
+		character.setGender(gender);
+		character.setHairColor(hairColour);
+		
+		return character;
+	}
+	
 	@Override
 	public Character findCharacter(int id)
 	{
@@ -314,29 +277,14 @@ public class CharacterDaoSQL implements CharacterDao
 			statement.setInt(1, id);
 			ResultSet result = statement.executeQuery();
 			
-			while (result.next())
-			{
-				Calendar calendar = new GregorianCalendar();
-				calendar.set(result.getInt("DOBYear"), result.getInt("DOBMonth"),
-						result.getInt("DOBDay"));
-				Date dobDate = calendar.getTime();
-				
-				Character insteredCharacter = new Character();
-				insteredCharacter.setBirthDate(dobDate);
-				insteredCharacter.setId(result.getInt("CharacterID"));
-				insteredCharacter.setArchetype(result.getString("Archetype"));
-				insteredCharacter.setName(result.getString("Name"));
-				insteredCharacter.setGender(Gender.valueOf(result.getString("Gender")));
-				insteredCharacter.setHairColor(result.getString("HairColor"));
-				character = insteredCharacter;
-			}
-			
-			statement.execute();
+			if (result.next())
+				character = parseCharacter(result);
 		}
 		catch (Exception exception)
 		{
 			exception.printStackTrace();
 		}
+		
 		return character;
 	}
 	
@@ -356,7 +304,6 @@ public class CharacterDaoSQL implements CharacterDao
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setInt(1, id);
-			
 			statement.execute();
 			result = true;
 		}
