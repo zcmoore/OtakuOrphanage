@@ -26,11 +26,6 @@ public class Character
 		super();
 	}
 	
-	public int getID()
-	{
-		return id;
-	}
-	
 	public int getId()
 	{
 		return id;

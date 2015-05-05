@@ -104,7 +104,7 @@ public class RegisterGUI extends JPanel
 					JOptionPane.showMessageDialog(client,
 							"Username is blank,\nPlease enter a Username", "Username Blank", JOptionPane.WARNING_MESSAGE);
 				}
-				else if (!userDao.userExists(user) && password.trim().length() == 0)
+				else if (!userDao.userExists(username) && password.trim().length() == 0)
 				{
 					JOptionPane.showMessageDialog(client,
 							"You need a Password,\nPlease enter a password", "Password Blank", JOptionPane.WARNING_MESSAGE);
