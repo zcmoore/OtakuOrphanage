@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -13,7 +12,6 @@ import java.util.List;
 
 import edu.asu.ser322.data.StorageFactory.SQL;
 import edu.asu.ser322.data.model.Character;
-import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Gender;
 
 public class CharacterDaoSQL implements CharacterDao
@@ -261,9 +259,40 @@ public class CharacterDaoSQL implements CharacterDao
 	@Override
 	public List<Character> findCharactersByAge(int age, ComparisonType comparisonType)
 	{
-		// TODO Auto-generated method stub
+		String sql = "SELECT * FROM Characters WHERE Age "
+				+ comparisonType.symbolicRepresentation() + " ?";
+		List<Character> characters = new LinkedList<Character>();
 		
-		return null;
+		try (Connection connection = createConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setInt(1, age);
+			ResultSet result = statement.executeQuery();
+			
+			while (result.next())
+			{
+				Calendar calendar = new GregorianCalendar();
+				calendar.set(result.getInt("DOBYear"), result.getInt("DOBMonth"),
+						result.getInt("DOBDay"));
+				Date dobDate = calendar.getTime();
+				
+				Character insteredCharacter = new Character();
+				insteredCharacter.setBirthDate(dobDate);
+				insteredCharacter.setId(result.getInt("CharacterID"));
+				insteredCharacter.setArchetype(result.getString("Archetype"));
+				insteredCharacter.setName(result.getString("Name"));
+				insteredCharacter.setGender(Gender.valueOf(result.getString("Gender")));
+				insteredCharacter.setHairColor(result.getString("HairColor"));
+				characters.add(insteredCharacter);
+			}
+			
+			statement.execute();
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return characters;
 	}
 	
 	@Override
