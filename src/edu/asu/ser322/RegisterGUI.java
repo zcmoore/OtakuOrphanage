@@ -18,10 +18,12 @@ import javax.swing.JTextField;
 
 import edu.asu.ser322.data.access.DAOCollection;
 import edu.asu.ser322.data.access.UserDao;
+import edu.asu.ser322.data.model.User;
 
 /**
  * 
  * @author Cuahuc
+ * @author Moore, Zachary
  *
  */
 
@@ -84,20 +86,28 @@ public class RegisterGUI extends JPanel
 		becomeOtakuButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				String user = enterUserNameTextField.getText();
-				if (userDao.userExists(user))
+				String username = enterUserNameTextField.getText();
+				String password = String.valueOf(enterPasswordTextField.getPassword());
+				password = password.trim();
+				
+				if (userDao.userExists(username))
 				{
 					JOptionPane.showMessageDialog(client,
 							"User Exists,\nPlease choose another Username");
 				}
-				else if (!userDao.userExists(user)
-						&& enterPasswordTextField.getText().trim() != null)
+				else if (password == null || password.trim().length() <= 0)
 				{
 					JOptionPane.showMessageDialog(client,
 							"You need a Password,\nPlease enter a password");
 				}
 				else
 				{
+					// TODO: account for Waifu
+					User user = new User(username, password, null);
+					UserDao dao = DAOCollection.getUserDao();
+					dao.addUser(user);
+					Session.login(username, password);
+					
 					client.showMainMenu();
 				}
 			}
