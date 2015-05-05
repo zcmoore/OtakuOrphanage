@@ -77,6 +77,7 @@ public class LoginGUI extends JPanel // implements ActionListener
 				
 				if (Session.login(username, password))
 				{
+					passwordTextField.setText("");
 					client.showMainMenu();
 				}
 			}
