@@ -57,7 +57,7 @@ class UserDaoSQL implements UserDao
 			
 			Character waifu = user.getWaifu();
 			if (waifu != null)
-				statement.setInt(3, waifu.getID());
+				statement.setInt(3, waifu.getId());
 			else
 				statement.setNull(3, Types.INTEGER);
 			
@@ -83,7 +83,7 @@ class UserDaoSQL implements UserDao
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
 			statement.setString(1, user.getPassword());
-			statement.setInt(2, user.getWaifu().getID());
+			statement.setInt(2, user.getWaifu().getId());
 			
 			statement.execute();
 			result = true;
@@ -254,7 +254,7 @@ class UserDaoSQL implements UserDao
 			
 			Character waifu = user.getWaifu();
 			if (waifu != null)
-				statement.setInt(3, waifu.getID());
+				statement.setInt(3, waifu.getId());
 			else
 				statement.setNull(3, Types.INTEGER);
 			

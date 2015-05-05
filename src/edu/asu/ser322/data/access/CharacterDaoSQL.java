@@ -348,7 +348,7 @@ public class CharacterDaoSQL implements CharacterDao
 		try (Connection connection = createConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setInt(1, character.getID());
+			statement.setInt(1, character.getId());
 			
 			statement.execute();
 			result = true;

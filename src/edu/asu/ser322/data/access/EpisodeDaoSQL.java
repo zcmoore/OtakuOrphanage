@@ -192,7 +192,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 		try (Connection connection = createConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setInt(1, character.getID());
+			statement.setInt(1, character.getId());
 			statement.setString(2, episode.getSeriesName());
 			statement.setInt(3, episode.getSeasonNumber());
 			statement.setInt(4, episode.getEpisodeNumber());
@@ -216,7 +216,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 		try (Connection connection = createConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setInt(1, character.getID());
+			statement.setInt(1, character.getId());
 			statement.setString(2, episode.getSeriesName());
 			statement.setInt(3, episode.getSeasonNumber());
 			statement.setInt(4, episode.getEpisodeNumber());
