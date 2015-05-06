@@ -33,6 +33,7 @@ public class Client extends JFrame
 	private final MainMenuGUI mainMenuGUI;
 	private final RegisterGUI registerGUI;
 	private final UpDateDatabseGUI updateDatabeGUI;
+	private final ProfileGUI profileGUI;
 	
 	public Client()
 	{
@@ -44,12 +45,14 @@ public class Client extends JFrame
 		mainMenuGUI = new MainMenuGUI(this);
 		registerGUI = new RegisterGUI(this);
 		updateDatabeGUI = new UpDateDatabseGUI(this);
+		profileGUI = new ProfileGUI(this);
 		panelContainer.setLayout(cardLayout);
 		
 		this.addGUI(loginGUI);
 		this.addGUI(mainMenuGUI);
 		this.addGUI(registerGUI);
 		this.addGUI(updateDatabeGUI);
+		this.addGUI(profileGUI);
 		this.add(panelContainer);
 		
 		this.showGUI(loginGUI);
@@ -101,6 +104,10 @@ public class Client extends JFrame
 	public void showUpdateDatabase()
 	{
 		showGUI(updateDatabeGUI);
+	}
+	public void showProfile()
+	{
+		showGUI(profileGUI);
 	}
 	
 }
