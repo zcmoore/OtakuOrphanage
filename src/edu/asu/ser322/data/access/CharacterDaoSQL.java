@@ -22,7 +22,7 @@ import edu.asu.ser322.data.model.Gender;
  * {@link Character} from an SQL {@link ResultSet}.
  * 
  * @author Moore, Zachary
- *
+ * 
  */
 public class CharacterDaoSQL implements CharacterDao
 {
@@ -37,7 +37,7 @@ public class CharacterDaoSQL implements CharacterDao
 	 */
 	protected Character parseCharacter(ResultSet result) throws SQLException
 	{
-	
+		
 		int id = result.getInt("CharacterID");
 		int age = result.getInt("Age");
 		String archetype = result.getString("Archetype");
@@ -74,9 +74,9 @@ public class CharacterDaoSQL implements CharacterDao
 			statement.setInt(1, character.getId());
 			statement.setString(2, character.getName());
 			statement.setString(3, character.getGender().toString());
-			statement.setString(7, character.getHairColor());
-			statement.setString(8, character.getArchetype());
-			statement.setInt(9, character.getAge());
+			statement.setString(4, character.getHairColor());
+			statement.setString(5, character.getArchetype());
+			statement.setInt(6, character.getAge());
 			statement.execute();
 			result = true;
 		}
