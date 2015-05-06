@@ -189,7 +189,8 @@ public class SeasonDaoSQL implements SeasonDao
 	@Override
 	public List<Season> findSeasonsBySeriesName(String seriesname)
 	{
-		String sql = "SELECT * FROM Seasons WHERE SeriesName=?";
+		seriesname = "%" + seriesname + "%";
+		String sql = "SELECT * FROM Seasons WHERE SeriesName LIKE ?";
 		List<Season> seasons = new LinkedList<Season>();
 		
 		try (Connection connection = createDatabaseConnection();
@@ -310,32 +311,6 @@ public class SeasonDaoSQL implements SeasonDao
 		}
 		
 		return result;
-	}
-	
-	@Override
-	public List<Season> findSeasonsInSeries(String seriesname)
-	{
-		String sql = "SELECT * FROM Seasons WHERE SeriesName=?";
-		List<Season> seasons = new LinkedList<>();
-		
-		try (Connection connection = createDatabaseConnection();
-				PreparedStatement statement = connection.prepareStatement(sql);)
-		{
-			statement.setString(1, seriesname);
-			ResultSet results = statement.executeQuery();
-			
-			while (results.next())
-			{
-				Season season = parseSeason(results);
-				seasons.add(season);
-			}
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return seasons;
 	}
 	
 	@Override

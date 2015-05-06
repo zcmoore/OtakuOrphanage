@@ -78,8 +78,6 @@ public interface SeasonDao
 	 */
 	public List<Season> seasonsByGenre(String genre);
 	
-	List<Season> findSeasonsInSeries(String seriesname);
-	
 	List<String> listSeries();
 	
 	List<Season> listAll();
