@@ -197,7 +197,8 @@ public class CharacterDaoSQL implements CharacterDao
 	@Override
 	public List<Character> findCharactersByArchetype(String archetype)
 	{
-		String sql = "SELECT * FROM Characters WHERE Archetype = ?";
+		archetype = "%" + archetype + "%";
+		String sql = "SELECT * FROM Characters WHERE Archetype LIKE ?";
 		List<Character> characters = new LinkedList<Character>();
 		
 		try (Connection connection = createDatabaseConnection();
@@ -248,7 +249,8 @@ public class CharacterDaoSQL implements CharacterDao
 	@Override
 	public List<Character> findCharactersByHairColour(String colour)
 	{
-		String sql = "SELECT * FROM Characters WHERE HairColor = ?";
+		colour = "%" + colour + "%";
+		String sql = "SELECT * FROM Characters WHERE HairColor LIKE ?";
 		List<Character> characters = new LinkedList<Character>();
 		
 		try (Connection connection = createDatabaseConnection();
@@ -273,7 +275,8 @@ public class CharacterDaoSQL implements CharacterDao
 	@Override
 	public List<Character> findCharactersByName(String name)
 	{
-		String sql = "SELECT * FROM Characters WHERE Name = ?";
+		name = "%" + name + "%";
+		String sql = "SELECT * FROM Characters WHERE Name LIKE ?";
 		List<Character> characters = new LinkedList<Character>();
 		
 		try (Connection connection = createDatabaseConnection();
