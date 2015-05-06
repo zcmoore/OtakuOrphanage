@@ -7,9 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -18,7 +16,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -59,9 +56,15 @@ public class MainMenuGUI extends JPanel
 	private List<Franchise> searchResultsOfFranchise;
 	private List<User> searchResultsOfUsers;
 	private List<Season> searchResultsOfSeason;
+<<<<<<< Updated upstream
 	// private List<Episode> searchResultsOfEpisodes;
 	// private List<Studio> searchResultsOfStudio;
+=======
+	private List<Episode> searchResultsOfEpisodes;
+	private List<Studio> searchResultsOfStudio;
+>>>>>>> Stashed changes
 	private DefaultTableModel tableModel;
+	JScrollPane spTable;
 	Vector<String> columnNames = new Vector<String>();
 	Vector<Vector<String>> rowValues = new Vector<Vector<String>>();
 	Vector<String> vector = new Vector<String>();
@@ -90,7 +93,13 @@ public class MainMenuGUI extends JPanel
 		settingsButton = new JButton("Settings");
 		tableModel = new DefaultTableModel();
 		results = new JTable(tableModel);
+<<<<<<< Updated upstream
 		JScrollPane spTable = new JScrollPane(results);
+=======
+		spTable = new JScrollPane(results);
+		//columnNames = new Vector<String>();
+		//rowValues = new Vector<String>();
+>>>>>>> Stashed changes
 		
 		selectedItemPictureLabel = new JLabel();
 		selectedItemInfoLabel = new JLabel();
@@ -162,6 +171,7 @@ public class MainMenuGUI extends JPanel
 					columnNames.add("Archetype");
 					columnNames.add("Hair Color");
 					columnNames.add("Birthday Day");
+					tableModel.setColumnIdentifiers(columnNames);
 					
 					for (int i = 0; i < searchResultsOfCharacter.size(); i++)
 					{
@@ -189,16 +199,116 @@ public class MainMenuGUI extends JPanel
 				else if (tableList.getSelectedItem().toString().equals("Franchise"))
 				{
 					clearAllVectors();
+<<<<<<< Updated upstream
 					searchResultsOfFranchise.add(DAOCollection.getFranchiseDao()
 							.findFranchise(searchBarTextField.getText()));
 				}
 				else if (tableList.getSelectedItem().toString().equals("User"))
+=======
+					System.out.print(DAOCollection.getFranchiseDao().findFranchise(searchBarTextField.getText()) != Franchise.NULL_FRANCHISE);
+					
+					//searchResultsOfFranchise.add(DAOCollection.getFranchiseDao().findFranchise(searchBarTextField.getText()));
+					//System.out.println(searchResultsOfFranchise.size());
+					columnNames.add("FranchiseID");
+					columnNames.add("FranchiseName");
+			
+					tableModel.setColumnIdentifiers(columnNames);
+					
+					//tableModel = new DefaultTableModel();
+					/*
+					for(int i = 0; i < searchResultsOfCharacter.size(); i++)
+					{
+						//int id = searchResultsOfCharacter.get(i).getId();
+						String ID = Integer.toString(searchResultsOfFranchise.get(i).getId());
+						String name = searchResultsOfFranchise.get(i).getName();
+					    vector.add(ID);
+					    vector.add(name);
+
+					    rowValues.add(vector);
+					}
+					*/
+					repaint();
+					tableModel.setDataVector(rowValues, columnNames);
+				}
+				else if(tableList.getSelectedItem().toString().equals("Episode"))
+>>>>>>> Stashed changes
 				{
 					clearAllVectors();
+					
+
+					searchResultsOfEpisodes = DAOCollection.getEpisodeDao().findEpisode(searchBarTextField.getText());
+					columnNames.add("SeriesName");
+					columnNames.add("SeasonNumber");
+					columnNames.add("EpisodeNumber");
+					columnNames.add("EpisodeName");
+					columnNames.add("AirDate");
+					columnNames.add("ArtStyle");
+					columnNames.add("Appropriateness");
+					
+			
+					tableModel.setColumnIdentifiers(columnNames);
+					//ListIterator<Episode> listIterator = searchResultsOfEpisodes.listIterator()
+					//tableModel = new DefaultTableModel();
+					for(Episode episode: searchResultsOfEpisodes)
+					{
+						vector = new Vector<String>();
+						String seriesName = episode.getSeriesName();
+						String seasonNumber = Integer.toString(episode.getSeasonNumber());
+						String episodeNumber = Integer.toString(episode.getEpisodeNumber());
+						String showName = episode.getEpisodeName();
+						String airDate = episode.getAirDate().toString();
+						String artStyle = episode.getArtStyle();
+						String appropriateness = episode.getApproprateness();
+					    vector.add(seriesName);
+					    vector.add(seasonNumber);
+					    vector.add(episodeNumber);
+					    vector.add(showName);
+					    vector.add(airDate);
+					    vector.add(artStyle);
+					    vector.add(appropriateness);
+					    rowValues.add(vector);
+					}
+					
+					repaint();
+					tableModel.setDataVector(rowValues, columnNames);
 				}
 				else if (tableList.getSelectedItem().toString().equals("Seasons"))
 				{
 					clearAllVectors();
+					
+					searchResultsOfSeason = DAOCollection.getSeasonDao().findSeason(searchBarTextField.getText());
+					columnNames.add("SeriesName");
+					columnNames.add("SeasonNumber");
+					columnNames.add("ShowName");
+					columnNames.add("AirDate");
+					columnNames.add("FinishDate");
+					columnNames.add("Appropriateness");
+					
+			
+					tableModel.setColumnIdentifiers(columnNames);
+					
+					//tableModel = new DefaultTableModel();
+					for(Season season: searchResultsOfSeason)
+					{
+						vector = new Vector<String>();
+						//int id = searchResultsOfCharacter.get(i).getId();
+						String seriesName = season.getSeriesName();
+						String seasonNumber = Integer.toString(season.getSeasonNumber());
+						String showName = season.getName();
+						String airDate = season.getAirDate().toString();
+						String FinishDate = season.toString();
+						String appropriateness = season.getAppropriateness();
+					    vector.add(seriesName);
+					    vector.add(seasonNumber);
+					    vector.add(showName);
+					    vector.add(airDate);
+					    vector.add(FinishDate);
+					    vector.add(appropriateness);
+					    rowValues.add(vector);
+					}
+					
+					repaint();
+					tableModel.setDataVector(rowValues, columnNames);
 				}
 				
 			}
@@ -234,8 +344,15 @@ public class MainMenuGUI extends JPanel
 		// Settings.setBounds(30, 30, 100, 30);
 		// add(Settings);
 		
+<<<<<<< Updated upstream
 		results.setBounds(50, 200, 600, 250);
 		add(results);
+=======
+	   
+		
+		spTable.setBounds(50, 200, 900, 250);
+		add(spTable);
+>>>>>>> Stashed changes
 		
 		selectedItemPictureLabel.setBounds(50, 300, 150, 200);
 		add(selectedItemPictureLabel);
@@ -287,7 +404,7 @@ public class MainMenuGUI extends JPanel
 	{
 		ListOfEntities.add("Character");
 		ListOfEntities.add("Franchise");
-		ListOfEntities.add("User");
+		ListOfEntities.add("Episode");
 		ListOfEntities.add("Seasons");
 		// ListOfEntities.add("Episode");
 		// ListOfEntities.add("Studio");
