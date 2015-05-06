@@ -234,7 +234,7 @@ class UserDaoSQL implements UserDao
 		}
 	}
 	
-	public boolean addWatch(User user, Season anime, int episodeCount, int rating)
+	private boolean addWatch(User user, Season anime, int episodeCount, int rating)
 	{
 		if (!user.validate())
 			return false;
