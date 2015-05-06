@@ -37,7 +37,7 @@ public interface SeasonDao
 	 *            Target series' seriesname
 	 * @return the a list of seasons, or null if a series cannot be found
 	 */
-	public List<Season> findSeason(String seriesname);
+	public List<Season> findSeasonsBySeriesName(String seriesname);
 	
 	/**
 	 * Finds the seasons that aired in the specified year and loads them from the
@@ -83,4 +83,12 @@ public interface SeasonDao
 	List<String> listSeries();
 	
 	List<Season> listAll();
+	
+	/**
+	 * @param seriesName
+	 * @return True if at least one season exists for the given seriesName
+	 */
+	boolean seasonExists(String seriesName);
+	
+	boolean seasonExists(String seriesName, int seasonNumber);
 }

@@ -484,7 +484,7 @@ public class MainMenuGUI extends JPanel
 		clearAllVectors();
 		if (searchBy.getSelectedItem().toString().equals("By Series Name"))
 		{
-			searchResultsOfSeason = DAOCollection.getSeasonDao().findSeason(
+			searchResultsOfSeason = DAOCollection.getSeasonDao().findSeasonsBySeriesName(
 					searchBarTextField.getText());
 		}
 		else if (searchBy.getSelectedItem().toString()

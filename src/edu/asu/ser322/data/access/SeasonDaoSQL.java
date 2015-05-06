@@ -187,7 +187,7 @@ public class SeasonDaoSQL implements SeasonDao
 	}
 	
 	@Override
-	public List<Season> findSeason(String seriesname)
+	public List<Season> findSeasonsBySeriesName(String seriesname)
 	{
 		String sql = "SELECT * FROM Seasons WHERE SeriesName=?";
 		List<Season> seasons = new LinkedList<Season>();
@@ -361,6 +361,18 @@ public class SeasonDaoSQL implements SeasonDao
 		}
 		
 		return seriesList;
+	}
+	
+	@Override
+	public boolean seasonExists(String seriesname, int seasonnumber)
+	{
+		return !Season.NULL_SEASON.equals(findSeason(seriesname, seasonnumber));
+	}
+	
+	@Override
+	public boolean seasonExists(String seriesname)
+	{
+		return findSeasonsBySeriesName(seriesname).size() > 0;
 	}
 	
 }
