@@ -8,7 +8,7 @@ import java.util.Date;
  * Model of an anime character, identified by {@link Character#id}.
  * 
  * @author Moore, Zachary
- *
+ * 
  */
 public class Character
 {
@@ -20,6 +20,7 @@ public class Character
 	private String name;
 	private String hairColor;
 	private Date birthDate;
+	private int age;
 	
 	public Character()
 	{
@@ -88,7 +89,11 @@ public class Character
 	
 	public int getAge()
 	{
-		// TODO calculate age from DOB
-		throw new UnsupportedOperationException();
+		return age;
+	}
+	
+	public void setAge(int age)
+	{
+		this.age = age;
 	}
 }

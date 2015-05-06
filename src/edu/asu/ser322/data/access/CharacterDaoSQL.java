@@ -37,27 +37,22 @@ public class CharacterDaoSQL implements CharacterDao
 	 */
 	protected Character parseCharacter(ResultSet result) throws SQLException
 	{
-		int year = result.getInt("DOBYear");
-		int month = result.getInt("DOBMonth");
-		int day = result.getInt("DOBDay");
+	
 		int id = result.getInt("CharacterID");
+		int age = result.getInt("Age");
 		String archetype = result.getString("Archetype");
 		String name = result.getString("Name");
 		String genderString = result.getString("Gender");
 		Gender gender = Gender.valueOf(genderString);
 		String hairColour = result.getString("HairColor");
 		
-		Calendar calendar = new GregorianCalendar();
-		calendar.set(year, month, day);
-		Date dobDate = calendar.getTime();
-		
 		Character character = new Character();
-		character.setBirthDate(dobDate);
 		character.setId(id);
 		character.setArchetype(archetype);
 		character.setName(name);
 		character.setGender(gender);
 		character.setHairColor(hairColour);
+		character.setAge(age);
 		
 		return character;
 	}
@@ -66,8 +61,8 @@ public class CharacterDaoSQL implements CharacterDao
 	public boolean addCharacter(Character character)
 	{
 		boolean result = false;
-		String sql = "INSERT INTO Characters(CharacterID, Name, Gender, DOBDay, DOBMonth, DOBYear, HairColor, Archetype) "
-				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO Characters(CharacterID, Name, Gender, HairColor, Archetype, Age) "
+				+ "VALUES(?, ?, ?, ?, ?, ?)";
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
@@ -79,11 +74,9 @@ public class CharacterDaoSQL implements CharacterDao
 			statement.setInt(1, character.getId());
 			statement.setString(2, character.getName());
 			statement.setString(3, character.getGender().toString());
-			statement.setInt(4, calender.get(Calendar.DAY_OF_MONTH));
-			statement.setInt(5, calender.get(Calendar.MONTH));
-			statement.setInt(6, calender.get(Calendar.DATE));
 			statement.setString(7, character.getHairColor());
 			statement.setString(8, character.getArchetype());
+			statement.setInt(9, character.getAge());
 			statement.execute();
 			result = true;
 		}
