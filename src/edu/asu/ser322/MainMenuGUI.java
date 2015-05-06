@@ -30,11 +30,10 @@ import edu.asu.ser322.data.access.DAOCollection;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Franchise;
+import edu.asu.ser322.data.model.Gender;
 import edu.asu.ser322.data.model.Person;
 import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.Studio;
-import edu.asu.ser322.data.model.User;
-import edu.asu.ser322.data.model.Gender;
 
 /**
  * 
@@ -51,8 +50,8 @@ public class MainMenuGUI extends JPanel
 	private JLabel accountInfoLabel;
 	private JLabel selectedItemPictureLabel;
 	private JLabel selectedItemInfoLabel;
-	private JComboBox tableList;
-	private JComboBox searchBy;
+	private JComboBox<Object> tableList;
+	private JComboBox<String> searchBy;
 	private JTextField searchBarTextField;
 	private JButton profileButton;
 	private JButton searchButton;
@@ -128,7 +127,7 @@ public class MainMenuGUI extends JPanel
 		linkEntitesToSearch.put("Season", seasonSearch);
 		linkEntitesToSearch.put("Person", personSearch);
 		linkEntitesToSearch.put("Studio", studioSearch);
-		searchBy = new JComboBox(linkEntitesToSearch.get(tableList.getSelectedItem()
+		searchBy = new JComboBox<>(linkEntitesToSearch.get(tableList.getSelectedItem()
 				.toString()));
 		
 		selectedItemPictureLabel = new JLabel();
@@ -322,7 +321,7 @@ public class MainMenuGUI extends JPanel
 	
 	private Vector<String> parseCharacter(Character character)
 	{
-		Vector vector = new Vector<String>();
+		Vector<String> vector = new Vector<>();
 		String name = character.getName();
 		String gender = character.getGender().toString();
 		String archetype = character.getArchetype();
@@ -371,7 +370,7 @@ public class MainMenuGUI extends JPanel
 	
 	private Vector<String> parseSeason(Season season)
 	{
-		Vector vector = new Vector<String>();
+		Vector<String> vector = new Vector<>();
 		String seriesName = season.getSeriesName();
 		String seasonNumber = Integer.toString(season.getSeasonNumber());
 		String showName = season.getName();
@@ -578,7 +577,7 @@ public class MainMenuGUI extends JPanel
 		
 		for (Person person : searchResultsOfPerson)
 		{
-			Vector vector = new Vector<String>();
+			Vector<String> vector = new Vector<>();
 			String personId = Integer.toString(person.getID());
 			String name = person.getName();
 			
@@ -623,7 +622,7 @@ public class MainMenuGUI extends JPanel
 	
 	private Vector<String> parseStudio(Studio studio)
 	{
-		Vector vector = new Vector<String>();
+		Vector<String> vector = new Vector<>();
 		String studioName = studio.getName();
 		String studioStartDate = "";
 		String studioCloseDate = "";
