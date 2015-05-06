@@ -87,7 +87,7 @@ public class FranchiseDaoSQL implements FranchiseDao
 		{
 			ResultSet results = statement.executeQuery();
 			
-			if (results.next())
+			while (results.next())
 			{
 				int resultId = results.getInt("FranchiseID");
 				String resultName = results.getString("FranchiseName");
