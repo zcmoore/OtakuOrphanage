@@ -136,7 +136,7 @@ public class StudioDaoSQL implements StudioDao
 	@Override
 	public List<Studio> listAll()
 	{
-		String sql = "SELECT * FROM Studios WHERE StudioName=?";
+		String sql = "SELECT * FROM Studios";
 		List<Studio> studios = new LinkedList<>();
 		
 		try (Connection connection = createDatabaseConnection();
