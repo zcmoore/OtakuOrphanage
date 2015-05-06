@@ -121,7 +121,7 @@ public class RegisterGUI extends JPanel
 							"User Exists,\nPlease choose another Username",
 							"User exists", JOptionPane.WARNING_MESSAGE);
 				}
-				else if (password == null || password.trim().length() <= 0)
+				else if (username == null || username.trim().length() <= 0)
 				{
 					JOptionPane.showMessageDialog(client,
 							"Username is blank,\nPlease enter a Username",
