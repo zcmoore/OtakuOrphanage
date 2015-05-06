@@ -11,12 +11,13 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.asu.ser322.data.model.Person;
 import edu.asu.ser322.data.model.Studio;
 
 /**
  * 
  * @author Benjamin Paothatat
- * @author Moor, Zachary
+ * @author Moore, Zachary
  *
  */
 
@@ -180,6 +181,7 @@ public class StudioDaoSQL implements StudioDao
 	@Override
 	public boolean deleteStudio(String studioName)
 	{
+		// TODO: delete all Employs relations related to this studio
 		boolean result = false;
 		String sql = "DELETE FROM Studios WHERE StudioName=?";
 		
@@ -200,17 +202,101 @@ public class StudioDaoSQL implements StudioDao
 	}
 	
 	@Override
-	public boolean addEmployee(String studioName, String personName, String role)
+	public boolean addEmployee(String studioName, Person employee, String role)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		boolean result = false;
+		String sql = "INSERT INTO Employs(Employer, Employee, Position) VALUES(?, ?, ?)";
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql))
+		{
+			statement.setString(1, studioName);
+			statement.setInt(2, employee.getID());
+			statement.setString(3, role);
+			
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	@Override
-	public boolean removeEmployee(String studioName, String personName, String role)
+	public boolean removeEmployee(String studioName, Person employee, String role)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		boolean result = false;
+		String sql = "DELETE FROM Employs WHERE StudioName=? AND Employee=? AND Position=?";
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql))
+		{
+			statement.setString(1, studioName);
+			statement.setInt(2, employee.getID());
+			statement.setString(3, role);
+			
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public boolean addEmployee(String studioName, String personName, String role)
+	{
+		PeopleDao dao = DAOCollection.getPeopleDao();
+		List<Person> matches = dao.findPerson(personName);
+		
+		if (matches.size() < 1)
+		{
+			if (dao.addPerson(personName))
+				return addEmployee(studioName, personName, role);
+			else
+				return false;
+		}
+		else if (matches.size() == 1)
+		{
+			Person employee = matches.get(0);
+			return addEmployee(studioName, employee, role);
+		}
+		else
+		{
+			// Multiple results - return false and do nothing
+			return false;
+		}
+	}
+	
+	@Override
+	public boolean removeEmployees(String studioName, String personName, String role)
+	{
+		boolean result = false;
+		String sql = "DELETE FROM Employs e WHERE StudioName=? AND Position=? AND "
+				+ "EXISTS (SELECT * FROM People p WHERE e.Employee = p.PersonID AND p.Name = ?)";
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql))
+		{
+			statement.setString(1, studioName);
+			statement.setString(2, role);
+			statement.setString(3, personName);
+			
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 }
