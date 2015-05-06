@@ -96,7 +96,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 	@Override
 	public List<Episode> findEpisode(String episodeName)
 	{
-		String sql = "SELECT * FROM Studios WHERE EpisodeName=?";
+		String sql = "SELECT * FROM Episodes WHERE EpisodeName=?";
 		List<Episode> episodes = new LinkedList<Episode>();
 		
 		try (Connection connection = createDatabaseConnection();
@@ -117,7 +117,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 				insteredEpisode.setAirDate(airDate);
 				insteredEpisode.setType("Type");
 				insteredEpisode.setApproprateness("Approprateness");
-				insteredEpisode.setEpisodeName("EpisodeName");
+				insteredEpisode.setEpisodeName(result.getString("EpisodeName"));
 				insteredEpisode.setArtStyle("ArtStyle");
 				episodes.add(insteredEpisode);
 			}
@@ -154,7 +154,7 @@ public class EpisodeDaoSQL implements EpisodeDao
 				insteredEpisode.setAirDate(airDate);
 				insteredEpisode.setType("Type");
 				insteredEpisode.setApproprateness("Approprateness");
-				insteredEpisode.setEpisodeName("EpisodeName");
+				insteredEpisode.setEpisodeName(result.getString("EpisodeName"));
 				insteredEpisode.setArtStyle("ArtStyle");
 				episodes.add(insteredEpisode);
 			}
