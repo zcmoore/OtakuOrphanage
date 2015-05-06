@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -64,10 +67,12 @@ public class MainMenuGUI extends JPanel
 	private String[] franchiseSerach;
 	private String[] episodeSearch;
 	private String[] seasonSearch;
+	private String[] personSearch;
+	private String[] studioSearch;
 	private List<Character> searchResultsOfCharacter;
 	private List<Franchise> searchResultsOfFranchise;
 	private List<Episode> searchResultsOfEpisode;
-	private List<User> searchResultsOfUsers;
+	private List<Person> searchResultsOfPerson;
 	private List<Season> searchResultsOfSeason;
 	private List<Episode> searchResultsOfEpisodes;
 	private List<Studio> searchResultsOfStudio;
@@ -101,7 +106,7 @@ public class MainMenuGUI extends JPanel
 		searchButton = new JButton("Search");
 		logoutButton = new JButton("Logout");
 		settingsButton = new JButton("Settings");
-		goToUpdateButton = new JButton("Update Databse");
+		goToUpdateButton = new JButton("Update Database");
 		tableModel = new DefaultTableModel();
 		results = new JTable(tableModel);
 		spTable = new JScrollPane(results);
@@ -114,11 +119,15 @@ public class MainMenuGUI extends JPanel
 		episodeSearch = new String[] { "By Name", "List All" };
 		seasonSearch = new String[] { "By Series Name", "By Genre",
 				"By Year Of Air Date", "List All" };
+		personSearch = new String[] { "By Name", "List All" };
+		studioSearch = new String[] { "By Name", "List All" };
 		linkEntitesToSearch = new Hashtable<String, String[]>();
 		linkEntitesToSearch.put("Character", chacacterSerach);
 		linkEntitesToSearch.put("Franchise", franchiseSerach);
 		linkEntitesToSearch.put("Episode", episodeSearch);
-		linkEntitesToSearch.put("Seasons", seasonSearch);
+		linkEntitesToSearch.put("Season", seasonSearch);
+		linkEntitesToSearch.put("Person", personSearch);
+		linkEntitesToSearch.put("Studio", studioSearch);
 		searchBy = new JComboBox(linkEntitesToSearch.get(tableList.getSelectedItem()
 				.toString()));
 		
@@ -158,9 +167,17 @@ public class MainMenuGUI extends JPanel
 				{
 					episodeSearches();
 				}
-				else if (tableList.getSelectedItem().toString().equals("Seasons"))
+				else if (tableList.getSelectedItem().toString().equals("Season"))
 				{
 					seasonSearches();
+				}
+				else if (tableList.getSelectedItem().toString().equals("Person"))
+				{
+					personSearches();
+				}
+				else
+				{
+					studioSearches();
 				}
 				
 			}
@@ -174,8 +191,7 @@ public class MainMenuGUI extends JPanel
 			}
 		});
 		
-		goToUpdateButton.addActionListener(new ActionListener()
-		{
+		goToUpdateButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
@@ -217,7 +233,7 @@ public class MainMenuGUI extends JPanel
 		selectedItemInfoLabel.setBounds(510, 200, 210, 200);
 		add(selectedItemInfoLabel);
 		
-		goToUpdateButton.setBounds(140, 30, 100, 30);
+		goToUpdateButton.setBounds(140, 30, 200, 30);
 		add(goToUpdateButton);
 	}
 	
@@ -263,10 +279,11 @@ public class MainMenuGUI extends JPanel
 	public void populateListOfTableArray()
 	{
 		ListOfEntities.add("Character");
-		ListOfEntities.add("Franchise");
 		ListOfEntities.add("Episode");
-		ListOfEntities.add("Seasons");
-		// ListOfEntities.add("Studio");
+		ListOfEntities.add("Franchise");
+		ListOfEntities.add("Person");
+		ListOfEntities.add("Season");
+		ListOfEntities.add("Studio");
 	}
 	
 	public void addImageBackGround()
@@ -298,13 +315,17 @@ public class MainMenuGUI extends JPanel
 	private Vector<String> parseCharacter(Character character)
 	{
 		Vector vector = new Vector<String>();
-		String ID = Integer.toString(character.getId());
 		String name = character.getName();
 		String gender = character.getGender().toString();
 		String archetype = character.getArchetype();
 		String hairColor = character.getHairColor();
-		String dob = character.getBirthDate().toString();
-		vector.add(ID);
+		String dob = "";
+		Date dateOfBirth = character.getBirthDate();
+		if (dateOfBirth != null)
+		{
+			dob = parseDate(dateOfBirth);
+		}
+		
 		vector.add(name);
 		vector.add(gender);
 		vector.add(archetype);
@@ -321,7 +342,12 @@ public class MainMenuGUI extends JPanel
 		String seasonNumber = Integer.toString(episode.getSeasonNumber());
 		String episodeNumber = Integer.toString(episode.getEpisodeNumber());
 		String showName = episode.getEpisodeName();
-		String airDate = episode.getAirDate().toString();
+		String airDate = "";
+		if (episode.getAirDate() != null)
+		{
+			airDate = parseDate(episode.getAirDate());
+		}
+		
 		String artStyle = episode.getArtStyle();
 		String appropriateness = episode.getApproprateness();
 		vector.add(seriesName);
@@ -341,14 +367,23 @@ public class MainMenuGUI extends JPanel
 		String seriesName = season.getSeriesName();
 		String seasonNumber = Integer.toString(season.getSeasonNumber());
 		String showName = season.getName();
-		String airDate = season.getAirDate().toString();
-		String FinishDate = season.toString();
+		String airDate = "";
+		if (season.getAirDate() != null)
+		{
+			airDate = parseDate(season.getAirDate());
+		}
+		String finishDate = "";
+		if (season.getFinishDate() != null)
+		{
+			finishDate = parseDate(season.getFinishDate());
+		}
+		
 		String appropriateness = season.getAppropriateness();
 		vector.add(seriesName);
 		vector.add(seasonNumber);
 		vector.add(showName);
 		vector.add(airDate);
-		vector.add(FinishDate);
+		vector.add(finishDate);
 		vector.add(appropriateness);
 		rowValues.add(vector);
 		return vector;
@@ -374,22 +409,18 @@ public class MainMenuGUI extends JPanel
 		else if (searchBy.getSelectedItem().toString().equals("By Gender"))
 		{
 			searchResultsOfCharacter = DAOCollection.getCharacterDao()
-					.findCharactersByGender(
-							Gender.valueOf(searchBarTextField.getText()));
+					.findCharactersByGender(Gender.valueOf(searchBarTextField.getText()));
 		}
-		else if (searchBy.getSelectedItem().toString()
-				.equals("By Hair Color"))
+		else if (searchBy.getSelectedItem().toString().equals("By Hair Color"))
 		{
 			searchResultsOfCharacter = DAOCollection.getCharacterDao()
 					.findCharactersByHairColour(searchBarTextField.getText());
 		}
 		else
 		{
-			searchResultsOfCharacter = DAOCollection.getCharacterDao()
-					.listAll();
+			searchResultsOfCharacter = DAOCollection.getCharacterDao().listAll();
 		}
 		
-		columnNames.add("CharacterID");
 		columnNames.add("Name");
 		columnNames.add("Gender");
 		columnNames.add("Archetype");
@@ -417,8 +448,8 @@ public class MainMenuGUI extends JPanel
 		
 		if (searchBy.getSelectedItem().toString().equals("By Name"))
 		{
-			Franchise franchise = DAOCollection.getFranchiseDao()
-					.findFranchise(searchBarTextField.getText());
+			Franchise franchise = DAOCollection.getFranchiseDao().findFranchise(
+					searchBarTextField.getText());
 			
 			String ID = Integer.toString(franchise.getId());
 			String name = franchise.getName();
@@ -429,8 +460,7 @@ public class MainMenuGUI extends JPanel
 		}
 		else
 		{
-			searchResultsOfFranchise = DAOCollection.getFranchiseDao()
-					.listAll();
+			searchResultsOfFranchise = DAOCollection.getFranchiseDao().listAll();
 			for (Franchise franchise : searchResultsOfFranchise)
 			{
 				vector = new Vector<String>();
@@ -453,8 +483,8 @@ public class MainMenuGUI extends JPanel
 		
 		if (searchBy.getSelectedItem().toString().equals("By Name"))
 		{
-			searchResultsOfEpisodes = DAOCollection.getEpisodeDao()
-					.findEpisode(searchBarTextField.getText());
+			searchResultsOfEpisodes = DAOCollection.getEpisodeDao().findEpisode(
+					searchBarTextField.getText());
 		}
 		else
 		{
@@ -487,23 +517,21 @@ public class MainMenuGUI extends JPanel
 			searchResultsOfSeason = DAOCollection.getSeasonDao().findSeasonsBySeriesName(
 					searchBarTextField.getText());
 		}
-		else if (searchBy.getSelectedItem().toString()
-				.equals("By Year Of Air Date"))
+		else if (searchBy.getSelectedItem().toString().equals("By Year Of Air Date"))
 		{
-			searchResultsOfSeason = DAOCollection.getSeasonDao()
-					.seasonsByAirYear(
-							Integer.parseInt(searchBarTextField.getText()));
+			searchResultsOfSeason = DAOCollection.getSeasonDao().seasonsByAirYear(
+					Integer.parseInt(searchBarTextField.getText()));
 		}
 		else if (searchBy.getSelectedItem().toString().equals("By Genre"))
 		{
-			searchResultsOfSeason = DAOCollection.getSeasonDao()
-					.seasonsByGenre(searchBarTextField.getText());
+			searchResultsOfSeason = DAOCollection.getSeasonDao().seasonsByGenre(
+					searchBarTextField.getText());
 		}
 		else
 		{
 			searchResultsOfSeason = DAOCollection.getSeasonDao().listAll();
 		}
-	
+		
 		columnNames.add("SeriesName");
 		columnNames.add("SeasonNumber");
 		columnNames.add("ShowName");
@@ -521,4 +549,102 @@ public class MainMenuGUI extends JPanel
 		repaint();
 		tableModel.setDataVector(rowValues, columnNames);
 	}
+	
+	private void personSearches()
+	{
+		clearAllVectors();
+		if (searchBy.getSelectedItem().toString().equals("By Name"))
+		{
+			searchResultsOfPerson = DAOCollection.getPeopleDao().findPerson(
+					searchBarTextField.getText());
+		}
+		else
+		{
+			searchResultsOfPerson = DAOCollection.getPeopleDao().listAll();
+		}
+		
+		columnNames.add("PersonID");
+		columnNames.add("Name");
+		
+		tableModel.setColumnIdentifiers(columnNames);
+		
+		for (Person person : searchResultsOfPerson)
+		{
+			Vector vector = new Vector<String>();
+			String personId = Integer.toString(person.getID());
+			String name = person.getName();
+			
+			vector.add(personId);
+			vector.add(name);
+			
+			rowValues.add(vector);
+		}
+		
+		repaint();
+		tableModel.setDataVector(rowValues, columnNames);
+		
+	}
+	
+	private void studioSearches()
+	{
+		clearAllVectors();
+		columnNames.add("StudioName");
+		columnNames.add("StartDate");
+		columnNames.add("CloseDate");
+		
+		tableModel.setColumnIdentifiers(columnNames);
+		
+		if (searchBy.getSelectedItem().toString().equals("By Name"))
+		{
+			Studio studio = DAOCollection.getStudioDao().findStudio(
+					searchBarTextField.getText());
+			parseStudio(studio);
+		}
+		else
+		{
+			searchResultsOfStudio = DAOCollection.getStudioDao().listAll();
+			for (Studio studio : searchResultsOfStudio)
+			{
+				parseStudio(studio);
+			}
+		}
+		
+		repaint();
+		tableModel.setDataVector(rowValues, columnNames);
+	}
+	
+	private Vector<String> parseStudio(Studio studio)
+	{
+		Vector vector = new Vector<String>();
+		String studioName = studio.getName();
+		String studioStartDate = "";
+		String studioCloseDate = "";
+		if (studio.getStartDate() != null)
+		{
+			studioStartDate = parseDate(studio.getStartDate());
+		}
+		
+		if (studio.getCloseDate() != null)
+		{
+			studioCloseDate = parseDate(studio.getCloseDate());
+		}
+		
+		vector.add(studioName);
+		vector.add(studioStartDate);
+		vector.add(studioCloseDate);
+		
+		rowValues.add(vector);
+		return vector;
+	}
+	
+	private String parseDate(Date date)
+	{
+		String result;
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		result = (calendar.get(Calendar.DATE) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar
+				.get(Calendar.YEAR));
+		return result;
+	}
+	
 }
