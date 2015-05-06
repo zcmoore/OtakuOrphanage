@@ -57,10 +57,13 @@ public class Interpreter
 			// Anime Data
 			Season anime = parseAnime(animeJSON);
 			
-			seasonDao.addSeason(anime);
+			if (!seasonDao.seasonExists(anime))
+				seasonDao.addSeason(anime);
+			
 			User user = userDao.findUser(username);
 			int intRating = (int) rating * 2;
-			userDao.registerWatch(user, anime, episodeCount, intRating);
+			if (!user.equals(User.NULL_USER))
+				userDao.registerWatch(user, anime, episodeCount, intRating);
 		}
 	}
 	
