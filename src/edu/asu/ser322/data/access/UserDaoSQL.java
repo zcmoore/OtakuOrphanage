@@ -5,6 +5,7 @@ import static edu.asu.ser322.data.StorageFactory.createDatabaseConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.User;
+import edu.asu.ser322.data.model.WatchRecord;
 
 /**
  * {@link UserDao} which uses an SQLite database as its persistent store.
@@ -290,6 +292,77 @@ class UserDaoSQL implements UserDao
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public List<WatchRecord> findWatchRecordsFor(String username)
+	{
+		String sql = "SELECT * FROM Watched WHERE User=?";
+		List<WatchRecord> records = new LinkedList<>();
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, username);
+			ResultSet results = statement.executeQuery();
+			
+			while (results.next())
+			{
+				WatchRecord record = parseWatchRecord(results);
+				User user = findUser(username);
+				record.setUser(user);
+				records.add(record);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return records;
+	}
+	
+	@Override
+	public List<WatchRecord> listAllWatchRecords()
+	{
+		String sql = "SELECT * FROM Watched";
+		List<WatchRecord> records = new LinkedList<>();
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			ResultSet results = statement.executeQuery();
+			
+			while (results.next())
+			{
+				WatchRecord record = parseWatchRecord(results);
+				User user = findUser(results.getString("User"));
+				record.setUser(user);
+				records.add(record);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return records;
+	}
+	
+	private WatchRecord parseWatchRecord(ResultSet results) throws SQLException
+	{
+		WatchRecord record = new WatchRecord();
+		
+		String seriesName = results.getString("Series");
+		int seasonNumber = results.getInt("Season");
+		int eipsodeCount = results.getInt("EpisodeCount");
+		
+		SeasonDao dao = DAOCollection.getSeasonDao();
+		Season season = dao.findSeason(seriesName, seasonNumber);
+		record.setEpisodesWatched(eipsodeCount);
+		record.setSeason(season);
+		
+		return record;
 	}
 	
 }

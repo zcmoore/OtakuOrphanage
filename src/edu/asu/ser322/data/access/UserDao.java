@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.User;
+import edu.asu.ser322.data.model.WatchRecord;
 
 /**
  * Intermediate layer to communicate {@link User} data between a client and a persistent
@@ -95,6 +96,10 @@ public interface UserDao
 	 * @return true if the logout was successful
 	 */
 	public boolean logout(String username, String password);
-
+	
 	List<User> listAll();
+	
+	List<WatchRecord> findWatchRecordsFor(String username);
+	
+	List<WatchRecord> listAllWatchRecords();
 }
