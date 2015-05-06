@@ -91,4 +91,6 @@ public interface SeasonDao
 	boolean seasonExists(String seriesName);
 	
 	boolean seasonExists(String seriesName, int seasonNumber);
+
+	boolean seasonExists(Season season);
 }

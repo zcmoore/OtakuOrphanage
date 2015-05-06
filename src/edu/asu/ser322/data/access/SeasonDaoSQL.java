@@ -364,6 +364,12 @@ public class SeasonDaoSQL implements SeasonDao
 	}
 	
 	@Override
+	public boolean seasonExists(Season season)
+	{
+		return seasonExists(season.getSeriesName(), season.getSeasonNumber());
+	}
+	
+	@Override
 	public boolean seasonExists(String seriesname, int seasonnumber)
 	{
 		return !Season.NULL_SEASON.equals(findSeason(seriesname, seasonnumber));
