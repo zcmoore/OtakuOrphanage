@@ -54,7 +54,7 @@ public class MainMenuGUI extends JPanel
 	private JComboBox tableList;
 	private JComboBox searchBy;
 	private JTextField searchBarTextField;
-	private JButton settingsButton;
+	private JButton profileButton;
 	private JButton searchButton;
 	private JButton logoutButton;
 	private JButton goToUpdateButton;
@@ -105,7 +105,7 @@ public class MainMenuGUI extends JPanel
 		searchBarTextField = new JTextField();
 		searchButton = new JButton("Search");
 		logoutButton = new JButton("Logout");
-		settingsButton = new JButton("Settings");
+		profileButton = new JButton("Profile");
 		goToUpdateButton = new JButton("Update Database");
 		tableModel = new DefaultTableModel();
 		results = new JTable(tableModel);
@@ -198,6 +198,14 @@ public class MainMenuGUI extends JPanel
 				client.showUpdateDatabase();
 			}
 		});
+		profileButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				client.showProfile();
+			}
+		});
+		
 	}
 	
 	public void layout()
@@ -221,8 +229,8 @@ public class MainMenuGUI extends JPanel
 		add(logoutButton);
 		
 		// TODO: function for the settings button has yet to be defined
-		settingsButton.setBounds(30, 30, 100, 30);
-		add(settingsButton);
+		profileButton.setBounds(30, 30, 100, 30);
+		add(profileButton);
 		
 		spTable.setBounds(50, 200, 900, 250);
 		add(spTable);
