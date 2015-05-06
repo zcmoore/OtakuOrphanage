@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -30,10 +31,12 @@ import edu.asu.ser322.data.model.Person;
 import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.Studio;
 import edu.asu.ser322.data.model.User;
+import edu.asu.ser322.data.model.Gender;
 
 /**
  * 
  * @author Cuahuc
+ * @author Benjamin Paothatat
  * 
  */
 
@@ -46,6 +49,7 @@ public class MainMenuGUI extends JPanel
 	private JLabel selectedItemPictureLabel;
 	private JLabel selectedItemInfoLabel;
 	private JComboBox tableList;
+	private JComboBox searchBy;
 	private JTextField searchBarTextField;
 	private JButton settingsButton;
 	private JButton searchButton;
@@ -53,8 +57,15 @@ public class MainMenuGUI extends JPanel
 	// private JList titleHolderList;
 	private JTable results;
 	private List<String> ListOfEntities;
+	private List<String> entitiesSubSearch;
+	private Hashtable<String, String[]> linkEntitesToSearch;
+	private String[] chacacterSerach;
+	private String[] franchiseSerach;
+	private String[] episodeSearch;
+	private String[] seasonSearch;
 	private List<Character> searchResultsOfCharacter;
 	private List<Franchise> searchResultsOfFranchise;
+	private List<Episode> searchResultsOfEpisode;
 	private List<User> searchResultsOfUsers;
 	private List<Season> searchResultsOfSeason;
 	private List<Episode> searchResultsOfEpisodes;
@@ -83,6 +94,7 @@ public class MainMenuGUI extends JPanel
 		titleLabel = new JLabel("Anime Database");
 		// informationSelectedListener();
 		populateListOfTableArray();
+		entitiesSubSearch = new ArrayList<String>();
 		tableList = new JComboBox<>(ListOfEntities.toArray());
 		searchBarTextField = new JTextField();
 		searchButton = new JButton("Search");
@@ -94,8 +106,37 @@ public class MainMenuGUI extends JPanel
 		// columnNames = new Vector<String>();
 		// rowValues = new Vector<String>();
 		
+		chacacterSerach = new String[] { "By Name", "By Age", "By Archetype",
+				"By Gender", "By Hair Color", "List All" };
+		franchiseSerach = new String[] { "By Name", "List All" };
+		episodeSearch = new String[] { "By Name", "List All" };
+		seasonSearch = new String[] { "By Series Name", "By Genre",
+				"By Year Of Air Date", "List All" };
+		linkEntitesToSearch = new Hashtable<String, String[]>();
+		linkEntitesToSearch.put("Character", chacacterSerach);
+		linkEntitesToSearch.put("Franchise", franchiseSerach);
+		linkEntitesToSearch.put("Episode", episodeSearch);
+		linkEntitesToSearch.put("Seasons", seasonSearch);
+		searchBy = new JComboBox(linkEntitesToSearch.get(tableList.getSelectedItem()
+				.toString()));
+		
 		selectedItemPictureLabel = new JLabel();
 		selectedItemInfoLabel = new JLabel();
+		
+		tableList.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				searchBy.removeAllItems();
+				String[] replacementSearchBy = linkEntitesToSearch.get(tableList
+						.getSelectedItem().toString());
+				for (int i = 0; i < replacementSearchBy.length; i++)
+				{
+					searchBy.addItem(replacementSearchBy[i]);
+				}
+				repaint();
+			}
+			
+		});
 		
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -105,142 +146,19 @@ public class MainMenuGUI extends JPanel
 				// loadInfoOnShows();
 				if (tableList.getSelectedItem().toString().equals("Character"))
 				{
-					clearAllVectors();
-					
-					searchResultsOfCharacter = DAOCollection.getCharacterDao()
-							.findCharactersByName(searchBarTextField.getText());
-					
-					columnNames.add("CharacterID");
-					columnNames.add("Name");
-					columnNames.add("Gender");
-					columnNames.add("Archetype");
-					columnNames.add("Hair Color");
-					columnNames.add("Birthday Day");
-					tableModel.setColumnIdentifiers(columnNames);
-					
-					for (int i = 0; i < searchResultsOfCharacter.size(); i++)
-					{
-						vector = new Vector<String>();
-						String ID = Integer.toString(searchResultsOfCharacter.get(i)
-								.getId());
-						String name = searchResultsOfCharacter.get(i).getName();
-						String gender = searchResultsOfCharacter.get(i).getGender()
-								.toString();
-						String archetype = searchResultsOfCharacter.get(i).getArchetype();
-						String hairColor = searchResultsOfCharacter.get(i).getHairColor();
-						String dob = searchResultsOfCharacter.get(i).getBirthDate()
-								.toString();
-						vector.add(ID);
-						vector.add(name);
-						vector.add(gender);
-						vector.add(archetype);
-						vector.add(hairColor);
-						vector.add(dob);
-						rowValues.add(vector);
-					}
-					
-					repaint();
-					tableModel.setDataVector(rowValues, columnNames);
+					characterSearches();
 				}
 				else if (tableList.getSelectedItem().toString().equals("Franchise"))
 				{
-					clearAllVectors();
-					
-					Franchise franchise = DAOCollection.getFranchiseDao().findFranchise(
-							searchBarTextField.getText());
-					
-					columnNames.add("FranchiseID");
-					columnNames.add("FranchiseName");
-					
-					tableModel.setColumnIdentifiers(columnNames);
-					
-					String ID = Integer.toString(franchise.getId());
-					String name = franchise.getName();
-					vector.add(ID);
-					vector.add(name);
-					
-					rowValues.add(vector);
-					
-					repaint();
-					tableModel.setDataVector(rowValues, columnNames);
+					franchiseSearches();
 				}
 				else if (tableList.getSelectedItem().toString().equals("Episode"))
 				{
-					clearAllVectors();
-					
-					searchResultsOfEpisodes = DAOCollection.getEpisodeDao().findEpisode(
-							searchBarTextField.getText());
-					columnNames.add("SeriesName");
-					columnNames.add("SeasonNumber");
-					columnNames.add("EpisodeNumber");
-					columnNames.add("EpisodeName");
-					columnNames.add("AirDate");
-					columnNames.add("ArtStyle");
-					columnNames.add("Appropriateness");
-					
-					tableModel.setColumnIdentifiers(columnNames);
-					
-					for (Episode episode : searchResultsOfEpisodes)
-					{
-						vector = new Vector<String>();
-						String seriesName = episode.getSeriesName();
-						String seasonNumber = Integer.toString(episode.getSeasonNumber());
-						String episodeNumber = Integer.toString(episode
-								.getEpisodeNumber());
-						String showName = episode.getEpisodeName();
-						String airDate = episode.getAirDate().toString();
-						String artStyle = episode.getArtStyle();
-						String appropriateness = episode.getApproprateness();
-						vector.add(seriesName);
-						vector.add(seasonNumber);
-						vector.add(episodeNumber);
-						vector.add(showName);
-						vector.add(airDate);
-						vector.add(artStyle);
-						vector.add(appropriateness);
-						rowValues.add(vector);
-					}
-					
-					repaint();
-					tableModel.setDataVector(rowValues, columnNames);
+					episodeSearches();
 				}
 				else if (tableList.getSelectedItem().toString().equals("Seasons"))
 				{
-					clearAllVectors();
-					
-					searchResultsOfSeason = DAOCollection.getSeasonDao().findSeason(
-							searchBarTextField.getText());
-					columnNames.add("SeriesName");
-					columnNames.add("SeasonNumber");
-					columnNames.add("ShowName");
-					columnNames.add("AirDate");
-					columnNames.add("FinishDate");
-					columnNames.add("Appropriateness");
-					
-					tableModel.setColumnIdentifiers(columnNames);
-					
-					// tableModel = new DefaultTableModel();
-					for (Season season : searchResultsOfSeason)
-					{
-						vector = new Vector<String>();
-						// int id = searchResultsOfCharacter.get(i).getId();
-						String seriesName = season.getSeriesName();
-						String seasonNumber = Integer.toString(season.getSeasonNumber());
-						String showName = season.getName();
-						String airDate = season.getAirDate().toString();
-						String FinishDate = season.toString();
-						String appropriateness = season.getAppropriateness();
-						vector.add(seriesName);
-						vector.add(seasonNumber);
-						vector.add(showName);
-						vector.add(airDate);
-						vector.add(FinishDate);
-						vector.add(appropriateness);
-						rowValues.add(vector);
-					}
-					
-					repaint();
-					tableModel.setDataVector(rowValues, columnNames);
+					seasonSearches();
 				}
 				
 			}
@@ -259,6 +177,9 @@ public class MainMenuGUI extends JPanel
 	{
 		titleLabel.setBounds(600, 20, 300, 30);
 		add(titleLabel);
+		
+		searchBy.setBounds(810, 100, 150, 30);
+		add(searchBy);
 		
 		tableList.setBounds(810, 60, 150, 30);
 		add(tableList);
@@ -375,5 +296,232 @@ public class MainMenuGUI extends JPanel
 		{
 			g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
 		}
+	}
+	
+	private Vector<String> parseCharacter(Character character)
+	{
+		Vector vector = new Vector<String>();
+		String ID = Integer.toString(character.getId());
+		String name = character.getName();
+		String gender = character.getGender().toString();
+		String archetype = character.getArchetype();
+		String hairColor = character.getHairColor();
+		String dob = character.getBirthDate().toString();
+		vector.add(ID);
+		vector.add(name);
+		vector.add(gender);
+		vector.add(archetype);
+		vector.add(hairColor);
+		vector.add(dob);
+		rowValues.add(vector);
+		return vector;
+	}
+	
+	private Vector<String> parseEpisode(Episode episode)
+	{
+		vector = new Vector<String>();
+		String seriesName = episode.getSeriesName();
+		String seasonNumber = Integer.toString(episode.getSeasonNumber());
+		String episodeNumber = Integer.toString(episode.getEpisodeNumber());
+		String showName = episode.getEpisodeName();
+		String airDate = episode.getAirDate().toString();
+		String artStyle = episode.getArtStyle();
+		String appropriateness = episode.getApproprateness();
+		vector.add(seriesName);
+		vector.add(seasonNumber);
+		vector.add(episodeNumber);
+		vector.add(showName);
+		vector.add(airDate);
+		vector.add(artStyle);
+		vector.add(appropriateness);
+		rowValues.add(vector);
+		return vector;
+	}
+	
+	private Vector<String> parseSeason(Season season)
+	{
+		Vector vector = new Vector<String>();
+		String seriesName = season.getSeriesName();
+		String seasonNumber = Integer.toString(season.getSeasonNumber());
+		String showName = season.getName();
+		String airDate = season.getAirDate().toString();
+		String FinishDate = season.toString();
+		String appropriateness = season.getAppropriateness();
+		vector.add(seriesName);
+		vector.add(seasonNumber);
+		vector.add(showName);
+		vector.add(airDate);
+		vector.add(FinishDate);
+		vector.add(appropriateness);
+		rowValues.add(vector);
+		return vector;
+	}
+	
+	private void characterSearches()
+	{
+		clearAllVectors();
+		if (searchBy.getSelectedItem().toString().equals("By Name"))
+		{
+			searchResultsOfCharacter = DAOCollection.getCharacterDao()
+					.findCharactersByName(searchBarTextField.getText());
+		}
+		else if (searchBy.getSelectedItem().toString().equals("By Age"))
+		{
+			// TODO: Add age to Characters
+		}
+		else if (searchBy.getSelectedItem().toString().equals("By Archetype"))
+		{
+			searchResultsOfCharacter = DAOCollection.getCharacterDao()
+					.findCharactersByArchetype(searchBarTextField.getText());
+		}
+		else if (searchBy.getSelectedItem().toString().equals("By Gender"))
+		{
+			searchResultsOfCharacter = DAOCollection.getCharacterDao()
+					.findCharactersByGender(
+							Gender.valueOf(searchBarTextField.getText()));
+		}
+		else if (searchBy.getSelectedItem().toString()
+				.equals("By Hair Color"))
+		{
+			searchResultsOfCharacter = DAOCollection.getCharacterDao()
+					.findCharactersByHairColour(searchBarTextField.getText());
+		}
+		else
+		{
+			searchResultsOfCharacter = DAOCollection.getCharacterDao()
+					.listAll();
+		}
+		
+		columnNames.add("CharacterID");
+		columnNames.add("Name");
+		columnNames.add("Gender");
+		columnNames.add("Archetype");
+		columnNames.add("Hair Color");
+		columnNames.add("Birthday Day");
+		tableModel.setColumnIdentifiers(columnNames);
+		
+		for (int i = 0; i < searchResultsOfCharacter.size(); i++)
+		{
+			parseCharacter(searchResultsOfCharacter.get(i));
+		}
+		
+		repaint();
+		tableModel.setDataVector(rowValues, columnNames);
+	}
+	
+	private void franchiseSearches()
+	{
+		clearAllVectors();
+		
+		columnNames.add("FranchiseID");
+		columnNames.add("FranchiseName");
+		
+		tableModel.setColumnIdentifiers(columnNames);
+		
+		if (searchBy.getSelectedItem().toString().equals("By Name"))
+		{
+			Franchise franchise = DAOCollection.getFranchiseDao()
+					.findFranchise(searchBarTextField.getText());
+			
+			String ID = Integer.toString(franchise.getId());
+			String name = franchise.getName();
+			vector.add(ID);
+			vector.add(name);
+			
+			rowValues.add(vector);
+		}
+		else
+		{
+			searchResultsOfFranchise = DAOCollection.getFranchiseDao()
+					.listAll();
+			for (Franchise franchise : searchResultsOfFranchise)
+			{
+				vector = new Vector<String>();
+				String ID = Integer.toString(franchise.getId());
+				String name = franchise.getName();
+				vector.add(ID);
+				vector.add(name);
+				
+				rowValues.add(vector);
+			}
+		}
+		
+		repaint();
+		tableModel.setDataVector(rowValues, columnNames);
+	}
+	
+	private void episodeSearches()
+	{
+		clearAllVectors();
+		
+		if (searchBy.getSelectedItem().toString().equals("By Name"))
+		{
+			searchResultsOfEpisodes = DAOCollection.getEpisodeDao()
+					.findEpisode(searchBarTextField.getText());
+		}
+		else
+		{
+			searchResultsOfEpisodes = DAOCollection.getEpisodeDao().listAll();
+		}
+		columnNames.add("SeriesName");
+		columnNames.add("SeasonNumber");
+		columnNames.add("EpisodeNumber");
+		columnNames.add("EpisodeName");
+		columnNames.add("AirDate");
+		columnNames.add("ArtStyle");
+		columnNames.add("Appropriateness");
+		
+		tableModel.setColumnIdentifiers(columnNames);
+		
+		for (Episode episode : searchResultsOfEpisodes)
+		{
+			parseEpisode(episode);
+		}
+		
+		repaint();
+		tableModel.setDataVector(rowValues, columnNames);
+	}
+	
+	private void seasonSearches()
+	{
+		clearAllVectors();
+		if (searchBy.getSelectedItem().toString().equals("By Series Name"))
+		{
+			searchResultsOfSeason = DAOCollection.getSeasonDao().findSeason(
+					searchBarTextField.getText());
+		}
+		else if (searchBy.getSelectedItem().toString()
+				.equals("By Year Of Air Date"))
+		{
+			searchResultsOfSeason = DAOCollection.getSeasonDao()
+					.seasonsByAirYear(
+							Integer.parseInt(searchBarTextField.getText()));
+		}
+		else if (searchBy.getSelectedItem().toString().equals("By Genre"))
+		{
+			searchResultsOfSeason = DAOCollection.getSeasonDao()
+					.seasonsByGenre(searchBarTextField.getText());
+		}
+		else
+		{
+			searchResultsOfSeason = DAOCollection.getSeasonDao().listAll();
+		}
+	
+		columnNames.add("SeriesName");
+		columnNames.add("SeasonNumber");
+		columnNames.add("ShowName");
+		columnNames.add("AirDate");
+		columnNames.add("FinishDate");
+		columnNames.add("Appropriateness");
+		
+		tableModel.setColumnIdentifiers(columnNames);
+		
+		for (Season season : searchResultsOfSeason)
+		{
+			parseSeason(season);
+		}
+		
+		repaint();
+		tableModel.setDataVector(rowValues, columnNames);
 	}
 }
