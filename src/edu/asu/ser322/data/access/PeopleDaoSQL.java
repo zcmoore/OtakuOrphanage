@@ -46,7 +46,8 @@ public class PeopleDaoSQL implements PeopleDao
 	@Override
 	public List<Person> findPerson(String name)
 	{
-		String sql = "SELECT * FROM People WHERE Name=?";
+		name = "%" + name + "%";
+		String sql = "SELECT * FROM People WHERE Name LIKE ?";
 		List<Person> people = new LinkedList<Person>();
 		
 		try (Connection connection = createDatabaseConnection();
