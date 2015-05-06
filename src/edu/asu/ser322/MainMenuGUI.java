@@ -54,6 +54,7 @@ public class MainMenuGUI extends JPanel
 	private JButton settingsButton;
 	private JButton searchButton;
 	private JButton logoutButton;
+	private JButton goToUpdateButton;
 	// private JList titleHolderList;
 	private JTable results;
 	private List<String> ListOfEntities;
@@ -100,6 +101,7 @@ public class MainMenuGUI extends JPanel
 		searchButton = new JButton("Search");
 		logoutButton = new JButton("Logout");
 		settingsButton = new JButton("Settings");
+		goToUpdateButton = new JButton("Update Databse");
 		tableModel = new DefaultTableModel();
 		results = new JTable(tableModel);
 		spTable = new JScrollPane(results);
@@ -171,6 +173,15 @@ public class MainMenuGUI extends JPanel
 				client.showLogin();
 			}
 		});
+		
+		goToUpdateButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				client.showUpdateDatabase();
+			}
+		});
 	}
 	
 	public void layout()
@@ -194,8 +205,8 @@ public class MainMenuGUI extends JPanel
 		add(logoutButton);
 		
 		// TODO: function for the settings button has yet to be defined
-		// Settings.setBounds(30, 30, 100, 30);
-		// add(Settings);
+		settingsButton.setBounds(30, 30, 100, 30);
+		add(settingsButton);
 		
 		spTable.setBounds(50, 200, 900, 250);
 		add(spTable);
@@ -205,6 +216,9 @@ public class MainMenuGUI extends JPanel
 		
 		selectedItemInfoLabel.setBounds(510, 200, 210, 200);
 		add(selectedItemInfoLabel);
+		
+		goToUpdateButton.setBounds(140, 30, 100, 30);
+		add(goToUpdateButton);
 	}
 	
 	public void clearAllVectors()
@@ -246,26 +260,9 @@ public class MainMenuGUI extends JPanel
 		return returnIcon;
 	}
 	
-	/*
-	 * public void informationSelectedListener() { //titleHolderList = new
-	 * JList(ListOfEntities.toArray());
-	 * //titleHolderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	 * //titleHolderList.addListSelectionListener(new ListSelectionListener() {
-	 * //@Override //public void valueChanged(ListSelectionEvent e) //{ // TODO: Here is
-	 * where we will get the info for the titles that // we have // selected
-	 * 
-	 * // setInfoOfSelectedItem(String of info); // setPictureOfSelectedItem(String path
-	 * to image);
-	 * 
-	 * } //});
-	 * 
-	 * //}
-	 */
-	
 	public void populateListOfTableArray()
 	{
 		ListOfEntities.add("Character");
-		// ListOfEntities.add("Episode");
 		ListOfEntities.add("Franchise");
 		ListOfEntities.add("Episode");
 		ListOfEntities.add("Seasons");
