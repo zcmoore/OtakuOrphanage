@@ -147,9 +147,9 @@ public class SeasonDaoSQL implements SeasonDao
 	private Date parseAirDate(ResultSet results) throws SQLException
 	{
 		Calendar calendar = new GregorianCalendar();
-		int day = results.getInt("AirDateYear");
+		int year = results.getInt("AirDateYear");
 		int month = results.getInt("AirDateMonth");
-		int year = results.getInt("AirDateDay");
+		int day = results.getInt("AirDateDay");
 		calendar.set(year, month, day);
 		
 		return calendar.getTime();
@@ -158,9 +158,9 @@ public class SeasonDaoSQL implements SeasonDao
 	private Date parseFinishDate(ResultSet results) throws SQLException
 	{
 		Calendar calendar = new GregorianCalendar();
-		int day = results.getInt("FinishDateYear");
+		int year = results.getInt("FinishDateYear");
 		int month = results.getInt("FinishDateMonth");
-		int year = results.getInt("FinishDateDay");
+		int day = results.getInt("FinishDateDay");
 		calendar.set(year, month, day);
 		
 		return calendar.getTime();
