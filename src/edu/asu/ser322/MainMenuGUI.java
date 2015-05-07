@@ -12,7 +12,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -33,11 +32,10 @@ import edu.asu.ser322.data.access.DAOCollection;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Franchise;
+import edu.asu.ser322.data.model.Gender;
 import edu.asu.ser322.data.model.Person;
 import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.Studio;
-import edu.asu.ser322.data.model.User;
-import edu.asu.ser322.data.model.Gender;
 
 /**
  * 
@@ -56,8 +54,8 @@ public class MainMenuGUI extends JPanel
 	private JLabel accountInfoLabel;
 	private JLabel selectedItemPictureLabel;
 	private JLabel selectedItemInfoLabel;
-	private JComboBox tableList;
-	private JComboBox searchBy;
+	private JComboBox<Object> tableList;
+	private JComboBox<String> searchBy;
 	private JTextField searchBarTextField;
 	private JButton profileButton;
 	private JButton searchButton;
@@ -82,11 +80,10 @@ public class MainMenuGUI extends JPanel
 	private List<Episode> searchResultsOfEpisodes;
 	private List<Studio> searchResultsOfStudio;
 	private DefaultTableModel tableModel;
-	JScrollPane spTable;
-	ProfileGUI profileGUI;
-	Vector<String> columnNames = new Vector<String>();
-	Vector<Vector<String>> rowValues = new Vector<Vector<String>>();
-	Vector<String> vector = new Vector<String>();
+	private JScrollPane spTable;
+	private Vector<String> columnNames = new Vector<>();
+	private Vector<Vector<String>> rowValues = new Vector<>();
+	private Vector<String> vector = new Vector<>();
 	
 	private BufferedImage img;
 	
@@ -115,7 +112,7 @@ public class MainMenuGUI extends JPanel
 		addImageBackGround();
 		titleLabel = new JLabel("Anime Database");
 		populateListOfTableArray();
-		entitiesSubSearch = new ArrayList<String>();
+		entitiesSubSearch = new ArrayList<>();
 		tableList = new JComboBox<>(ListOfEntities.toArray());
 		searchBarTextField = new JTextField();
 		searchButton = new JButton("Search");
@@ -123,7 +120,6 @@ public class MainMenuGUI extends JPanel
 		profileButton = new JButton("Profile");
 		goToUpdateButton = new JButton("Update Database");
 		tableModel = new DefaultTableModel();
-		profileGUI = new ProfileGUI(this.client);
 		results = new JTable(tableModel);
 		spTable = new JScrollPane(results);
 		nextPerson = new JButton("Next Person");
@@ -145,7 +141,7 @@ public class MainMenuGUI extends JPanel
 		linkEntitesToSearch.put("Season", seasonSearch);
 		linkEntitesToSearch.put("Person", personSearch);
 		linkEntitesToSearch.put("Studio", studioSearch);
-		searchBy = new JComboBox(linkEntitesToSearch.get(tableList.getSelectedItem()
+		searchBy = new JComboBox<String>(linkEntitesToSearch.get(tableList.getSelectedItem()
 				.toString()));
 		
 		selectedItemPictureLabel = new JLabel();
@@ -325,7 +321,7 @@ public class MainMenuGUI extends JPanel
 	 */
 	private void parseCharacter(Character character)
 	{
-		Vector vector = new Vector<String>();
+		Vector<String> vector = new Vector<String>();
 		String name = character.getName();
 		String gender = character.getGender().toString();
 		String archetype = character.getArchetype();
@@ -380,7 +376,7 @@ public class MainMenuGUI extends JPanel
 	 */
 	private void parseSeason(Season season)
 	{
-		Vector vector = new Vector<String>();
+		Vector<String> vector = new Vector<String>();
 		String seriesName = season.getSeriesName();
 		String seasonNumber = Integer.toString(season.getSeasonNumber());
 		String showName = season.getName();
@@ -605,7 +601,7 @@ public class MainMenuGUI extends JPanel
 			
 			for (Person person : searchResultsOfPerson)
 			{
-				Vector vector = new Vector<String>();
+				Vector<String> vector = new Vector<String>();
 				String personId = Integer.toString(person.getID());
 				String name = person.getName();
 				
@@ -729,7 +725,7 @@ public class MainMenuGUI extends JPanel
 			
 			for (Person person : searchResultsOfPerson)
 			{
-				Vector vector = new Vector<String>();
+				Vector<String> vector = new Vector<String>();
 				String personId = Integer.toString(person.getID());
 				String name = person.getName();
 				
@@ -783,7 +779,7 @@ public class MainMenuGUI extends JPanel
 	 */
 	private void parseStudio(Studio studio)
 	{
-		Vector vector = new Vector<String>();
+		Vector<String> vector = new Vector<>();
 		String studioName = studio.getName();
 		String studioStartDate = "";
 		String studioCloseDate = "";
@@ -829,7 +825,7 @@ public class MainMenuGUI extends JPanel
 	 */
 	private void seperator(int length)
 	{
-		vector = new Vector<String>();
+		vector = new Vector<>();
 		String dashes = "=============";
 		for (int i = 0; i < length; i++)
 		{
