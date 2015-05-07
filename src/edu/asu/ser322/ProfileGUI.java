@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -18,9 +19,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 import edu.asu.ser322.data.access.DAOCollection;
 import edu.asu.ser322.data.model.User;
+import edu.asu.ser322.data.model.WatchRecord;
 
 public class ProfileGUI extends JPanel
 {
@@ -37,6 +40,9 @@ public class ProfileGUI extends JPanel
 	private BufferedImage img;
 	
 	private List<User> searchWatches;
+	private DefaultTableModel tableModel;
+	Vector<String> columnNames = new Vector<String>();
+	Vector<Vector<String>> rowValues = new Vector<Vector<String>>();
 	
 	Client client;
 	
@@ -54,7 +60,7 @@ public class ProfileGUI extends JPanel
 		imageOfUser = new JLabel();
 		userNameLabel = new JLabel();
 		
-		userWatchTable = new JTable();
+		userWatchTable = new JTable(tableModel);
 		scp = new JScrollPane(userWatchTable);
 		
 		searchBarField = new JTextField();
@@ -85,7 +91,24 @@ public class ProfileGUI extends JPanel
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				;
+				columnNames.add("Series Name");
+				columnNames.add("Season Number");
+				columnNames.add("Episode Number");
+				tableModel.setColumnIdentifiers(columnNames);
+				List<WatchRecord> watched = DAOCollection.getUserDao()
+						.findWatchRecordsFor(Session.getActiveUser().getUsername());
+				for(WatchRecord watchRecord: watched)
+				{
+					Vector vector = new Vector<String>();
+					;
+					
+					vector.add(watchRecord.getSeason().getSeriesName());
+					vector.add(watchRecord.getSeason().getSeasonNumber());
+					vector.add(watchRecord.getEpisodesWatched());
+					rowValues.add(vector);
+				}
+				repaint();
+				tableModel.setDataVector(rowValues, columnNames);
 			}
 		});
 		
