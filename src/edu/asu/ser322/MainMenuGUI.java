@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
