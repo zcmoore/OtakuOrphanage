@@ -110,8 +110,8 @@ public class PeopleDaoSQL implements PeopleDao
 	{
 		String sql = "SELECT * FROM Seasons season WHERE EXISTS "
 				+ "(SELECT * FROM ActorAppearances act WHERE"
-				+ "season.SeasonNumber = act.Season AND season.SeriesName = act.Series AND"
-				+ "act.Actor = ?)";
+				+ " season.SeasonNumber = act.Season AND season.SeriesName = act.Series AND"
+				+ " act.Actor = ?)";
 		List<Season> seasons = new LinkedList<>();
 		
 		try (Connection connection = createDatabaseConnection();
@@ -141,7 +141,7 @@ public class PeopleDaoSQL implements PeopleDao
 	public List<Character> getCharactersActedBy(Person person)
 	{
 		String sql = "SELECT * FROM Characters character WHERE EXISTS "
-				+ "(SELECT * FROM ActorAppearances act WHERE"
+				+ "(SELECT * FROM ActorAppearances act WHERE "
 				+ "character.CharacterID = act.Character AND act.Actor = ?)";
 		List<Character> characters = new LinkedList<>();
 		
