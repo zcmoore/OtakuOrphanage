@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class UpDateDatabseGUI extends JPanel 
+public class UpDateDatabseGUI extends JPanel
 {
 	private JComboBox boxEntities;
 	private JLabel TitleOfPage;
@@ -41,6 +41,13 @@ public class UpDateDatabseGUI extends JPanel
 		this.listOfEntitiesToModify = new ArrayList<>();
 		init();
 		layout();
+		
+		primaryKeyField.setVisible(false);
+		secondItemField.setVisible(false);
+		thirdItemField.setVisible(false);
+		fourthItemField.setVisible(false);
+		fifthItemField.setVisible(false);
+		sixthItemField.setVisible(false);
 	}
 	
 	public void init()
@@ -72,7 +79,6 @@ public class UpDateDatabseGUI extends JPanel
 				setTextStyle(boxEntities.getSelectedItem().toString());
 				repaint();
 			}
-			
 		});
 		
 		add(TitleOfPage);
@@ -90,16 +96,13 @@ public class UpDateDatabseGUI extends JPanel
 		add(fourthItemField);
 		add(fifthItemField);
 		add(sixthItemField);
-		
-		
-		
 	}
 	
 	public void layout()
 	{
 		setLayout(null);
-	
-		TitleOfPage.setBounds(600,20,300,80);
+		
+		TitleOfPage.setBounds(600, 20, 300, 80);
 		boxEntities.setBounds(810, 60, 150, 30);
 		primaryKey.setBounds(810, 100, 150, 30);
 		secondItem.setBounds(810, 150, 150, 30);
@@ -108,22 +111,31 @@ public class UpDateDatabseGUI extends JPanel
 		fifthItem.setBounds(810, 300, 150, 30);
 		sixthItem.setBounds(810, 350, 150, 30);
 		
-		primaryKeyField.setBounds(970, 60, 150, 30);
+		primaryKeyField.setBounds(970, 100, 150, 30);
 		secondItemField.setBounds(970, 150, 150, 30);
-		
+		thirdItemField.setBounds(970, 200, 150, 30);
+		fourthItemField.setBounds(970, 250, 150, 30);
+		fifthItemField.setBounds(970, 300, 150, 30);
+		sixthItemField.setBounds(970, 350, 150, 30);
 	}
 	
 	public void setTextStyle(String itemSelected)
-	{
-		if(itemSelected.equals("Characters"))
+	{	
+		if (itemSelected.equals("Characters"))
 		{
 			primaryKey.setText("Name");
 			secondItem.setText("Gender");
 			thirdItem.setText("archetype");
 			fourthItem.setText("Hair Color");
 			fifthItem.setText("Birth Date");
+			
+			primaryKeyField.setVisible(true);
+			secondItemField.setVisible(true);
+			thirdItemField.setVisible(true);
+			fourthItemField.setVisible(true);
+			fifthItemField.setVisible(true);
 		}
-		else if(itemSelected.equals("Seasons"))
+		else if (itemSelected.equals("Seasons"))
 		{
 			primaryKey.setText("Series Name");
 			secondItem.setText("Season Number");
@@ -131,7 +143,12 @@ public class UpDateDatabseGUI extends JPanel
 			fourthItem.setText("Date Finished");
 			fifthItem.setText("Genres");
 			sixthItem.setText("Appropriateness");
-			
+			primaryKeyField.setVisible(true);
+			secondItemField.setVisible(true);
+			thirdItemField.setVisible(true);
+			fourthItemField.setVisible(true);
+			fifthItemField.setVisible(true);
+			sixthItemField.setVisible(true);
 			
 		}
 	}
