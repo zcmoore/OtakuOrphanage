@@ -32,7 +32,7 @@ public class Client extends JFrame
 	private final LoginGUI loginGUI;
 	private final MainMenuGUI mainMenuGUI;
 	private final RegisterGUI registerGUI;
-	private final UpDateDatabseGUI updateDatabeGUI;
+	private final UpdateDatabseGUI updateDatabeGUI;
 	private final ProfileGUI profileGUI;
 	
 	public Client()
@@ -44,7 +44,7 @@ public class Client extends JFrame
 		loginGUI = new LoginGUI(this);
 		mainMenuGUI = new MainMenuGUI(this);
 		registerGUI = new RegisterGUI(this);
-		updateDatabeGUI = new UpDateDatabseGUI(this);
+		updateDatabeGUI = new UpdateDatabseGUI(this);
 		profileGUI = new ProfileGUI(this);
 		panelContainer.setLayout(cardLayout);
 		

@@ -33,8 +33,7 @@ public class ProfileGUI extends JPanel
 	private JTable userWatchTable;
 	private JScrollPane scp;
 	
-	private JTextField searchBarField;
-	private JButton searchButton;
+	private JButton loadButton;
 	private JButton backButton;
 	private JButton deleteAccount;
 	private BufferedImage img;
@@ -60,13 +59,18 @@ public class ProfileGUI extends JPanel
 		imageOfUser = new JLabel();
 		userNameLabel = new JLabel();
 		
+		tableModel = new DefaultTableModel();
 		userWatchTable = new JTable(tableModel);
 		scp = new JScrollPane(userWatchTable);
 		
-		searchBarField = new JTextField();
-		searchButton = new JButton("Search");
+		loadButton = new JButton("Load");
 		backButton = new JButton("Back");
 		deleteAccount = new JButton("Delete Account");
+		
+		columnNames.add("Series Name");
+		columnNames.add("Season Number");
+		columnNames.add("Episode Number");
+		tableModel.setColumnIdentifiers(columnNames);
 		
 		deleteAccount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -88,20 +92,14 @@ public class ProfileGUI extends JPanel
 			}
 		});
 		
-		searchButton.addActionListener(new ActionListener() {
+		loadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				columnNames.add("Series Name");
-				columnNames.add("Season Number");
-				columnNames.add("Episode Number");
-				tableModel.setColumnIdentifiers(columnNames);
 				List<WatchRecord> watched = DAOCollection.getUserDao()
 						.findWatchRecordsFor(Session.getActiveUser().getUsername());
-				for(WatchRecord watchRecord: watched)
+				for (WatchRecord watchRecord : watched)
 				{
 					Vector vector = new Vector<String>();
-					;
-					
 					vector.add(watchRecord.getSeason().getSeriesName());
 					vector.add(watchRecord.getSeason().getSeasonNumber());
 					vector.add(watchRecord.getEpisodesWatched());
@@ -119,19 +117,16 @@ public class ProfileGUI extends JPanel
 			}
 		});
 		
-		scp.setBounds(325, 10, 600, 300);
+		scp.setBounds(325, 100, 600, 300);
 		add(scp);
 		
-		searchBarField.setBounds(500, 350, 200, 30);
-		add(searchBarField);
-		
-		searchButton.setBounds(700, 350, 80, 30);
-		add(searchButton);
+		loadButton.setBounds(597, 460, 80, 30);
+		add(loadButton);
 		
 		imageOfUser.setBounds(900, 580, 150, 75);
 		add(imageOfUser);
 		
-		userNameLabel.setBounds(30, 30, 150, 75);
+		userNameLabel.setBounds(500, 30, 300, 75);
 		add(userNameLabel);
 		
 		backButton.setBounds(1100, 580, 80, 30);
@@ -143,8 +138,8 @@ public class ProfileGUI extends JPanel
 	
 	public void setTextStyle(String currentUser)
 	{
-		String usernameStyle = "<html>\n" + "<font size=+3><font color=#00ff00>"
-				+ currentUser + "</font>";
+		String usernameStyle = "<html>" + "<font size=+3><font color=#00ff00>"
+				+ "Welcome " + currentUser + "</font>";
 		this.userNameLabel.setText(usernameStyle);
 		repaint();
 	}
@@ -175,17 +170,7 @@ public class ProfileGUI extends JPanel
 	
 	public void layout()
 	{
-		/*
-		 * scp.setBounds(325, 10, 600, 300); add(scp);
-		 * 
-		 * searchBarField.setBounds(500, 350, 200, 30); add(searchBarField);
-		 * 
-		 * searchButton.setBounds(700, 350, 80, 30); add(searchButton);
-		 * 
-		 * imageOfUser.setBounds(900, 580, 150, 75); add(imageOfUser);
-		 * 
-		 * userNameLabel.setBounds(1100, 580, 150, 75); add(userNameLabel);
-		 */
+		
 	}
 	
 	public void addImageBackGround()

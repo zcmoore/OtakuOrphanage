@@ -67,9 +67,6 @@ public class CharacterDaoSQL implements CharacterDao
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			Date dobDate = character.getBirthDate();
-			Calendar calender = new GregorianCalendar();
-			calender.setTime(dobDate);
 			
 			statement.setInt(1, character.getId());
 			statement.setString(2, character.getName());

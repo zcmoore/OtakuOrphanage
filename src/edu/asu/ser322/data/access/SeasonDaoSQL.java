@@ -38,7 +38,7 @@ public class SeasonDaoSQL implements SeasonDao
 			statement.setInt(5, calendar.get(Calendar.MONTH));
 			statement.setInt(6, calendar.get(Calendar.YEAR));
 			
-			calendar.setTime(season.getAirDate());
+			calendar.setTime(season.getFinishDate());
 			statement.setInt(7, calendar.get(Calendar.DAY_OF_MONTH));
 			statement.setInt(8, calendar.get(Calendar.MONTH));
 			statement.setInt(9, calendar.get(Calendar.YEAR));
@@ -46,7 +46,7 @@ public class SeasonDaoSQL implements SeasonDao
 			
 			statement.execute();
 			
-			associateGenres(season);
+			//associateGenres(season);
 			result = true;
 		}
 		catch (Exception exception)
