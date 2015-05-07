@@ -120,9 +120,10 @@ public class ProfileGUI extends JPanel
 	
 	public void setTextStyle(String currentUser)
 	{
-		String usernameStyle = "<html>\n" + "<font size=+2><font color=green>"
+		String usernameStyle = "<html>\n" + "<font size=+3><font color=#00ff00>"
 				+ currentUser + "</font>";
 		this.userNameLabel.setText(usernameStyle);
+		repaint();
 	}
 	
 	public void setPictureOfSelectedItem(String picturePath)
