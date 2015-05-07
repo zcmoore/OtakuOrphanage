@@ -107,6 +107,7 @@ public class Client extends JFrame
 	}
 	public void showProfile()
 	{
+		profileGUI.setTextStyle(Session.getActiveUser().getUsername());
 		showGUI(profileGUI);
 	}
 	

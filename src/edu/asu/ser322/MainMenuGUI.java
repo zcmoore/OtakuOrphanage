@@ -203,8 +203,6 @@ public class MainMenuGUI extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				//System.out.println(Session.getActiveUser().getUsername());
-				profileGUI.setTextStyle(Session.getActiveUser().getUsername());
 				client.showProfile();
 			}
 		});
