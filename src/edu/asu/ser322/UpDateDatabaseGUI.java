@@ -27,7 +27,7 @@ import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Gender;
 import edu.asu.ser322.data.model.Season;
 
-public class UpdateDatabseGUI extends JPanel
+public class UpDateDatabaseGUI extends JPanel
 {
 	private JComboBox boxEntities;
 	private JLabel TitleOfPage;
@@ -53,7 +53,7 @@ public class UpdateDatabseGUI extends JPanel
 	
 	Client client;
 	
-	public UpdateDatabseGUI(Client client)
+	public UpDateDatabaseGUI(Client client)
 	{
 		this.client = client;
 		this.listOfEntitiesToModify = new ArrayList<>();
