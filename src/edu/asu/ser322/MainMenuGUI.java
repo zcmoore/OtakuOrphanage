@@ -49,7 +49,6 @@ public class MainMenuGUI extends JPanel
 	private Client client;
 	
 	private JLabel titleLabel;
-	private JLabel accountInfoLabel;
 	private JLabel selectedItemPictureLabel;
 	private JLabel selectedItemInfoLabel;
 	private JComboBox<Object> tableList;
@@ -62,7 +61,6 @@ public class MainMenuGUI extends JPanel
 	private JButton nextPerson;
 	private JTable results;
 	private List<String> ListOfEntities;
-	private List<String> entitiesSubSearch;
 	private Hashtable<String, String[]> linkEntitesToSearch;
 	private String[] chacacterSerach;
 	private String[] franchiseSerach;
@@ -72,7 +70,6 @@ public class MainMenuGUI extends JPanel
 	private String[] studioSearch;
 	private List<Character> searchResultsOfCharacter;
 	private List<Franchise> searchResultsOfFranchise;
-	private List<Episode> searchResultsOfEpisode;
 	private List<Person> searchResultsOfPerson;
 	private List<Season> searchResultsOfSeason;
 	private List<Episode> searchResultsOfEpisodes;
@@ -99,9 +96,7 @@ public class MainMenuGUI extends JPanel
 		setOpaque(false);
 		addImageBackGround();
 		titleLabel = new JLabel("Anime Database");
-		// informationSelectedListener();
 		populateListOfTableArray();
-		entitiesSubSearch = new ArrayList<>();
 		tableList = new JComboBox<>(ListOfEntities.toArray());
 		searchBarTextField = new JTextField();
 		searchButton = new JButton("Search");
@@ -130,8 +125,8 @@ public class MainMenuGUI extends JPanel
 		linkEntitesToSearch.put("Season", seasonSearch);
 		linkEntitesToSearch.put("Person", personSearch);
 		linkEntitesToSearch.put("Studio", studioSearch);
-		searchBy = new JComboBox<String>(linkEntitesToSearch.get(tableList.getSelectedItem()
-				.toString()));
+		searchBy = new JComboBox<String>(linkEntitesToSearch.get(tableList
+				.getSelectedItem().toString()));
 		
 		selectedItemPictureLabel = new JLabel();
 		selectedItemInfoLabel = new JLabel();
