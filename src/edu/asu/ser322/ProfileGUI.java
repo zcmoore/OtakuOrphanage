@@ -29,28 +29,28 @@ public class ProfileGUI extends JPanel
 {
 	private JLabel imageOfUser;
 	public JLabel userNameLabel;
-	
+
 	private JTable userWatchTable;
 	private JScrollPane scp;
-	
+
 	private JButton loadButton;
 	private JButton backButton;
 	private JButton deleteAccount;
 	private BufferedImage img;
-	
+
 	private List<User> searchWatches;
 	private DefaultTableModel tableModel;
 	Vector<String> columnNames = new Vector<String>();
 	Vector<Vector<String>> rowValues = new Vector<Vector<String>>();
-	
+
 	Client client;
-	
+
 	public ProfileGUI(Client client)
 	{
 		this.client = client;
 		init();
 	}
-	
+
 	public void init()
 	{
 		setOpaque(false);
@@ -58,20 +58,20 @@ public class ProfileGUI extends JPanel
 		layout();
 		imageOfUser = new JLabel();
 		userNameLabel = new JLabel();
-		
+
 		tableModel = new DefaultTableModel();
 		userWatchTable = new JTable(tableModel);
 		scp = new JScrollPane(userWatchTable);
-		
+
 		loadButton = new JButton("Load");
 		backButton = new JButton("Back");
 		deleteAccount = new JButton("Delete Account");
-		
+
 		columnNames.add("Series Name");
 		columnNames.add("Season Number");
 		columnNames.add("Episode Number");
 		tableModel.setColumnIdentifiers(columnNames);
-		
+
 		deleteAccount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
@@ -88,10 +88,10 @@ public class ProfileGUI extends JPanel
 				else if (reply == JOptionPane.NO_OPTION)
 				{
 				}
-				
+
 			}
 		});
-		
+
 		loadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
@@ -109,33 +109,33 @@ public class ProfileGUI extends JPanel
 				tableModel.setDataVector(rowValues, columnNames);
 			}
 		});
-		
+
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
 				client.showMainMenu();
 			}
 		});
-		
+
 		scp.setBounds(325, 100, 600, 300);
 		add(scp);
-		
+
 		loadButton.setBounds(597, 460, 80, 30);
 		add(loadButton);
-		
+
 		imageOfUser.setBounds(900, 580, 150, 75);
 		add(imageOfUser);
-		
+
 		userNameLabel.setBounds(500, 30, 300, 75);
 		add(userNameLabel);
-		
+
 		backButton.setBounds(1100, 580, 80, 30);
 		add(backButton);
-		
+
 		deleteAccount.setBounds(30, 580, 150, 30);
 		add(deleteAccount);
 	}
-	
+
 	public void setTextStyle(String currentUser)
 	{
 		String usernameStyle = "<html>" + "<font size=+3><font color=#00ff00>"
@@ -143,18 +143,18 @@ public class ProfileGUI extends JPanel
 		this.userNameLabel.setText(usernameStyle);
 		repaint();
 	}
-	
+
 	public void setPictureOfSelectedItem(String picturePath)
 	{
 		ImageIcon icon = createImageIcon(picturePath);
 		imageOfUser.setIcon(icon);
 	}
-	
+
 	public ImageIcon createImageIcon(String path)
 	{
 		java.net.URL imageURL = MainMenuGUI.class.getResource(path);
 		ImageIcon returnIcon;
-		
+
 		if (imageURL != null)
 		{
 			returnIcon = new ImageIcon(imageURL);
@@ -164,15 +164,13 @@ public class ProfileGUI extends JPanel
 			System.err.println("Couldn't find file: " + path);
 			returnIcon = null;
 		}
-		
+
 		return returnIcon;
 	}
-	
+
 	public void layout()
-	{
-		
-	}
-	
+	{}
+
 	public void addImageBackGround()
 	{
 		try
@@ -188,7 +186,7 @@ public class ProfileGUI extends JPanel
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	protected void paintComponent(Graphics g)
 	{

@@ -12,6 +12,10 @@ import edu.asu.ser322.data.model.Franchise;
 
 /**
  * 
+ * This dao will allow for the connections between the database and the GUI, 
+ * here is where the Queries are made and the returned as either booleans
+ * or linkedlist or and object into a model
+ * 
  * @author Benjamin Paothatat
  *
  */

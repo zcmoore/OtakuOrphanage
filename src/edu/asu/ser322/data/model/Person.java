@@ -2,6 +2,8 @@ package edu.asu.ser322.data.model;
 
 /**
  * 
+ * Model of Persons
+ * 
  * @author Benjamin Paothatat
  *
  */

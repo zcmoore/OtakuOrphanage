@@ -11,19 +11,22 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 /**
  * 
+ * Login page Panel
+ * to activate a session for the current user being logged in
  * 
  * @author Benjamin Paothatat
  * @author Cuahuctemoc Osorio
  * @author Moore, Zachary
  */
 @SuppressWarnings("serial")
-public class LoginGUI extends JPanel // implements ActionListener
+public class LoginGUI extends JPanel
 {
 	private JLabel animeDatabaseLogin;
 	private JLabel userLabel;
@@ -39,15 +42,16 @@ public class LoginGUI extends JPanel // implements ActionListener
 	Client client;
 	MainMenuGUI mainMenu;
 	
-	// protected GroupLayout layout = new GroupLayout(this);
-	
 	public LoginGUI(Client client)
 	{
 		this.client = client;
 		init();
 		layout();
 	}
-	
+	/**
+	 * this will initialize each component of what we have
+	 * and give the listeners to the buttons
+	 */
 	private void init()
 	{
 		setOpaque(false);
@@ -80,6 +84,12 @@ public class LoginGUI extends JPanel // implements ActionListener
 					passwordTextField.setText("");
 					client.showMainMenu();
 				}
+				else
+				{
+					JOptionPane.showMessageDialog(client,
+							"This is not the correct login Information, please try again",
+							"Wrong Credentials", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		});
 		
@@ -91,6 +101,9 @@ public class LoginGUI extends JPanel // implements ActionListener
 		});
 	}
 	
+	/**
+	 * this sets the layout of the Login page.
+	 */
 	public void layout()
 	{
 		setLayout(null);
@@ -117,6 +130,9 @@ public class LoginGUI extends JPanel // implements ActionListener
 		add(registerButton);
 	}
 	
+	/**
+	 * this will load the image into a buffer which will be used to be the back ground
+	 */
 	public void addImageBackGround()
 	{
 		try
@@ -133,6 +149,9 @@ public class LoginGUI extends JPanel // implements ActionListener
 		}
 	}
 	
+	/**
+	 * This will paint what is in the buffer to the background of the Panel
+	 */
 	@Override
 	protected void paintComponent(Graphics g)
 	{

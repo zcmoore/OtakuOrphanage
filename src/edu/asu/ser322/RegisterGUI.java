@@ -25,6 +25,9 @@ import edu.asu.ser322.data.model.User;
 
 /**
  *
+ *Register Panel
+ *This will add a user to the database and allow them to start a session
+ *
  * @author Cuahuc
  * @author Moore, Zachary
  *
@@ -56,6 +59,11 @@ public class RegisterGUI extends JPanel
 		layout();
 	}
 	
+	
+	/**
+	 * this initializes the components of what is being used, and adds
+	 * action listeners to the buttons
+	 */
 	private void init()
 	{
 		Font terrorFont;
@@ -154,6 +162,9 @@ public class RegisterGUI extends JPanel
 		});
 	}
 	
+	/**
+	 * this will set the layout of the component that are being used
+	 */
 	public void layout()
 	{
 		setLayout(null);
@@ -186,6 +197,10 @@ public class RegisterGUI extends JPanel
 		add(backToLogin);
 	}
 	
+	/**
+	 * this grabs the image that will be used in the background 
+	 * and places into a buffer
+	 */
 	public void addImageBackGround()
 	{
 		try
@@ -202,6 +217,9 @@ public class RegisterGUI extends JPanel
 		}
 	}
 	
+	/**
+	 * Grabs image from the buffer and paints into the background
+	 */
 	@Override
 	protected void paintComponent(Graphics g)
 	{
