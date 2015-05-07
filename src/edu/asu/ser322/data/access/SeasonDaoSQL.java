@@ -267,7 +267,10 @@ public class SeasonDaoSQL implements SeasonDao
 	@Override
 	public List<Season> seasonsByGenre(String genre)
 	{
-		String sql = "SELECT * FROM Seasons WHERE Genre=?";
+		String sql = "SELECT * FROM Seasons seasons WHERE seasons.SeriesName In"
+				+ "(SELECT Series FROM GenreMap map WHERE "
+				+ "seasons.SeasonNumber = map.SeasonNumber AND "
+				+ "seasons.SeriesName = map.Series AND " + "map.Genre = ?)";
 		List<Season> seasons = new LinkedList<Season>();
 		
 		try (Connection connection = createDatabaseConnection();
