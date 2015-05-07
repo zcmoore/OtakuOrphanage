@@ -16,6 +16,10 @@ import edu.asu.ser322.data.model.Season;
 
 /**
  * 
+ * This dao will allow for the connections between the database and the GUI, 
+ * here is where the Queries are made and the returned as either booleans
+ * or linkedlist or a hashmap of archetype and number of roles
+ * 
  * @author Benjamin Paothatat
  * 
  */

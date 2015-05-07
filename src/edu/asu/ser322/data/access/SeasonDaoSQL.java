@@ -14,6 +14,14 @@ import java.util.List;
 
 import edu.asu.ser322.data.model.Season;
 
+/**
+ * This dao will allow for the connections between the database and the GUI, 
+ * here is where the Queries are made and the returned as either booleans
+ * or linkedlist or object as a model or a date object 
+ * 
+ * @author Benjamin 
+ *
+ */
 public class SeasonDaoSQL implements SeasonDao
 {
 	@Override
