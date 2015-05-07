@@ -1,5 +1,10 @@
 package edu.asu.ser322;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -26,19 +31,22 @@ public class UpDateDatabseGUI extends JPanel
 	private JTextField sixthItemField;
 	
 	private JButton addItemToDatabase;
+	private List<String> listOfEntitiesToModify;
 	
 	Client client;
 	
 	public UpDateDatabseGUI(Client client)
 	{
 		this.client = client;
+		this.listOfEntitiesToModify = new ArrayList<>();
 		init();
+		layout();
 	}
 	
 	public void init()
 	{
-		boxEntities = new JComboBox();
-		
+		populateEntities();
+		boxEntities = new JComboBox(listOfEntitiesToModify.toArray());
 		TitleOfPage = new JLabel();
 		prompt = new JLabel();
 		
@@ -57,23 +65,87 @@ public class UpDateDatabseGUI extends JPanel
 		sixthItemField = new JTextField();
 		
 		addItemToDatabase = new JButton();
+		
+		boxEntities.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				setTextStyle(boxEntities.getSelectedItem().toString());
+				repaint();
+			}
+			
+		});
+		
+		add(TitleOfPage);
+		add(boxEntities);
+		add(primaryKey);
+		add(secondItem);
+		add(thirdItem);
+		add(fourthItem);
+		add(fifthItem);
+		add(sixthItem);
+		
+		add(primaryKeyField);
+		add(secondItemField);
+		add(thirdItemField);
+		add(fourthItemField);
+		add(fifthItemField);
+		add(sixthItemField);
+		
+		
+		
 	}
 	
 	public void layout()
 	{
 		setLayout(null);
-		
+	
 		TitleOfPage.setBounds(600,20,300,80);
-		add(TitleOfPage);
+		boxEntities.setBounds(810, 60, 150, 30);
+		primaryKey.setBounds(810, 100, 150, 30);
+		secondItem.setBounds(810, 150, 150, 30);
+		thirdItem.setBounds(810, 200, 150, 30);
+		fourthItem.setBounds(810, 250, 150, 30);
+		fifthItem.setBounds(810, 300, 150, 30);
+		sixthItem.setBounds(810, 350, 150, 30);
+		
+		primaryKeyField.setBounds(970, 60, 150, 30);
+		secondItemField.setBounds(970, 150, 150, 30);
+		
 	}
 	
-	public void setTextStyle()
+	public void setTextStyle(String itemSelected)
 	{
-		;
+		if(itemSelected.equals("Characters"))
+		{
+			primaryKey.setText("Name");
+			secondItem.setText("Gender");
+			thirdItem.setText("archetype");
+			fourthItem.setText("Hair Color");
+			fifthItem.setText("Birth Date");
+		}
+		else if(itemSelected.equals("Seasons"))
+		{
+			primaryKey.setText("Series Name");
+			secondItem.setText("Season Number");
+			thirdItem.setText("Air Date");
+			fourthItem.setText("Date Finished");
+			fifthItem.setText("Genres");
+			sixthItem.setText("Appropriateness");
+			
+			
+		}
+	}
+	
+	public void insertIntoTable()
+	{
+		
 	}
 	
 	public void populateEntities()
 	{
-		boxEntities.addItem("");
+		listOfEntitiesToModify.add("");
+		listOfEntitiesToModify.add("Characters");
+		listOfEntitiesToModify.add("Seasons");
 	}
+	
 }
