@@ -10,19 +10,22 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import edu.asu.ser322.data.access.DAOCollection;
 import edu.asu.ser322.data.model.User;
 
 public class ProfileGUI extends JPanel
 {
 	private JLabel imageOfUser;
-	private JLabel userNameLabel;
+	public JLabel userNameLabel;
 	
 	private JTable userWatchTable;
 	private JScrollPane scp;
@@ -30,6 +33,7 @@ public class ProfileGUI extends JPanel
 	private JTextField searchBarField;
 	private JButton searchButton;
 	private JButton backButton;
+	private JButton deleteAccount;
 	private BufferedImage img;
 	
 	private List<User> searchWatches;
@@ -44,6 +48,9 @@ public class ProfileGUI extends JPanel
 	
 	public void init()
 	{
+		setOpaque(false);
+		addImageBackGround();
+		layout();
 		imageOfUser = new JLabel();
 		userNameLabel = new JLabel();
 		
@@ -51,38 +58,112 @@ public class ProfileGUI extends JPanel
 		scp = new JScrollPane(userWatchTable);
 		
 		searchBarField = new JTextField();
-		searchButton = new JButton();
-		backButton = new JButton();
-	}
-	
-	public void buttonActions()
-	{
+		searchButton = new JButton("Search");
+		backButton = new JButton("Back");
+		deleteAccount = new JButton("Delete Account");
+		
+		deleteAccount.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				int reply = JOptionPane.showConfirmDialog(client,
+						"Are you sure you want to delete your account?", "Delete User",
+						JOptionPane.YES_NO_OPTION);
+				if (reply == JOptionPane.YES_OPTION)
+				{
+					boolean check = DAOCollection.getUserDao().deleteUser(
+							Session.getActiveUser().getUsername());
+					Session.logout();
+					client.showLogin();
+				}
+				else if (reply == JOptionPane.NO_OPTION)
+				{
+				}
+				
+			}
+		});
+		
+		searchButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				;
+			}
+		});
+		
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
 				client.showMainMenu();
 			}
-			
 		});
+		
+		scp.setBounds(325, 10, 600, 300);
+		add(scp);
+		
+		searchBarField.setBounds(500, 350, 200, 30);
+		add(searchBarField);
+		
+		searchButton.setBounds(700, 350, 80, 30);
+		add(searchButton);
+		
+		imageOfUser.setBounds(900, 580, 150, 75);
+		add(imageOfUser);
+		
+		userNameLabel.setBounds(30, 30, 150, 75);
+		add(userNameLabel);
+		
+		backButton.setBounds(1100, 580, 80, 30);
+		add(backButton);
+		
+		deleteAccount.setBounds(30, 580, 150, 30);
+		add(deleteAccount);
+	}
+	
+	public void setTextStyle(String currentUser)
+	{
+		String usernameStyle = "<html>\n" + "<font size=+2><font color=green>"
+				+ currentUser + "</font>";
+		this.userNameLabel.setText(usernameStyle);
+	}
+	
+	public void setPictureOfSelectedItem(String picturePath)
+	{
+		ImageIcon icon = createImageIcon(picturePath);
+		imageOfUser.setIcon(icon);
+	}
+	
+	public ImageIcon createImageIcon(String path)
+	{
+		java.net.URL imageURL = MainMenuGUI.class.getResource(path);
+		ImageIcon returnIcon;
+		
+		if (imageURL != null)
+		{
+			returnIcon = new ImageIcon(imageURL);
+		}
+		else
+		{
+			System.err.println("Couldn't find file: " + path);
+			returnIcon = null;
+		}
+		
+		return returnIcon;
 	}
 	
 	public void layout()
 	{
-		//imageOfUser.setBounds(30, 30, 100, 200);
-		//add(imageOfUser);
-		
-		//userNameLabel.setBounds(150, 30, 150, 80);
-		//add(userNameLabel);
-		
-		scp.setBounds(30, 30, 900, 450);
-		add(scp);
-		
-		//searchBarField.setBounds(970, 60, 200, 30);
-		//add(searchBarField);
-		
-		//searchButton.setBounds(1180, 60, 80, 30);
-		//add(searchButton);
+		/*
+		 * scp.setBounds(325, 10, 600, 300); add(scp);
+		 * 
+		 * searchBarField.setBounds(500, 350, 200, 30); add(searchBarField);
+		 * 
+		 * searchButton.setBounds(700, 350, 80, 30); add(searchButton);
+		 * 
+		 * imageOfUser.setBounds(900, 580, 150, 75); add(imageOfUser);
+		 * 
+		 * userNameLabel.setBounds(1100, 580, 150, 75); add(userNameLabel);
+		 */
 	}
+	
 	public void addImageBackGround()
 	{
 		try
