@@ -12,7 +12,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -20,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -30,10 +33,11 @@ import edu.asu.ser322.data.access.DAOCollection;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Franchise;
-import edu.asu.ser322.data.model.Gender;
 import edu.asu.ser322.data.model.Person;
 import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.Studio;
+import edu.asu.ser322.data.model.User;
+import edu.asu.ser322.data.model.Gender;
 
 /**
  * 
@@ -50,13 +54,15 @@ public class MainMenuGUI extends JPanel
 	private JLabel accountInfoLabel;
 	private JLabel selectedItemPictureLabel;
 	private JLabel selectedItemInfoLabel;
-	private JComboBox<Object> tableList;
-	private JComboBox<String> searchBy;
+	private JComboBox tableList;
+	private JComboBox searchBy;
+	private JComboBox differentPeople;
 	private JTextField searchBarTextField;
 	private JButton profileButton;
 	private JButton searchButton;
 	private JButton logoutButton;
 	private JButton goToUpdateButton;
+	private JButton nextPerson;
 	// private JList titleHolderList;
 	private JTable results;
 	private List<String> ListOfEntities;
@@ -111,8 +117,8 @@ public class MainMenuGUI extends JPanel
 		profileGUI = new ProfileGUI(this.client);
 		results = new JTable(tableModel);
 		spTable = new JScrollPane(results);
-		// columnNames = new Vector<String>();
-		// rowValues = new Vector<String>();
+		nextPerson = new JButton("Next Person");
+		nextPerson.setVisible(false);
 		
 		chacacterSerach = new String[] { "By Name", "By Age", "By Archetype",
 				"By Gender", "By Hair Color", "List All" };
@@ -120,7 +126,8 @@ public class MainMenuGUI extends JPanel
 		episodeSearch = new String[] { "By Name", "List All" };
 		seasonSearch = new String[] { "By Series Name", "By Genre",
 				"By Year Of Air Date", "List All" };
-		personSearch = new String[] { "By Name", "List All" };
+		personSearch = new String[] { "By Name", "Seasons Acted In", "Played Character",
+				"Archetype Distribution", "List All" };
 		studioSearch = new String[] { "By Name", "List All" };
 		linkEntitesToSearch = new Hashtable<String, String[]>();
 		linkEntitesToSearch.put("Character", chacacterSerach);
@@ -129,11 +136,22 @@ public class MainMenuGUI extends JPanel
 		linkEntitesToSearch.put("Season", seasonSearch);
 		linkEntitesToSearch.put("Person", personSearch);
 		linkEntitesToSearch.put("Studio", studioSearch);
-		searchBy = new JComboBox<>(linkEntitesToSearch.get(tableList.getSelectedItem()
+		searchBy = new JComboBox(linkEntitesToSearch.get(tableList.getSelectedItem()
 				.toString()));
-		
+		differentPeople = new JComboBox();
+		// differentPeople.setVisible(false);
 		selectedItemPictureLabel = new JLabel();
 		selectedItemInfoLabel = new JLabel();
+		
+		// TODO: Get action lister to work
+		searchBy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				differentPeople.removeAllItems();
+				
+				repaint();
+			}
+		});
 		
 		tableList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -206,16 +224,14 @@ public class MainMenuGUI extends JPanel
 				client.showProfile();
 			}
 		});
-		
-	}
-	
-	public void layout()
-	{
 		titleLabel.setBounds(600, 20, 300, 30);
 		add(titleLabel);
 		
 		searchBy.setBounds(810, 100, 150, 30);
 		add(searchBy);
+		
+		differentPeople.setBounds(970, 100, 200, 30);
+		add(differentPeople);
 		
 		tableList.setBounds(810, 60, 150, 30);
 		add(tableList);
@@ -244,6 +260,11 @@ public class MainMenuGUI extends JPanel
 		
 		goToUpdateButton.setBounds(140, 30, 200, 30);
 		add(goToUpdateButton);
+	}
+	
+	public void layout()
+	{
+		
 	}
 	
 	public void clearAllVectors()
@@ -321,30 +342,24 @@ public class MainMenuGUI extends JPanel
 		}
 	}
 	
-	private Vector<String> parseCharacter(Character character)
+	private void parseCharacter(Character character)
 	{
-		Vector<String> vector = new Vector<>();
+		Vector vector = new Vector<String>();
 		String name = character.getName();
 		String gender = character.getGender().toString();
 		String archetype = character.getArchetype();
 		String hairColor = character.getHairColor();
-		String dob = "";
-		Date dateOfBirth = character.getBirthDate();
-		if (dateOfBirth != null)
-		{
-			dob = parseDate(dateOfBirth);
-		}
+		String age = Integer.toString(character.getAge());
 		
 		vector.add(name);
 		vector.add(gender);
 		vector.add(archetype);
 		vector.add(hairColor);
-		vector.add(dob);
+		vector.add(age);
 		rowValues.add(vector);
-		return vector;
 	}
 	
-	private Vector<String> parseEpisode(Episode episode)
+	private void parseEpisode(Episode episode)
 	{
 		vector = new Vector<String>();
 		String seriesName = episode.getSeriesName();
@@ -367,12 +382,12 @@ public class MainMenuGUI extends JPanel
 		vector.add(artStyle);
 		vector.add(appropriateness);
 		rowValues.add(vector);
-		return vector;
+		// return vector;
 	}
 	
-	private Vector<String> parseSeason(Season season)
+	private void parseSeason(Season season)
 	{
-		Vector<String> vector = new Vector<>();
+		Vector vector = new Vector<String>();
 		String seriesName = season.getSeriesName();
 		String seasonNumber = Integer.toString(season.getSeasonNumber());
 		String showName = season.getName();
@@ -395,7 +410,7 @@ public class MainMenuGUI extends JPanel
 		vector.add(finishDate);
 		vector.add(appropriateness);
 		rowValues.add(vector);
-		return vector;
+		// return vector;
 	}
 	
 	private void characterSearches()
@@ -434,7 +449,7 @@ public class MainMenuGUI extends JPanel
 		columnNames.add("Gender");
 		columnNames.add("Archetype");
 		columnNames.add("Hair Color");
-		columnNames.add("Birthday Day");
+		columnNames.add("Age");
 		tableModel.setColumnIdentifiers(columnNames);
 		
 		for (int i = 0; i < searchResultsOfCharacter.size(); i++)
@@ -566,27 +581,146 @@ public class MainMenuGUI extends JPanel
 		{
 			searchResultsOfPerson = DAOCollection.getPeopleDao().findPerson(
 					searchBarTextField.getText());
+			columnNames.add("PersonID");
+			columnNames.add("Name");
+			
+			tableModel.setColumnIdentifiers(columnNames);
+			
+			for (Person person : searchResultsOfPerson)
+			{
+				Vector vector = new Vector<String>();
+				String personId = Integer.toString(person.getID());
+				String name = person.getName();
+				
+				vector.add(personId);
+				vector.add(name);
+				
+				rowValues.add(vector);
+			}
+		}
+		else if (searchBy.getSelectedItem().toString().equals("Seasons Acted In"))
+		{
+			columnNames.add("SeriesName");
+			columnNames.add("SeasonNumber");
+			columnNames.add("ShowName");
+			columnNames.add("AirDate");
+			columnNames.add("FinishDate");
+			columnNames.add("Appropriateness");
+			tableModel.setColumnIdentifiers(columnNames);
+			searchResultsOfPerson = DAOCollection.getPeopleDao().findPerson(
+					searchBarTextField.getText());
+			
+			if (searchResultsOfPerson.size() != 0)
+			{
+				JOptionPane
+						.showMessageDialog(
+								client,
+								"Multiple persons' with the same name!!!\nEach person is seperated by ======.",
+								"Multiple people with the same name",
+								JOptionPane.WARNING_MESSAGE);
+				
+				for (Person person : searchResultsOfPerson)
+				{
+					searchResultsOfSeason = DAOCollection.getPeopleDao()
+							.getSeasonsActedBy(person);
+					for (Season season : searchResultsOfSeason)
+					{
+						parseSeason(season);
+					}
+					seperator(6);
+				}
+			}
+		}
+		else if (searchBy.getSelectedItem().toString().equals("Played Character"))
+		{
+			columnNames.add("Name");
+			columnNames.add("Gender");
+			columnNames.add("Archetype");
+			columnNames.add("Hair Color");
+			columnNames.add("Age");
+			tableModel.setColumnIdentifiers(columnNames);
+			searchResultsOfPerson = DAOCollection.getPeopleDao().findPerson(
+					searchBarTextField.getText());
+			if (searchResultsOfPerson.size() != 0)
+			{
+				if (searchResultsOfPerson.size() > 1)
+				{
+					JOptionPane
+							.showMessageDialog(
+									client,
+									"Multiple persons' with the same name!!!\nEach person is seperated by ======.",
+									"Multiple people with the same name",
+									JOptionPane.WARNING_MESSAGE);
+				}
+				
+				for (Person person : searchResultsOfPerson)
+				{
+					searchResultsOfCharacter = DAOCollection.getPeopleDao()
+							.getCharactersActedBy(person);
+					for (Character character : searchResultsOfCharacter)
+					{
+						parseCharacter(character);
+					}
+					seperator(5);
+				}
+			}
+			
+		}
+		else if (searchBy.getSelectedItem().toString().equals("Archetype Distribution"))
+		{
+			columnNames.add("Archetype");
+			columnNames.add("Number of instances of being that Archetype");
+			tableModel.setColumnIdentifiers(columnNames);
+			searchResultsOfPerson = DAOCollection.getPeopleDao().findPerson(
+					searchBarTextField.getText());
+			if (searchResultsOfPerson.size() != 0)
+			{
+				if (searchResultsOfPerson.size() > 1)
+				{
+					JOptionPane
+							.showMessageDialog(
+									client,
+									"Multiple persons' with the same name!!!\nEach person is seperated by ======.",
+									"Multiple people with the same name",
+									JOptionPane.WARNING_MESSAGE);
+				}
+				for (Person person : searchResultsOfPerson)
+				{
+					Map<String, Integer> countingArchetype = DAOCollection.getPeopleDao()
+							.getArchetypeDistributionOf(person);
+					for(String key: countingArchetype.keySet())
+					{
+					    vector = new Vector<String>();
+					    String insertedKey = key;
+					    String count = Integer.toString(countingArchetype.get(key));
+					    vector.add(insertedKey);
+					    vector.add(count);
+					    rowValues.add(vector);
+					}
+
+					seperator(2);
+				}
+			}
 		}
 		else
 		{
 			searchResultsOfPerson = DAOCollection.getPeopleDao().listAll();
-		}
-		
-		columnNames.add("PersonID");
-		columnNames.add("Name");
-		
-		tableModel.setColumnIdentifiers(columnNames);
-		
-		for (Person person : searchResultsOfPerson)
-		{
-			Vector<String> vector = new Vector<>();
-			String personId = Integer.toString(person.getID());
-			String name = person.getName();
+			columnNames.add("PersonID");
+			columnNames.add("Name");
 			
-			vector.add(personId);
-			vector.add(name);
+			tableModel.setColumnIdentifiers(columnNames);
 			
-			rowValues.add(vector);
+			for (Person person : searchResultsOfPerson)
+			{
+				Vector vector = new Vector<String>();
+				String personId = Integer.toString(person.getID());
+				String name = person.getName();
+				
+				vector.add(personId);
+				vector.add(name);
+				
+				rowValues.add(vector);
+			}
 		}
 		
 		repaint();
@@ -622,9 +756,9 @@ public class MainMenuGUI extends JPanel
 		tableModel.setDataVector(rowValues, columnNames);
 	}
 	
-	private Vector<String> parseStudio(Studio studio)
+	private void parseStudio(Studio studio)
 	{
-		Vector<String> vector = new Vector<>();
+		Vector vector = new Vector<String>();
 		String studioName = studio.getName();
 		String studioStartDate = "";
 		String studioCloseDate = "";
@@ -643,7 +777,7 @@ public class MainMenuGUI extends JPanel
 		vector.add(studioCloseDate);
 		
 		rowValues.add(vector);
-		return vector;
+		// return vector;
 	}
 	
 	private String parseDate(Date date)
@@ -656,4 +790,14 @@ public class MainMenuGUI extends JPanel
 		return result;
 	}
 	
+	private void seperator(int length)
+	{
+		vector = new Vector<String>();
+		String dashes = "=============";
+		for (int i = 0; i < length; i++)
+		{
+			vector.add(dashes);
+		}
+		rowValues.add(vector);
+	}
 }
