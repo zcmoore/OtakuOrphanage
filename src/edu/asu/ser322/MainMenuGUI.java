@@ -56,14 +56,12 @@ public class MainMenuGUI extends JPanel
 	private JLabel selectedItemInfoLabel;
 	private JComboBox tableList;
 	private JComboBox searchBy;
-	private JComboBox differentPeople;
 	private JTextField searchBarTextField;
 	private JButton profileButton;
 	private JButton searchButton;
 	private JButton logoutButton;
 	private JButton goToUpdateButton;
 	private JButton nextPerson;
-	// private JList titleHolderList;
 	private JTable results;
 	private List<String> ListOfEntities;
 	private List<String> entitiesSubSearch;
@@ -138,20 +136,9 @@ public class MainMenuGUI extends JPanel
 		linkEntitesToSearch.put("Studio", studioSearch);
 		searchBy = new JComboBox(linkEntitesToSearch.get(tableList.getSelectedItem()
 				.toString()));
-		differentPeople = new JComboBox();
-		// differentPeople.setVisible(false);
+		
 		selectedItemPictureLabel = new JLabel();
 		selectedItemInfoLabel = new JLabel();
-		
-		// TODO: Get action lister to work
-		searchBy.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				differentPeople.removeAllItems();
-				
-				repaint();
-			}
-		});
 		
 		tableList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -229,9 +216,6 @@ public class MainMenuGUI extends JPanel
 		
 		searchBy.setBounds(810, 100, 150, 30);
 		add(searchBy);
-		
-		differentPeople.setBounds(970, 100, 200, 30);
-		add(differentPeople);
 		
 		tableList.setBounds(810, 60, 150, 30);
 		add(tableList);
@@ -688,16 +672,16 @@ public class MainMenuGUI extends JPanel
 				{
 					Map<String, Integer> countingArchetype = DAOCollection.getPeopleDao()
 							.getArchetypeDistributionOf(person);
-					for(String key: countingArchetype.keySet())
+					for (String key : countingArchetype.keySet())
 					{
-					    vector = new Vector<String>();
-					    String insertedKey = key;
-					    String count = Integer.toString(countingArchetype.get(key));
-					    vector.add(insertedKey);
-					    vector.add(count);
-					    rowValues.add(vector);
+						vector = new Vector<String>();
+						String insertedKey = key;
+						String count = Integer.toString(countingArchetype.get(key));
+						vector.add(insertedKey);
+						vector.add(count);
+						rowValues.add(vector);
 					}
-
+					
 					seperator(2);
 				}
 			}
