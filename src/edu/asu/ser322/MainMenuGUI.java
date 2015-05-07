@@ -77,6 +77,7 @@ public class MainMenuGUI extends JPanel
 	private List<Studio> searchResultsOfStudio;
 	private DefaultTableModel tableModel;
 	JScrollPane spTable;
+	ProfileGUI profileGUI;
 	Vector<String> columnNames = new Vector<String>();
 	Vector<Vector<String>> rowValues = new Vector<Vector<String>>();
 	Vector<String> vector = new Vector<String>();
@@ -107,6 +108,7 @@ public class MainMenuGUI extends JPanel
 		profileButton = new JButton("Profile");
 		goToUpdateButton = new JButton("Update Database");
 		tableModel = new DefaultTableModel();
+		profileGUI = new ProfileGUI(this.client);
 		results = new JTable(tableModel);
 		spTable = new JScrollPane(results);
 		// columnNames = new Vector<String>();
@@ -201,6 +203,8 @@ public class MainMenuGUI extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				//System.out.println(Session.getActiveUser().getUsername());
+				profileGUI.setTextStyle(Session.getActiveUser().getUsername());
 				client.showProfile();
 			}
 		});
