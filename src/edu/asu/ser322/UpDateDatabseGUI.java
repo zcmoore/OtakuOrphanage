@@ -31,6 +31,7 @@ public class UpDateDatabseGUI extends JPanel
 	private JTextField sixthItemField;
 	
 	private JButton addItemToDatabase;
+	private JButton backButton;
 	private List<String> listOfEntitiesToModify;
 	
 	Client client;
@@ -72,6 +73,14 @@ public class UpDateDatabseGUI extends JPanel
 		sixthItemField = new JTextField();
 		
 		addItemToDatabase = new JButton();
+		backButton = new JButton("back");
+		
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				client.showMainMenu();
+			}
+		});
 		
 		boxEntities.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -89,6 +98,7 @@ public class UpDateDatabseGUI extends JPanel
 		add(fourthItem);
 		add(fifthItem);
 		add(sixthItem);
+		add(backButton);
 		
 		add(primaryKeyField);
 		add(secondItemField);
@@ -110,6 +120,7 @@ public class UpDateDatabseGUI extends JPanel
 		fourthItem.setBounds(810, 250, 150, 30);
 		fifthItem.setBounds(810, 300, 150, 30);
 		sixthItem.setBounds(810, 350, 150, 30);
+		backButton.setBounds(1100, 580, 80, 30);
 		
 		primaryKeyField.setBounds(970, 100, 150, 30);
 		secondItemField.setBounds(970, 150, 150, 30);
@@ -128,12 +139,14 @@ public class UpDateDatabseGUI extends JPanel
 			thirdItem.setText("archetype");
 			fourthItem.setText("Hair Color");
 			fifthItem.setText("Birth Date");
+			sixthItem.setText("");
 			
 			primaryKeyField.setVisible(true);
 			secondItemField.setVisible(true);
 			thirdItemField.setVisible(true);
 			fourthItemField.setVisible(true);
 			fifthItemField.setVisible(true);
+			sixthItemField.setVisible(false);
 		}
 		else if (itemSelected.equals("Seasons"))
 		{
@@ -143,6 +156,7 @@ public class UpDateDatabseGUI extends JPanel
 			fourthItem.setText("Date Finished");
 			fifthItem.setText("Genres");
 			sixthItem.setText("Appropriateness");
+			
 			primaryKeyField.setVisible(true);
 			secondItemField.setVisible(true);
 			thirdItemField.setVisible(true);
@@ -150,6 +164,22 @@ public class UpDateDatabseGUI extends JPanel
 			fifthItemField.setVisible(true);
 			sixthItemField.setVisible(true);
 			
+		}
+		else if(itemSelected.equals(""))
+		{
+			primaryKey.setText("");
+			secondItem.setText("");
+			thirdItem.setText("");
+			fourthItem.setText("");
+			fifthItem.setText("");
+			sixthItem.setText("");
+			
+			primaryKeyField.setVisible(false);
+			secondItemField.setVisible(false);
+			thirdItemField.setVisible(false);
+			fourthItemField.setVisible(false);
+			fifthItemField.setVisible(false);
+			sixthItemField.setVisible(false);
 		}
 	}
 	
