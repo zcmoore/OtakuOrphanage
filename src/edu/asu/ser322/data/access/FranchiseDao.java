@@ -9,6 +9,7 @@ import edu.asu.ser322.data.model.Franchise;
  * persistent store.
  * 
  * @author Benjamin Paothatat
+ * @author Moore, Zachary
  *
  */
 public interface FranchiseDao
@@ -23,15 +24,13 @@ public interface FranchiseDao
 	public boolean addFranchise(Franchise franchise);
 	
 	/**
-	 * Updates a franchise in the persistent store
+	 * Deletes a franchise with the specified name
 	 * 
-	 * @param franchise
-	 *            Target to update.
-	 * @return true if the franchise was updated successfully. False if the update failed,
-	 *         if the specified franchise does not exist in the persistent store, or if
-	 *         the user is invalid.
+	 * @param name
+	 *            Target franchise's name
+	 * @return true if the deletion was successful. False otherwise
 	 */
-	public boolean updateFranchise(Franchise franchise);
+	public boolean deleteFranchise(String name);
 	
 	/**
 	 * Finds the franchise with the given name, and loads it from the persistent store
@@ -43,14 +42,16 @@ public interface FranchiseDao
 	 */
 	public Franchise findFranchise(String name);
 	
-	/**
-	 * Deletes a franchise with the specified name
-	 * 
-	 * @param name
-	 *            Target franchise's name
-	 * @return true if the deletion was successful. False otherwise
-	 */
-	public boolean deleteFranchise(String name);
+	public List<Franchise> listAll();
 
-	List<Franchise> listAll();
+	/**
+	 * Updates a franchise in the persistent store
+	 * 
+	 * @param franchise
+	 *            Target to update.
+	 * @return true if the franchise was updated successfully. False if the update failed,
+	 *         if the specified franchise does not exist in the persistent store, or if
+	 *         the user is invalid.
+	 */
+	public boolean updateFranchise(Franchise franchise);
 }

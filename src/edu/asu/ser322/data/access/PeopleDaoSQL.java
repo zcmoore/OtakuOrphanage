@@ -21,6 +21,7 @@ import edu.asu.ser322.data.model.Season;
  * or linkedlist or a hashmap of archetype and number of roles
  * 
  * @author Benjamin Paothatat
+ * @author Moore, Zachary
  * 
  */
 public class PeopleDaoSQL implements PeopleDao
@@ -77,22 +78,26 @@ public class PeopleDaoSQL implements PeopleDao
 	}
 	
 	@Override
-	public List<Person> listAll()
+	public Map<String, Integer> getArchetypeDistributionOf(Person person)
 	{
-		String sql = "SELECT * FROM People";
-		List<Person> people = new LinkedList<Person>();
+		// TODO: verify
+		String sql = "SELECT Characters.Archetype AS Archetype, COUNT(Characters.CharacterId) AS NumberOfRoles FROM "
+				+ "ActorAppearances INNER JOIN Characters "
+				+ "ON ActorAppearances.Actor = ? AND ActorAppearances.Character = Characters.CharacterId "
+				+ "GROUP BY Characters.Archetype;";
+		Map<String, Integer> distribution = new HashMap<>();
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
+			statement.setInt(1, person.getID());
 			ResultSet results = statement.executeQuery();
 			
 			while (results.next())
 			{
-				int resultPersonId = results.getInt("PersonID");
-				String resultName = results.getString("Name");
-				Person person = new Person(resultPersonId, resultName);
-				people.add(person);
+				String archetype = results.getString("Archetype");
+				int numberOfRoles = results.getInt("NumberOfRoles");
+				distribution.put(archetype, Integer.valueOf(numberOfRoles));
 			}
 		}
 		catch (Exception exception)
@@ -100,13 +105,38 @@ public class PeopleDaoSQL implements PeopleDao
 			exception.printStackTrace();
 		}
 		
-		return people;
+		return distribution;
 	}
 	
 	@Override
-	public boolean personExists(String name)
+	public List<Character> getCharactersActedBy(Person person)
 	{
-		return !(findPerson(name).isEmpty());
+		String sql = "SELECT * FROM Characters character WHERE EXISTS "
+				+ "(SELECT * FROM ActorAppearances act WHERE "
+				+ "character.CharacterID = act.Character AND act.Actor = ?)";
+		List<Character> characters = new LinkedList<>();
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setInt(1, person.getID());
+			ResultSet results = statement.executeQuery();
+			CharacterDao dao = DAOCollection.getCharacterDao();
+			
+			while (results.next())
+			{
+				int characterID = results.getInt("CharacterID");
+				
+				Character character = dao.findCharacter(characterID);
+				characters.add(character);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return characters;
 	}
 	
 	@Override
@@ -142,26 +172,22 @@ public class PeopleDaoSQL implements PeopleDao
 	}
 	
 	@Override
-	public List<Character> getCharactersActedBy(Person person)
+	public List<Person> listAll()
 	{
-		String sql = "SELECT * FROM Characters character WHERE EXISTS "
-				+ "(SELECT * FROM ActorAppearances act WHERE "
-				+ "character.CharacterID = act.Character AND act.Actor = ?)";
-		List<Character> characters = new LinkedList<>();
+		String sql = "SELECT * FROM People";
+		List<Person> people = new LinkedList<Person>();
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setInt(1, person.getID());
 			ResultSet results = statement.executeQuery();
-			CharacterDao dao = DAOCollection.getCharacterDao();
 			
 			while (results.next())
 			{
-				int characterID = results.getInt("CharacterID");
-				
-				Character character = dao.findCharacter(characterID);
-				characters.add(character);
+				int resultPersonId = results.getInt("PersonID");
+				String resultName = results.getString("Name");
+				Person person = new Person(resultPersonId, resultName);
+				people.add(person);
 			}
 		}
 		catch (Exception exception)
@@ -169,38 +195,13 @@ public class PeopleDaoSQL implements PeopleDao
 			exception.printStackTrace();
 		}
 		
-		return characters;
+		return people;
 	}
 	
 	@Override
-	public Map<String, Integer> getArchetypeDistributionOf(Person person)
+	public boolean personExists(String name)
 	{
-		// TODO: verify
-		String sql = "SELECT Characters.Archetype AS Archetype, COUNT(Characters.CharacterId) AS NumberOfRoles FROM "
-				+ "ActorAppearances INNER JOIN Characters "
-				+ "ON ActorAppearances.Actor = ? AND ActorAppearances.Character = Characters.CharacterId "
-				+ "GROUP BY Characters.Archetype;";
-		Map<String, Integer> distribution = new HashMap<>();
-		
-		try (Connection connection = createDatabaseConnection();
-				PreparedStatement statement = connection.prepareStatement(sql);)
-		{
-			statement.setInt(1, person.getID());
-			ResultSet results = statement.executeQuery();
-			
-			while (results.next())
-			{
-				String archetype = results.getString("Archetype");
-				int numberOfRoles = results.getInt("NumberOfRoles");
-				distribution.put(archetype, Integer.valueOf(numberOfRoles));
-			}
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return distribution;
+		return !(findPerson(name).isEmpty());
 	}
 	
 }

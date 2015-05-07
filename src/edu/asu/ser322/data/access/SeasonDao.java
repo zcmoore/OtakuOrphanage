@@ -22,13 +22,14 @@ public interface SeasonDao
 	public boolean addSeason(Season season);
 	
 	/**
-	 * Updates a season in the persistent store
+	 * Fetch a single season given its series name and season number. No two seasons will
+	 * share the same seasonName and seriesNumber.
 	 * 
-	 * @param season
-	 *            Target to update.
-	 * @return true if the season was updated successfully. False if the update failed
+	 * @param seriesname
+	 * @param seasonnumber
+	 * @return
 	 */
-	public boolean updateSeason(Season season);
+	public Season findSeason(String seriesname, int seasonnumber);
 	
 	/**
 	 * Finds the seasons with the given seriesname, and loads it from the persistent store
@@ -38,6 +39,29 @@ public interface SeasonDao
 	 * @return the a list of seasons, or null if a series cannot be found
 	 */
 	public List<Season> findSeasonsBySeriesName(String seriesname);
+	
+	public List<Season> listAll();
+	
+	public List<String> listSeries();
+	
+	/**
+	 * Remove a season from the persistent store
+	 * 
+	 * @param seriesName
+	 *            , seasonNumber Series data to add. Must be valid
+	 * @return true if the deletion was successfully
+	 */
+	public boolean removeSeason(String seriesName, int seasonNumber);
+	
+	public boolean seasonExists(Season season);
+	
+	/**
+	 * @param seriesName
+	 * @return True if at least one season exists for the given seriesName
+	 */
+	public boolean seasonExists(String seriesName);
+	
+	public boolean seasonExists(String seriesName, int seasonNumber);
 	
 	/**
 	 * Finds the seasons that aired in the specified year and loads them from the
@@ -50,25 +74,6 @@ public interface SeasonDao
 	public List<Season> seasonsByAirYear(int airYear);
 	
 	/**
-	 * Remove a season from the persistent store
-	 * 
-	 * @param seriesName
-	 *            , seasonNumber Series data to add. Must be valid
-	 * @return true if the deletion was successfully
-	 */
-	public boolean removeSeason(String seriesName, int seasonNumber);
-	
-	/**
-	 * Fetch a single season given its series name and season number. No two seasons will
-	 * share the same seasonName and seriesNumber.
-	 * 
-	 * @param seriesname
-	 * @param seasonnumber
-	 * @return
-	 */
-	public Season findSeason(String seriesname, int seasonnumber);
-	
-	/**
 	 * Finds the seasons that consist of a specified genre and loads them from the
 	 * persistent store
 	 * 
@@ -77,19 +82,14 @@ public interface SeasonDao
 	 * @return the a list of seasons, or null if a series cannot be found
 	 */
 	public List<Season> seasonsByGenre(String genre);
-	
-	List<String> listSeries();
-	
-	List<Season> listAll();
-	
-	/**
-	 * @param seriesName
-	 * @return True if at least one season exists for the given seriesName
-	 */
-	boolean seasonExists(String seriesName);
-	
-	boolean seasonExists(String seriesName, int seasonNumber);
 
-	boolean seasonExists(Season season);
+	/**
+	 * Updates a season in the persistent store
+	 * 
+	 * @param season
+	 *            Target to update.
+	 * @return true if the season was updated successfully. False if the update failed
+	 */
+	public boolean updateSeason(Season season);
 
 }

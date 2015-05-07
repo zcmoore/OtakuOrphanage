@@ -26,6 +26,80 @@ import edu.asu.ser322.data.model.WatchRecord;
  */
 class UserDaoSQL implements UserDao
 {
+	private boolean addWatch(User user, Season anime, int episodeCount, int rating)
+	{
+		if (!user.validate())
+			return false;
+		
+		boolean result = false;
+		String sql = "INSERT INTO Watched(User, Series, Season, EpisodeCount) VALUES(?, ?, ?, ?)";
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, user.getUsername());
+			statement.setString(2, anime.getSeriesName());
+			statement.setInt(3, anime.getSeasonNumber());
+			statement.setInt(4, episodeCount);
+			
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	private WatchRecord parseWatchRecord(ResultSet results) throws SQLException
+	{
+		WatchRecord record = new WatchRecord();
+		
+		String seriesName = results.getString("Series");
+		int seasonNumber = results.getInt("Season");
+		int eipsodeCount = results.getInt("EpisodeCount");
+		
+		SeasonDao dao = DAOCollection.getSeasonDao();
+		Season season = dao.findSeason(seriesName, seasonNumber);
+		record.setEpisodesWatched(eipsodeCount);
+		record.setSeason(season);
+		
+		return record;
+	}
+	
+	private boolean updateWatch(User user, Season anime, int episodeCount, int rating)
+	{
+		if (!user.validate())
+			return false;
+		
+		boolean result = false;
+		String sql = "INSERT INTO Users(Username, Password, Waifu) VALUES(?, ?, ?)";
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, user.getUsername());
+			statement.setString(2, user.getPassword());
+			
+			Character waifu = user.getWaifu();
+			if (waifu != null)
+				statement.setInt(3, waifu.getId());
+			else
+				statement.setNull(3, Types.INTEGER);
+			
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	@Override
 	public boolean addUser(User user)
 	{
@@ -59,19 +133,15 @@ class UserDaoSQL implements UserDao
 	}
 	
 	@Override
-	public boolean updateUser(User user)
+	public boolean deleteUser(String username)
 	{
-		if (!user.validate())
-			return false;
-		
 		boolean result = false;
-		String sql = "UPDATE Users set Password=?, Waifu=?, WHERE Username=?";
+		String sql = "DELETE FROM Users WHERE Username=?";
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setString(1, user.getPassword());
-			statement.setInt(2, user.getWaifu().getId());
+			statement.setString(1, username);
 			
 			statement.execute();
 			result = true;
@@ -118,6 +188,34 @@ class UserDaoSQL implements UserDao
 	}
 	
 	@Override
+	public List<WatchRecord> findWatchRecordsFor(String username)
+	{
+		String sql = "SELECT * FROM Watched WHERE User=?";
+		List<WatchRecord> records = new LinkedList<>();
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, username);
+			ResultSet results = statement.executeQuery();
+			
+			while (results.next())
+			{
+				WatchRecord record = parseWatchRecord(results);
+				User user = findUser(username);
+				record.setUser(user);
+				records.add(record);
+			}
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return records;
+	}
+	
+	@Override
 	public List<User> listAll()
 	{
 		String sql = "SELECT * FROM Users WHERE Username=?";
@@ -151,31 +249,30 @@ class UserDaoSQL implements UserDao
 	}
 	
 	@Override
-	public boolean userExists(String username)
+	public List<WatchRecord> listAllWatchRecords()
 	{
-		return !User.NULL_USER.equals(findUser(username));
-	}
-	
-	@Override
-	public boolean deleteUser(String username)
-	{
-		boolean result = false;
-		String sql = "DELETE FROM Users WHERE Username=?";
+		String sql = "SELECT * FROM Watched";
+		List<WatchRecord> records = new LinkedList<>();
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setString(1, username);
+			ResultSet results = statement.executeQuery();
 			
-			statement.execute();
-			result = true;
+			while (results.next())
+			{
+				WatchRecord record = parseWatchRecord(results);
+				User user = findUser(results.getString("User"));
+				record.setUser(user);
+				records.add(record);
+			}
 		}
 		catch (Exception exception)
 		{
 			exception.printStackTrace();
 		}
 		
-		return result;
+		return records;
 	}
 	
 	@Override
@@ -236,52 +333,20 @@ class UserDaoSQL implements UserDao
 		}
 	}
 	
-	private boolean addWatch(User user, Season anime, int episodeCount, int rating)
+	@Override
+	public boolean updateUser(User user)
 	{
 		if (!user.validate())
 			return false;
 		
 		boolean result = false;
-		String sql = "INSERT INTO Watched(User, Series, Season, EpisodeCount) VALUES(?, ?, ?, ?)";
+		String sql = "UPDATE Users set Password=?, Waifu=?, WHERE Username=?";
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setString(1, user.getUsername());
-			statement.setString(2, anime.getSeriesName());
-			statement.setInt(3, anime.getSeasonNumber());
-			statement.setInt(4, episodeCount);
-			
-			statement.execute();
-			result = true;
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return result;
-	}
-	
-	private boolean updateWatch(User user, Season anime, int episodeCount, int rating)
-	{
-		if (!user.validate())
-			return false;
-		
-		boolean result = false;
-		String sql = "INSERT INTO Users(Username, Password, Waifu) VALUES(?, ?, ?)";
-		
-		try (Connection connection = createDatabaseConnection();
-				PreparedStatement statement = connection.prepareStatement(sql);)
-		{
-			statement.setString(1, user.getUsername());
-			statement.setString(2, user.getPassword());
-			
-			Character waifu = user.getWaifu();
-			if (waifu != null)
-				statement.setInt(3, waifu.getId());
-			else
-				statement.setNull(3, Types.INTEGER);
+			statement.setString(1, user.getPassword());
+			statement.setInt(2, user.getWaifu().getId());
 			
 			statement.execute();
 			result = true;
@@ -295,74 +360,9 @@ class UserDaoSQL implements UserDao
 	}
 	
 	@Override
-	public List<WatchRecord> findWatchRecordsFor(String username)
+	public boolean userExists(String username)
 	{
-		String sql = "SELECT * FROM Watched WHERE User=?";
-		List<WatchRecord> records = new LinkedList<>();
-		
-		try (Connection connection = createDatabaseConnection();
-				PreparedStatement statement = connection.prepareStatement(sql);)
-		{
-			statement.setString(1, username);
-			ResultSet results = statement.executeQuery();
-			
-			while (results.next())
-			{
-				WatchRecord record = parseWatchRecord(results);
-				User user = findUser(username);
-				record.setUser(user);
-				records.add(record);
-			}
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return records;
-	}
-	
-	@Override
-	public List<WatchRecord> listAllWatchRecords()
-	{
-		String sql = "SELECT * FROM Watched";
-		List<WatchRecord> records = new LinkedList<>();
-		
-		try (Connection connection = createDatabaseConnection();
-				PreparedStatement statement = connection.prepareStatement(sql);)
-		{
-			ResultSet results = statement.executeQuery();
-			
-			while (results.next())
-			{
-				WatchRecord record = parseWatchRecord(results);
-				User user = findUser(results.getString("User"));
-				record.setUser(user);
-				records.add(record);
-			}
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return records;
-	}
-	
-	private WatchRecord parseWatchRecord(ResultSet results) throws SQLException
-	{
-		WatchRecord record = new WatchRecord();
-		
-		String seriesName = results.getString("Series");
-		int seasonNumber = results.getInt("Season");
-		int eipsodeCount = results.getInt("EpisodeCount");
-		
-		SeasonDao dao = DAOCollection.getSeasonDao();
-		Season season = dao.findSeason(seriesName, seasonNumber);
-		record.setEpisodesWatched(eipsodeCount);
-		record.setSeason(season);
-		
-		return record;
+		return !User.NULL_USER.equals(findUser(username));
 	}
 	
 }

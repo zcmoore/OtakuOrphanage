@@ -11,12 +11,12 @@ import java.util.List;
 import edu.asu.ser322.data.model.Franchise;
 
 /**
- * 
  * This dao will allow for the connections between the database and the GUI, 
  * here is where the Queries are made and the returned as either booleans
  * or linkedlist or and object into a model
  * 
  * @author Benjamin Paothatat
+ * @author Moore, Zachary
  *
  */
 public class FranchiseDaoSQL implements FranchiseDao
@@ -45,10 +45,25 @@ public class FranchiseDaoSQL implements FranchiseDao
 	}
 	
 	@Override
-	public boolean updateFranchise(Franchise franchise)
+	public boolean deleteFranchise(String name)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		boolean result = false;
+		String sql = "DELETE FROM Franchises WHERE Username=?";
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, name);
+			
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	@Override
@@ -109,25 +124,10 @@ public class FranchiseDaoSQL implements FranchiseDao
 	}
 	
 	@Override
-	public boolean deleteFranchise(String name)
+	public boolean updateFranchise(Franchise franchise)
 	{
-		boolean result = false;
-		String sql = "DELETE FROM Franchises WHERE Username=?";
-		
-		try (Connection connection = createDatabaseConnection();
-				PreparedStatement statement = connection.prepareStatement(sql);)
-		{
-			statement.setString(1, name);
-			
-			statement.execute();
-			result = true;
-		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-		
-		return result;
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

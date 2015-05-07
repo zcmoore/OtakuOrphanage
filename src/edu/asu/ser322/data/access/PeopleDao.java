@@ -10,6 +10,7 @@ import edu.asu.ser322.data.model.Season;
 /**
  * 
  * @author Benjamin Paothatat
+ * @author Moore, Zachary
  *
  */
 public interface PeopleDao
@@ -32,6 +33,14 @@ public interface PeopleDao
 	 */
 	public List<Person> findPerson(String name);
 	
+	public Map<String, Integer> getArchetypeDistributionOf(Person person);
+	
+	public List<Character> getCharactersActedBy(Person person);
+	
+	public List<Season> getSeasonsActedBy(Person person);
+	
+	public List<Person> listAll();
+
 	/**
 	 * Checks that a person is in the system
 	 * 
@@ -39,12 +48,4 @@ public interface PeopleDao
 	 * @return true if a person with the specified name exists
 	 */
 	public boolean personExists(String name);
-	
-	List<Season> getSeasonsActedBy(Person person);
-	
-	List<Character> getCharactersActedBy(Person person);
-	
-	Map<String, Integer> getArchetypeDistributionOf(Person person);
-
-	List<Person> listAll();
 }

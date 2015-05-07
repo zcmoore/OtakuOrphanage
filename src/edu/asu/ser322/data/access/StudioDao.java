@@ -15,48 +15,18 @@ import edu.asu.ser322.data.model.User;
 public interface StudioDao
 {
 	/**
-	 * Add a studio to the persistent store
+	 * Adds an employee to the persistent store by {@link Person} reference. The
+	 * {@link Person} must be valid, and should be obtained via
+	 * {@link PeopleDao#findPerson(String)} or another Dao that returns {@link People}
+	 * results.
 	 * 
-	 * @param studio
-	 *            Studio data to add. Must be valid
-	 * @return true if the studio was added successfully
+	 * @param studioName
+	 *            Employer's name
+	 * @param employee
+	 *            New Employee's reference (depends on id)
+	 * @return true if the addition was successful. False otherwise
 	 */
-	public boolean addStudio(Studio studio);
-	
-	/**
-	 * Updates a studio in the persistent store
-	 * 
-	 * @param studio
-	 *            Target to update.
-	 * @return true if the user was updated successfully. False if the update failed
-	 */
-	public boolean updateStudio(Studio studio);
-	
-	/**
-	 * Finds the studio with the given studioname, and loads it from the persistent store
-	 * 
-	 * @param studioname
-	 *            Target studio's studioname
-	 * @return the Studio object, or {@link User#NULL_STUDIO} if a studio cannot be found
-	 */
-	public Studio findStudio(String studioName);
-	
-	/**
-	 * Checks that a studio is in the system
-	 * 
-	 * @param studioname
-	 * @return true if a user with the specified studioname exists
-	 */
-	public boolean studioExists(String studioName);
-	
-	/**
-	 * Deletes a studio with the specified studioname
-	 * 
-	 * @param studio
-	 *            Target studio's studioname
-	 * @return true if the deletion was successful. False otherwise
-	 */
-	public boolean deleteStudio(String studioName);
+	public boolean addEmployee(String studioName, Person employee, String role);
 	
 	/**
 	 * Adds an employee to the persistent store by name. If there is no person registered
@@ -73,32 +43,33 @@ public interface StudioDao
 	public boolean addEmployee(String studioName, String personName, String role);
 	
 	/**
-	 * Removes all employees with the given name and role who are employed by the given
-	 * studio.
+	 * Add a studio to the persistent store
 	 * 
-	 * @param studioName
-	 *            Employer's name
-	 * @param personName
-	 *            Target Employee's name
-	 * @return true if the deletion was successful. False otherwise
+	 * @param studio
+	 *            Studio data to add. Must be valid
+	 * @return true if the studio was added successfully
 	 */
-	public boolean removeEmployees(String studioName, String personName, String role);
-	
-	public List<Studio> listAll();
+	public boolean addStudio(Studio studio);
 	
 	/**
-	 * Adds an employee to the persistent store by {@link Person} reference. The
-	 * {@link Person} must be valid, and should be obtained via
-	 * {@link PeopleDao#findPerson(String)} or another Dao that returns {@link People}
-	 * results.
+	 * Deletes a studio with the specified studioname
 	 * 
-	 * @param studioName
-	 *            Employer's name
-	 * @param employee
-	 *            New Employee's reference (depends on id)
-	 * @return true if the addition was successful. False otherwise
+	 * @param studio
+	 *            Target studio's studioname
+	 * @return true if the deletion was successful. False otherwise
 	 */
-	public boolean addEmployee(String studioName, Person employee, String role);
+	public boolean deleteStudio(String studioName);
+	
+	/**
+	 * Finds the studio with the given studioname, and loads it from the persistent store
+	 * 
+	 * @param studioname
+	 *            Target studio's studioname
+	 * @return the Studio object, or {@link User#NULL_STUDIO} if a studio cannot be found
+	 */
+	public Studio findStudio(String studioName);
+	
+	public List<Studio> listAll();
 	
 	/**
 	 * Removes an employee from the persistent store who matches the given studio,
@@ -111,5 +82,34 @@ public interface StudioDao
 	 * @return true if the deletion was successful. False otherwise
 	 */
 	public boolean removeEmployee(String studioName, Person employee, String role);
+	
+	/**
+	 * Removes all employees with the given name and role who are employed by the given
+	 * studio.
+	 * 
+	 * @param studioName
+	 *            Employer's name
+	 * @param personName
+	 *            Target Employee's name
+	 * @return true if the deletion was successful. False otherwise
+	 */
+	public boolean removeEmployees(String studioName, String personName, String role);
+	
+	/**
+	 * Checks that a studio is in the system
+	 * 
+	 * @param studioname
+	 * @return true if a user with the specified studioname exists
+	 */
+	public boolean studioExists(String studioName);
+	
+	/**
+	 * Updates a studio in the persistent store
+	 * 
+	 * @param studio
+	 *            Target to update.
+	 * @return true if the user was updated successfully. False if the update failed
+	 */
+	public boolean updateStudio(Studio studio);
 	
 }
