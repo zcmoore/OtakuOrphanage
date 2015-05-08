@@ -192,6 +192,7 @@ public class MainMenuGUI extends JPanel
 			public void actionPerformed(ActionEvent e)
 			{
 				Session.logout();
+				clearAllVectors();
 				client.showLogin();
 			}
 		});

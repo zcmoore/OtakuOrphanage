@@ -83,6 +83,7 @@ public class ProfileGUI extends JPanel
 					boolean check = DAOCollection.getUserDao().deleteUser(
 							Session.getActiveUser().getUsername());
 					Session.logout();
+					clearAllVectors();
 					client.showLogin();
 				}
 				else if (reply == JOptionPane.NO_OPTION)
@@ -134,6 +135,12 @@ public class ProfileGUI extends JPanel
 
 		deleteAccount.setBounds(30, 580, 150, 30);
 		add(deleteAccount);
+	}
+	
+	public void clearAllVectors()
+	{
+		columnNames.clear();
+		rowValues.clear();
 	}
 
 	public void setTextStyle(String currentUser)
