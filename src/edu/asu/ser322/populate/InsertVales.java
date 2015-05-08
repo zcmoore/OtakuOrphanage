@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import edu.asu.ser322.data.access.DAOCollection;
+import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Franchise;
 import edu.asu.ser322.data.model.Gender;
+import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.Studio;
 import edu.asu.ser322.data.model.Character;
 
@@ -189,9 +191,118 @@ public class InsertVales
 	    /**
 	     * adding Season
 	     */
+	    Calendar calendarNaruto = new GregorianCalendar();
+	    calendarNaruto.set(2002, 10, 3);
+		Date airDateNaruto = calendarNaruto.getTime();
+		
+		Calendar calendarNaruto2 = new GregorianCalendar();
+		calendarNaruto2.set(2007, 2, 8);
+		Date finshDateNaruto = calendarNaruto2.getTime();
+		
+		Season narutoSeason = new Season("Nartuo", 1);
+		narutoSeason.setName("Naruto");
+		narutoSeason.setAirDate(airDateNaruto);
+		narutoSeason.setFinishDate(finshDateNaruto);
+		narutoSeason.setAppropriateness("PG-13");
+		
+		Calendar calendarNaruto3 = new GregorianCalendar();
+	    calendarNaruto3.set(2007, 2, 15);
+		Date airDateNaruto3 = calendarNaruto3.getTime();
+		
+		Season narutoSeason2 = new Season("Nartuo", 2);
+		narutoSeason2.setName("Naruto: Shippuuden");
+		narutoSeason2.setAirDate(airDateNaruto3);
+		narutoSeason2.setAppropriateness("PG-13");
 	    
+		Calendar calendarAngel = new GregorianCalendar();
+		calendarAngel.set(2010, 4, 3);
+		Date airDateAngel = calendarAngel.getTime();
+		
+		Calendar calendarAngel2 = new GregorianCalendar();
+		calendarAngel2.set(2010, 6, 26);
+		Date finishDateAngel = calendarAngel2.getTime();
+		
+		Season angelBeats = new Season("Angel Beats!", 1);
+		angelBeats.setName("Angel Beats!");
+		angelBeats.setAirDate(airDateAngel);
+		angelBeats.setFinishDate(finishDateAngel);
+		angelBeats.setAppropriateness("PG-13");
 	    
-	    
-	    
+		Calendar calendarAngel3 = new GregorianCalendar();
+		calendarAngel3.set(2010, 12, 22);
+		Date airDateAngel2 = calendarAngel3.getTime();
+		
+		Calendar calendarAngel4 = new GregorianCalendar();
+		calendarAngel4.set(2010, 12, 22);
+		Date finishDateAngel2 = calendarAngel4.getTime();
+		
+		Season angelBeats2 = new Season("Angel Beats!", 2);
+		angelBeats2.setName("Angel Beats: Another Epilogue");
+		angelBeats2.setAirDate(airDateAngel2);
+		angelBeats2.setFinishDate(finishDateAngel2);
+		angelBeats2.setAppropriateness("PG-13");
+		
+		Calendar calendarGodOnly = new GregorianCalendar();
+		calendarGodOnly.set(2010, 10, 7);
+		Date airDateGodOnly = calendarGodOnly.getTime();
+		
+		Calendar calendarGodOnly2 = new GregorianCalendar();
+		calendarGodOnly2.set(2010, 12, 23);
+		Date finishDateGodOnly = calendarGodOnly2.getTime();
+		
+		Season theWorldGodOnlyKnow = new Season("The World God Only Know", 1);
+		theWorldGodOnlyKnow.setName("The World God Only Know");
+		theWorldGodOnlyKnow.setAirDate(airDateGodOnly);
+		theWorldGodOnlyKnow.setFinishDate(finishDateGodOnly);
+		theWorldGodOnlyKnow.setAppropriateness("PG-13");
+		
+		Calendar calendarGodOnly3 = new GregorianCalendar();
+		calendarGodOnly3.set(2011, 4, 12);
+		Date airDateGodOnly1 = calendarGodOnly3.getTime();
+		
+		Calendar calendarGodOnly4 = new GregorianCalendar();
+		calendarGodOnly4.set(2010, 6, 28);
+		Date finishDateGodOnly1 = calendarGodOnly4.getTime();
+		
+		Season theWorldGodOnlyKnow2 = new Season("The World God Only Know", 2);
+		theWorldGodOnlyKnow2.setName("The World God Only Know II");
+		theWorldGodOnlyKnow2.setAirDate(airDateGodOnly1);
+		theWorldGodOnlyKnow2.setFinishDate(finishDateGodOnly1);
+		theWorldGodOnlyKnow2.setAppropriateness("PG-13");
+		
+		Calendar calendarBlueExorcist = new GregorianCalendar();
+		calendarBlueExorcist.set(2011, 4, 17);
+		Date airDateBlueExorcist = calendarBlueExorcist.getTime();
+		
+		Calendar calendarBlueExorcist1 = new GregorianCalendar();
+		calendarBlueExorcist1.set(2011, 10, 2);
+		Date finishDateBlueExorcist = calendarBlueExorcist1.getTime();
+		
+		Season blueExorcist1 = new Season("Blue Exorcist", 1);
+		blueExorcist1.setName("Blue Exorcist");
+		blueExorcist1.setAirDate(airDateBlueExorcist);
+		blueExorcist1.setFinishDate(finishDateBlueExorcist);
+		blueExorcist1.setAppropriateness("PG-13");
+		
+		Calendar calendarBlueExorcist2 = new GregorianCalendar();
+		calendarBlueExorcist2.set(2011, 10, 26);
+		Date airDateBlueExorcist1 = calendarBlueExorcist2.getTime();
+		
+		Calendar calendarBlueExorcist3 = new GregorianCalendar();
+		calendarBlueExorcist3.set(2011, 10, 26);
+		Date finishDateBlueExorcist1 = calendarBlueExorcist3.getTime();
+		
+		Season blueExorcist2 = new Season("Blue Exorcist", 2);
+		blueExorcist2.setName("Blue Exorcist: Runaway Kuro");
+		blueExorcist2.setAirDate(airDateBlueExorcist1);
+		blueExorcist2.setFinishDate(finishDateBlueExorcist1);
+		blueExorcist2.setAppropriateness("PG-13");
+		
+		 /**
+	     * adding Episodes
+	     */
+		Episode episodeNaruto1 = new Episode("Naruto", 1, 1);
+		
+		
 	}
 }
