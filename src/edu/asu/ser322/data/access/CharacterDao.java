@@ -3,6 +3,7 @@ package edu.asu.ser322.data.access;
 import java.util.List;
 
 import edu.asu.ser322.data.model.Character;
+import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Gender;
 
 /**
@@ -10,7 +11,7 @@ import edu.asu.ser322.data.model.Gender;
  * persistent store.
  * 
  * @author Moore, Zachary
- *
+ * 
  */
 public interface CharacterDao
 {
@@ -67,4 +68,7 @@ public interface CharacterDao
 	 *         entity is invalid.
 	 */
 	public boolean updateCharacter(Character character);
+	
+	public boolean associateCharacterWithShow(int characterId, Episode episode,
+			String role);
 }

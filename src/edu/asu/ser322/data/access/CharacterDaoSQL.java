@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.asu.ser322.data.model.Character;
+import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Gender;
 
 /**
@@ -362,6 +363,34 @@ public class CharacterDaoSQL implements CharacterDao
 			statement.setString(6, character.getHairColor());
 			statement.setString(7, character.getArchetype());
 			statement.setInt(8, character.getId());
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public boolean associateCharacterWithShow(int characterId, Episode episode,
+			String role)
+	{
+		boolean result = false;
+		String sql = "INSERT INTO CharacterAppearances(Character, Series, Season, Episode, Role) "
+				+ "VALUES(?, ?, ?, ?, ?)";
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			
+			statement.setInt(1, characterId);
+			statement.setString(2, episode.getSeriesName());
+			statement.setInt(3, episode.getSeasonNumber());
+			statement.setInt(4, episode.getEpisodeNumber());
+			statement.setString(5, role);
 			statement.execute();
 			result = true;
 		}

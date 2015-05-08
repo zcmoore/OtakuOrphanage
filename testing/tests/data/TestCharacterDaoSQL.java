@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.asu.ser322.data.model.Character;
+import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Gender;
 import edu.asu.ser322.data.access.CharacterDaoSQL;
 
@@ -34,6 +35,7 @@ public class TestCharacterDaoSQL
 	@Test
 	public void test()
 	{
+		
 		Calendar calendar = new GregorianCalendar();
 		calendar.set(2010, 10, 14);
 		Date dobDate = calendar.getTime();
@@ -56,6 +58,9 @@ public class TestCharacterDaoSQL
 		characterDaoSQL.deleteCharacter(1);
 		assertEquals(testCharacter3.get(0).getName(), testCharacter4.get(0).getName());
 		assertEquals(testCharacter2.getName(), "Zach");
+		
+		Episode episode = new Episode("Test", 1, 1);
+		characterDaoSQL.associateCharacterWithShow(1, episode, "Hero");
 	}
 	
 }
