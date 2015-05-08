@@ -16,9 +16,9 @@ import edu.asu.ser322.data.model.Season;
 
 /**
  * 
- * This dao will allow for the connections between the database and the GUI, 
- * here is where the Queries are made and the returned as either booleans
- * or linkedlist or a hashmap of archetype and number of roles
+ * This dao will allow for the connections between the database and the GUI, here is where
+ * the Queries are made and the returned as either booleans or linkedlist or a hashmap of
+ * archetype and number of roles
  * 
  * @author Benjamin Paothatat
  * @author Moore, Zachary
@@ -202,6 +202,31 @@ public class PeopleDaoSQL implements PeopleDao
 	public boolean personExists(String name)
 	{
 		return !(findPerson(name).isEmpty());
+	}
+	
+	@Override
+	public boolean associatePersonWithShow(int personId, int characterId, Season season)
+	{
+		boolean result = false;
+		String sql = "INSERT INTO ActorAppearances(Actor, Character, Series, Season) VALUES(?, ?, ?, ?)";
+		
+		try (Connection connection = createDatabaseConnection();
+				PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setInt(1, personId);
+			statement.setInt(2, characterId);
+			statement.setString(3, season.getSeriesName());
+			statement.setInt(4, season.getSeasonNumber());
+			
+			statement.execute();
+			result = true;
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 }

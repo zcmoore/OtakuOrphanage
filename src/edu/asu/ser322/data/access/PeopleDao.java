@@ -11,7 +11,9 @@ import edu.asu.ser322.data.model.Season;
  * 
  * @author Benjamin Paothatat
  * @author Moore, Zachary
- *
+ * 
+ * 
+ * 
  */
 public interface PeopleDao
 {
@@ -25,27 +27,22 @@ public interface PeopleDao
 	public boolean addPerson(String name);
 	
 	/**
-	 * Finds the people with the given name, and loads it from the persistent store
-	 * 
-	 * @param name
-	 *            Target people's name
-	 * @return the List of persons, or an empty list
-	 */
-	public List<Person> findPerson(String name);
-	
-	public Map<String, Integer> getArchetypeDistributionOf(Person person);
-	
-	public List<Character> getCharactersActedBy(Person person);
-	
-	public List<Season> getSeasonsActedBy(Person person);
-	
-	public List<Person> listAll();
-
-	/**
 	 * Checks that a person is in the system
 	 * 
 	 * @param name
 	 * @return true if a person with the specified name exists
 	 */
 	public boolean personExists(String name);
+	
+	public boolean associatePersonWithShow(int personId, int characterId, Season season);
+	
+	List<Person> findPerson(String name);
+	
+	List<Season> getSeasonsActedBy(Person person);
+	
+	List<Character> getCharactersActedBy(Person person);
+	
+	Map<String, Integer> getArchetypeDistributionOf(Person person);
+	
+	List<Person> listAll();
 }
