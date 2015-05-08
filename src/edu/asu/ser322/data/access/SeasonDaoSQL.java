@@ -15,13 +15,13 @@ import java.util.List;
 import edu.asu.ser322.data.model.Season;
 
 /**
- * This dao will allow for the connections between the database and the GUI, 
- * here is where the Queries are made and the returned as either booleans
- * or linkedlist or object as a model or a date object 
+ * This dao will allow for the connections between the database and the GUI, here is where
+ * the Queries are made and the returned as either booleans or linkedlist or object as a
+ * model or a date object
  * 
  * @author Benjamin
  * @author Moore, Zachary
- *
+ * 
  */
 public class SeasonDaoSQL implements SeasonDao
 {
@@ -142,16 +142,17 @@ public class SeasonDaoSQL implements SeasonDao
 			statement.setInt(4, calendar.get(Calendar.DAY_OF_MONTH));
 			statement.setInt(5, calendar.get(Calendar.MONTH));
 			statement.setInt(6, calendar.get(Calendar.YEAR));
-			
-			calendar.setTime(season.getFinishDate());
-			statement.setInt(7, calendar.get(Calendar.DAY_OF_MONTH));
-			statement.setInt(8, calendar.get(Calendar.MONTH));
-			statement.setInt(9, calendar.get(Calendar.YEAR));
-			statement.setString(10, season.getAppropriateness());
-			
+			if (season.getFinishDate() != null)
+			{
+				calendar.setTime(season.getFinishDate());
+				statement.setInt(7, calendar.get(Calendar.DAY_OF_MONTH));
+				statement.setInt(8, calendar.get(Calendar.MONTH));
+				statement.setInt(9, calendar.get(Calendar.YEAR));
+				statement.setString(10, season.getAppropriateness());
+			}
 			statement.execute();
 			
-			//associateGenres(season);
+			// associateGenres(season);
 			result = true;
 		}
 		catch (Exception exception)

@@ -16,9 +16,8 @@ import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Gender;
 
 /**
- * This dao will allow for the connections between the database and the GUI, 
- * here is where the Queries are made and the returned as either booleans
- * or linkedlist
+ * This dao will allow for the connections between the database and the GUI, here is where
+ * the Queries are made and the returned as either booleans or linkedlist
  * 
  * @author Benjamin Paothatat
  * @author Moore, Zachary
@@ -54,8 +53,8 @@ public class EpisodeDaoSQL implements EpisodeDao
 	public boolean addEpisode(Episode episode)
 	{
 		boolean result = false;
-		String sql = "INSERT INTO Episodes(SeriesName, SeasonNumber, ShowName, AirDateDay, AirDateMonth"
-				+ "AirDateYear, ArtStyle, Approprateness, EpisodeName, Type) VALUES(?, ?, ?, ?, ? , ?, ?, ?, ?)";
+		String sql = "INSERT INTO Episodes(SeriesName, SeasonNumber, EpisodeNumber, AirDateDay, AirDateMonth,"
+				+ "AirDateYear, ArtStyle, Approprateness, EpisodeName) VALUES(?, ?, ?, ?, ? , ?, ?, ?, ?)";
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
@@ -73,7 +72,6 @@ public class EpisodeDaoSQL implements EpisodeDao
 			statement.setString(7, episode.getArtStyle());
 			statement.setString(8, episode.getApproprateness());
 			statement.setString(9, episode.getEpisodeName());
-			statement.setString(9, episode.getType());
 			statement.execute();
 			result = true;
 		}
@@ -137,10 +135,9 @@ public class EpisodeDaoSQL implements EpisodeDao
 				Episode insteredEpisode = new Episode(result.getString("SeriesName"),
 						result.getInt("SeasonNumber"), result.getInt("EpisodeNumber"));
 				insteredEpisode.setAirDate(airDate);
-				insteredEpisode.setType("Type");
-				insteredEpisode.setApproprateness("Approprateness");
+				insteredEpisode.setApproprateness(result.getString("Approprateness"));
 				insteredEpisode.setEpisodeName(result.getString("EpisodeName"));
-				insteredEpisode.setArtStyle("ArtStyle");
+				insteredEpisode.setArtStyle(result.getString("ArtStyle"));
 				episodes.add(insteredEpisode);
 			}
 			
@@ -174,10 +171,9 @@ public class EpisodeDaoSQL implements EpisodeDao
 				Episode insteredEpisode = new Episode(result.getString("SeriesName"),
 						result.getInt("SeasonNumber"), result.getInt("EpisodeNumber"));
 				insteredEpisode.setAirDate(airDate);
-				insteredEpisode.setType("Type");
-				insteredEpisode.setApproprateness("Approprateness");
+				insteredEpisode.setApproprateness(result.getString("Approprateness"));
 				insteredEpisode.setEpisodeName(result.getString("EpisodeName"));
-				insteredEpisode.setArtStyle("ArtStyle");
+				insteredEpisode.setArtStyle(result.getString("ArtStyle"));
 				episodes.add(insteredEpisode);
 			}
 			
@@ -262,14 +258,14 @@ public class EpisodeDaoSQL implements EpisodeDao
 	{
 		boolean result = false;
 		String sql = "UPDATE Episodes set AirDateDay = ?, AirDateMonth = ?, AireDateYear = ?,"
-				+ "ArtSytle = ?, Approprateness = ?, EpisodeName = ?, Type = ? WHERE  SeriesName = ?, SeasonNumber = ?, EpisodeNumber = ?";
+				+ "ArtSytle = ?, Approprateness = ?, EpisodeName = ? WHERE  SeriesName = ?, SeasonNumber = ?, EpisodeNumber = ?";
 		
 		try (Connection connection = createDatabaseConnection();
 				PreparedStatement statement = connection.prepareStatement(sql);)
 		{
-			statement.setString(8, episode.getSeriesName());
-			statement.setInt(9, episode.getSeasonNumber());
-			statement.setInt(10, episode.getEpisodeNumber());
+			statement.setString(7, episode.getSeriesName());
+			statement.setInt(8, episode.getSeasonNumber());
+			statement.setInt(9, episode.getEpisodeNumber());
 			
 			Date airDate = episode.getAirDate();
 			Calendar calender = new GregorianCalendar();
@@ -281,7 +277,6 @@ public class EpisodeDaoSQL implements EpisodeDao
 			statement.setString(4, episode.getArtStyle());
 			statement.setString(5, episode.getApproprateness());
 			statement.setString(6, episode.getEpisodeName());
-			statement.setString(7, episode.getType());
 			statement.execute();
 			result = true;
 		}

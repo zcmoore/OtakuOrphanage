@@ -84,9 +84,9 @@ public class MainMenuGUI extends JPanel
 	private BufferedImage img;
 	
 	/**
-	 * constructor for the MainMenu Panel
-	 * passes and client instance into here to connect 
+	 * constructor for the MainMenu Panel passes and client instance into here to connect
 	 * each panel
+	 * 
 	 * @param client
 	 */
 	public MainMenuGUI(Client client)
@@ -98,9 +98,9 @@ public class MainMenuGUI extends JPanel
 	}
 	
 	/**
-	 * this will initialize most of objects that we will be using,
-	 * this creates the all swing components and give listeners to where it is needed
-	 * it places the layout of the components being used.
+	 * this will initialize most of objects that we will be using, this creates the all
+	 * swing components and give listeners to where it is needed it places the layout of
+	 * the components being used.
 	 */
 	private void init()
 	{
@@ -120,8 +120,8 @@ public class MainMenuGUI extends JPanel
 		nextPerson = new JButton("Next Person");
 		nextPerson.setVisible(false);
 		
-		chacacterSerach = new String[] { "By Name", "By Archetype",
-				"By Gender", "By Hair Color", "List All" };
+		chacacterSerach = new String[] { "By Name", "By Archetype", "By Gender",
+				"By Hair Color", "List All" };
 		franchiseSerach = new String[] { "By Name", "List All" };
 		episodeSearch = new String[] { "By Name", "List All" };
 		seasonSearch = new String[] { "By Series Name", "By Genre",
@@ -213,7 +213,7 @@ public class MainMenuGUI extends JPanel
 		titleLabel.setBounds(600, 20, 300, 30);
 		add(titleLabel);
 		
-		searchBy.setBounds(810, 100, 150, 30);
+		searchBy.setBounds(810, 100, 225, 30);
 		add(searchBy);
 		
 		tableList.setBounds(810, 60, 150, 30);
@@ -248,7 +248,8 @@ public class MainMenuGUI extends JPanel
 	 * just to show layout of gui
 	 */
 	public void layout()
-	{}
+	{
+	}
 	
 	/**
 	 * this function is used to clear the vector to be used in other methods
@@ -260,9 +261,8 @@ public class MainMenuGUI extends JPanel
 		rowValues.clear();
 	}
 	
-	
 	/**
-	 * this will populate the top combo box of what can be searched 
+	 * this will populate the top combo box of what can be searched
 	 */
 	public void populateListOfTableArray()
 	{
@@ -276,8 +276,8 @@ public class MainMenuGUI extends JPanel
 	
 	/**
 	 * 
-	 * This will grab the images from the file and place it into a buffer
-	 * which will be painted in another functions
+	 * This will grab the images from the file and place it into a buffer which will be
+	 * painted in another functions
 	 * 
 	 */
 	public void addImageBackGround()
@@ -295,6 +295,7 @@ public class MainMenuGUI extends JPanel
 			e.printStackTrace();
 		}
 	}
+	
 	/**
 	 * this will paint the the images onto the background
 	 */
@@ -309,9 +310,9 @@ public class MainMenuGUI extends JPanel
 	}
 	
 	/**
-	 * this will place the results of the search and place them
-	 * into a vector which will then in turn places them into the table
-	 * to display the results to the users
+	 * this will place the results of the search and place them into a vector which will
+	 * then in turn places them into the table to display the results to the users
+	 * 
 	 * @param character
 	 */
 	private void parseCharacter(Character character)
@@ -333,9 +334,9 @@ public class MainMenuGUI extends JPanel
 	
 	/**
 	 * 
-	 * this will place the results of the search and place them
-	 * into a vector which will then in turn places them into the table
-	 * to display the results to the users
+	 * this will place the results of the search and place them into a vector which will
+	 * then in turn places them into the table to display the results to the users
+	 * 
 	 * @param episode
 	 */
 	private void parseEpisode(Episode episode)
@@ -365,8 +366,9 @@ public class MainMenuGUI extends JPanel
 	}
 	
 	/**
-	 * this will grab the season results and place them into a vector
-	 * which will then in turn place them into the table to display the results
+	 * this will grab the season results and place them into a vector which will then in
+	 * turn place them into the table to display the results
+	 * 
 	 * @param season
 	 */
 	private void parseSeason(Season season)
@@ -385,6 +387,13 @@ public class MainMenuGUI extends JPanel
 		{
 			finishDate = parseDate(season.getFinishDate());
 		}
+		Calendar calendar = new GregorianCalendar();
+		calendar.set(2, 11, 31);
+		Date badDate = calendar.getTime();
+		if (finishDate.equals(parseDate(badDate)))
+		{
+			finishDate = null;
+		}
 		
 		String appropriateness = season.getAppropriateness();
 		vector.add(seriesName);
@@ -398,9 +407,9 @@ public class MainMenuGUI extends JPanel
 	
 	/**
 	 * 
-	 * This will grab from the combobox what you want to search by and when you
-	 * type it in the search it will search by those parameters through the database
-	 * give you results if it finds anything
+	 * This will grab from the combobox what you want to search by and when you type it in
+	 * the search it will search by those parameters through the database give you results
+	 * if it finds anything
 	 * 
 	 */
 	
@@ -420,7 +429,8 @@ public class MainMenuGUI extends JPanel
 		else if (searchBy.getSelectedItem().toString().equals("By Gender"))
 		{
 			searchResultsOfCharacter = DAOCollection.getCharacterDao()
-					.findCharactersByGender(Gender.valueOf(searchBarTextField.getText()));
+					.findCharactersByGender(
+							(Gender.valueOf(searchBarTextField.getText().toUpperCase())));
 		}
 		else if (searchBy.getSelectedItem().toString().equals("By Hair Color"))
 		{
@@ -448,9 +458,9 @@ public class MainMenuGUI extends JPanel
 	}
 	
 	/**
-	 * This will place the column name at the top to be able 
-	 * to identify each column And this this will fill the vectors with the results 
-	 * which will then be able to fill the table will the results 
+	 * This will place the column name at the top to be able to identify each column And
+	 * this this will fill the vectors with the results which will then be able to fill
+	 * the table will the results
 	 */
 	
 	private void franchiseSearches()
@@ -481,7 +491,7 @@ public class MainMenuGUI extends JPanel
 				String ID = Integer.toString(franchise.getId());
 				String name = franchise.getName();
 				vector.add(ID);
-				vector.add(name);		
+				vector.add(name);
 				rowValues.add(vector);
 			}
 		}
@@ -490,9 +500,9 @@ public class MainMenuGUI extends JPanel
 	}
 	
 	/**
-	 * This will place the column name at the top to be able 
-	 * to identify each column And this this will fill the vectors with the results 
-	 * which will then be able to fill the table will the results 
+	 * This will place the column name at the top to be able to identify each column And
+	 * this this will fill the vectors with the results which will then be able to fill
+	 * the table will the results
 	 */
 	
 	private void episodeSearches()
@@ -529,9 +539,9 @@ public class MainMenuGUI extends JPanel
 	
 	/**
 	 * 
-	 * This will place the column name at the top to be able 
-	 * to identify each column And this this will fill the vectors with the results 
-	 * which will then be able to fill the table will the results 
+	 * This will place the column name at the top to be able to identify each column And
+	 * this this will fill the vectors with the results which will then be able to fill
+	 * the table will the results
 	 * 
 	 */
 	private void seasonSearches()
@@ -577,9 +587,9 @@ public class MainMenuGUI extends JPanel
 	
 	/**
 	 * 
-	 * This will place the column name at the top to be able 
-	 * to identify each column And this this will fill the vectors with the results 
-	 * which will then be able to fill the table will the results 
+	 * This will place the column name at the top to be able to identify each column And
+	 * this this will fill the vectors with the results which will then be able to fill
+	 * the table will the results
 	 * 
 	 */
 	private void personSearches()
@@ -736,8 +746,8 @@ public class MainMenuGUI extends JPanel
 	
 	/**
 	 * 
-	 * It will place the columns Names at the top of table to be
-	 * able to identify each column 
+	 * It will place the columns Names at the top of table to be able to identify each
+	 * column
 	 * 
 	 */
 	private void studioSearches()
@@ -768,8 +778,9 @@ public class MainMenuGUI extends JPanel
 	}
 	
 	/**
-	 * It will places the search results into a vector 
-	 * which will places it into the Table to display the results
+	 * It will places the search results into a vector which will places it into the Table
+	 * to display the results
+	 * 
 	 * @param studio
 	 */
 	private void parseStudio(Studio studio)
@@ -787,6 +798,13 @@ public class MainMenuGUI extends JPanel
 		{
 			studioCloseDate = parseDate(studio.getCloseDate());
 		}
+		Calendar calendar = new GregorianCalendar();
+		calendar.set(2, 11, 31);
+		Date badDate = calendar.getTime();
+		if (studioCloseDate.equals(parseDate(badDate)))
+		{
+			studioCloseDate = null;
+		}
 		
 		vector.add(studioName);
 		vector.add(studioStartDate);
@@ -797,8 +815,7 @@ public class MainMenuGUI extends JPanel
 	
 	/**
 	 * 
-	 * This will changes the date to be more readable to be:
-	 * DAY/MONTH/YEAR
+	 * This will changes the date to be more readable to be: DAY/MONTH/YEAR
 	 * 
 	 * @param date
 	 * @return
@@ -814,8 +831,9 @@ public class MainMenuGUI extends JPanel
 	}
 	
 	/**
-	 * This will separate the resulats should there be an 
-	 * instances of the same name of Persons
+	 * This will separate the resulats should there be an instances of the same name of
+	 * Persons
+	 * 
 	 * @param length
 	 */
 	private void seperator(int length)

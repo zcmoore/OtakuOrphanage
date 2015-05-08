@@ -45,7 +45,7 @@ public class UpdateDatabaseGUI extends JPanel
 	private JTextField fifthItemField;
 	private JTextField sixthItemField;
 	
-	private JButton addItemToDatabase;
+	private JButton editItemToDatabase;
 	private JButton backButton;
 	private List<String> listOfEntitiesToModify;
 	private BufferedImage img;
@@ -90,8 +90,8 @@ public class UpdateDatabaseGUI extends JPanel
 		
 		addImageBackGround();
 		
-		addItemToDatabase = new JButton("Add");
-		addItemToDatabase.setVisible(false);
+		editItemToDatabase = new JButton("Update Database");
+		editItemToDatabase.setVisible(false);
 		backButton = new JButton("Back");
 		
 		backButton.addActionListener(new ActionListener() {
@@ -109,7 +109,7 @@ public class UpdateDatabaseGUI extends JPanel
 			}
 		});
 		
-		addItemToDatabase.addActionListener(new ActionListener() {
+		editItemToDatabase.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
 				if (boxEntities.getSelectedItem().toString().equals("Add Characters"))
@@ -129,7 +129,8 @@ public class UpdateDatabaseGUI extends JPanel
 				{
 					Season instertedSeason = new Season();
 					instertedSeason.setName(primaryKeyField.getText());
-					instertedSeason.setSeasonNumber(Integer.valueOf(secondItemField.getText()));
+					instertedSeason.setSeasonNumber(Integer.valueOf(secondItemField
+							.getText()));
 					DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 					DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
 					Date startDate;
@@ -150,7 +151,8 @@ public class UpdateDatabaseGUI extends JPanel
 					System.out.print(fifthItem.getText());
 					DAOCollection.getSeasonDao().addSeason(instertedSeason);
 				}
-				else if (boxEntities.getSelectedItem().toString().equals("Remove Characters"))
+				else if (boxEntities.getSelectedItem().toString()
+						.equals("Remove Characters"))
 				{
 					Character instertedCharacter = new Character();
 					
@@ -158,7 +160,8 @@ public class UpdateDatabaseGUI extends JPanel
 					
 					DAOCollection.getCharacterDao().deleteCharacter(instertedCharacter);
 				}
-				else if (boxEntities.getSelectedItem().toString().equals("Remove Seasons"))
+				else if (boxEntities.getSelectedItem().toString()
+						.equals("Remove Seasons"))
 				{
 					DAOCollection.getSeasonDao().removeSeason(primaryKeyField.getText(),
 							Integer.valueOf(secondItemField.getText()));
@@ -181,7 +184,7 @@ public class UpdateDatabaseGUI extends JPanel
 		add(fourthItemField);
 		add(fifthItemField);
 		
-		add(addItemToDatabase);
+		add(editItemToDatabase);
 	}
 	
 	public void layout()
@@ -189,7 +192,7 @@ public class UpdateDatabaseGUI extends JPanel
 		setLayout(null);
 		
 		TitleOfPage.setBounds(600, 20, 300, 80);
-		boxEntities.setBounds(110, 60, 150, 30);
+		boxEntities.setBounds(100, 60, 300, 30);
 		primaryKey.setBounds(110, 100, 150, 30);
 		secondItem.setBounds(110, 150, 150, 30);
 		thirdItem.setBounds(110, 200, 150, 30);
@@ -197,24 +200,29 @@ public class UpdateDatabaseGUI extends JPanel
 		fifthItem.setBounds(110, 300, 150, 30);
 		backButton.setBounds(1100, 580, 80, 30);
 		
-		primaryKeyField.setBounds(250, 100, 150, 30);
-		secondItemField.setBounds(250, 150, 150, 30);
-		thirdItemField.setBounds(250, 200, 150, 30);
-		fourthItemField.setBounds(250, 250, 150, 30);
-		fifthItemField.setBounds(250, 300, 150, 30);
+		primaryKeyField.setBounds(300, 100, 150, 30);
+		secondItemField.setBounds(300, 150, 150, 30);
+		thirdItemField.setBounds(300, 200, 150, 30);
+		fourthItemField.setBounds(300, 250, 150, 30);
+		fifthItemField.setBounds(300, 300, 150, 30);
 		
-		addItemToDatabase.setBounds(100, 350, 80, 30);
+		editItemToDatabase.setBounds(180, 350, 100, 30);
 	}
 	
 	public void setTextStyle(String itemSelected)
 	{
 		if (itemSelected.equals("Add Characters"))
 		{
-			primaryKey.setText("Name");
-			secondItem.setText("Gender");
-			thirdItem.setText("Archetype");
-			fourthItem.setText("Hair Color");
-			fifthItem.setText("Age");
+			primaryKey.setText("<html>\n"
+					+ "<font><font size=+1><font color=#FF0000>Name</font>");
+			secondItem.setText("<html>\n"
+					+ "<font><font size=+1><font color=#FF0000>Gender</font>");
+			thirdItem.setText("<html>\n"
+					+ "<font><font size=+1><font color=#FF0000>Archetype</font>");
+			fourthItem.setText("<html>\n"
+					+ "<font><font size=+1><font color=#FF0000>Hair Color</font>");
+			fifthItem.setText("<html>\n"
+					+ "<font><font size=+1><font color=#FF0000>Age</font>");
 			
 			primaryKeyField.setVisible(true);
 			secondItemField.setVisible(true);
@@ -222,15 +230,22 @@ public class UpdateDatabaseGUI extends JPanel
 			fourthItemField.setVisible(true);
 			fifthItemField.setVisible(true);
 			
-			addItemToDatabase.setVisible(true);
+			editItemToDatabase.setVisible(true);
 		}
 		else if (itemSelected.equals("Add Seasons"))
 		{
-			primaryKey.setText("Series Name");
-			secondItem.setText("Season Number");
-			thirdItem.setText("Air Date (DD/MM/YYYY)");
-			fourthItem.setText("Date Finished (DD/MM/YYYY)");
-			fifthItem.setText("Appropriateness");
+			primaryKey.setText("<html>\n"
+					+ "<font><font size=+1><font color=#FF0000>Series Name</font>");
+			secondItem.setText("<html>\n"
+					+ "<font><font size=+1><font color=#FF0000>Season Number</font>");
+			thirdItem
+					.setText("<html>\n"
+							+ "<font><font size=+1><font color=#FF0000>Air Date (DD/MM/YYYY)</font>");
+			fourthItem
+					.setText("<html>\n"
+							+ "<font><font size=+1><font color=#FF0000>Date Finish (DD/MM/YYYY)</font>");
+			fifthItem.setText("<html>\n"
+					+ "<font><font size=+1><font color=#FF0000>Appropriateness</font>");
 			
 			primaryKeyField.setVisible(true);
 			secondItemField.setVisible(true);
@@ -238,12 +253,13 @@ public class UpdateDatabaseGUI extends JPanel
 			fourthItemField.setVisible(true);
 			fifthItemField.setVisible(true);
 			
-			addItemToDatabase.setVisible(true);
+			editItemToDatabase.setVisible(true);
 			
 		}
 		else if (itemSelected.equals("Remove Characters"))
 		{
-			primaryKey.setText("Name");
+			primaryKey.setText("<html>\n"
+					+ "<font><font size=+1><font color=#FF0000>Name</font>");
 			secondItem.setText("");
 			thirdItem.setText("");
 			fourthItem.setText("");
@@ -255,12 +271,14 @@ public class UpdateDatabaseGUI extends JPanel
 			fourthItemField.setVisible(false);
 			fifthItemField.setVisible(false);
 			
-			addItemToDatabase.setVisible(true);
+			editItemToDatabase.setVisible(true);
 		}
 		else if (itemSelected.equals("Remove Seasons"))
 		{
-			primaryKey.setText("Series Name");
-			secondItem.setText("Season Number");
+			primaryKey.setText("<html>\n"
+					+ "<font><font size=+1><font color=#FF0000>Series Name</font>");
+			secondItem.setText("<html>\n"
+					+ "<font><font size=+1><font color=#FF0000>Season Number</font>");
 			thirdItem.setText("");
 			fourthItem.setText("");
 			fifthItem.setText("");
@@ -271,7 +289,7 @@ public class UpdateDatabaseGUI extends JPanel
 			fourthItemField.setVisible(false);
 			fifthItemField.setVisible(false);
 			
-			addItemToDatabase.setVisible(true);
+			editItemToDatabase.setVisible(true);
 		}
 		else if (itemSelected.equals(""))
 		{
@@ -287,7 +305,7 @@ public class UpdateDatabaseGUI extends JPanel
 			fourthItemField.setVisible(false);
 			fifthItemField.setVisible(false);
 			
-			addItemToDatabase.setVisible(false);
+			editItemToDatabase.setVisible(false);
 		}
 	}
 	
