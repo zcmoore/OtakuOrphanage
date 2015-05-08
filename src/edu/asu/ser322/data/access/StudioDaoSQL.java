@@ -93,10 +93,13 @@ public class StudioDaoSQL implements StudioDao
 			statement.setInt(3, calendar.get(Calendar.MONTH));
 			statement.setInt(4, calendar.get(Calendar.YEAR));
 			
-			calendar.setTime(closeDate);
-			statement.setInt(5, calendar.get(Calendar.DATE));
-			statement.setInt(6, calendar.get(Calendar.MONTH));
-			statement.setInt(7, calendar.get(Calendar.YEAR));
+			if(closeDate != null)
+			{
+				calendar.setTime(closeDate);
+				statement.setInt(5, calendar.get(Calendar.DATE));
+				statement.setInt(6, calendar.get(Calendar.MONTH));
+				statement.setInt(7, calendar.get(Calendar.YEAR));
+			}
 			
 			statement.execute();
 			result = true;
