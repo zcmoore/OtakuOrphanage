@@ -126,11 +126,6 @@ public class MainMenuGUI extends JPanel
 		}
 	}
 	
-	public void layout()
-	{
-		
-	}
-	
 	/**
 	 * this will paint the the images onto the background
 	 */
@@ -431,6 +426,9 @@ public class MainMenuGUI extends JPanel
 	 */
 	private void init()
 	{
+		// XXX: Consider a layout manager
+		this.setLayout(null);
+		
 		//@formatter:off
 		addSearch("Character", "By Name", 		this::searchCharactersByName);
 		addSearch("Character", "By Archetype", 	this::searchCharactersByArchetype);
