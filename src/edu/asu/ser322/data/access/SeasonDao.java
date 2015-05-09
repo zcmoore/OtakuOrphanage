@@ -81,7 +81,7 @@ public interface SeasonDao
 	 *            Target seasons' genre
 	 * @return the a list of seasons, or null if a series cannot be found
 	 */
-	public List<Season> seasonsByGenre(String genre);
+	public List<Season> findSeasonsByGenre(String genre);
 
 	/**
 	 * Updates a season in the persistent store

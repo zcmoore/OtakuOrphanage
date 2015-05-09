@@ -28,7 +28,7 @@ import edu.asu.ser322.data.model.Season;
 
 public class UpdateDatabaseGUI extends JPanel
 {
-	private JComboBox boxEntities;
+	private JComboBox<Object> boxEntities;
 	private JLabel TitleOfPage;
 	private JLabel prompt;
 	private JLabel primaryKey;
@@ -36,7 +36,6 @@ public class UpdateDatabaseGUI extends JPanel
 	private JLabel thirdItem;
 	private JLabel fourthItem;
 	private JLabel fifthItem;
-	private JLabel sixthItem;
 	
 	private JTextField primaryKeyField;
 	private JTextField secondItemField;
@@ -70,7 +69,7 @@ public class UpdateDatabaseGUI extends JPanel
 	public void init()
 	{
 		populateEntities();
-		boxEntities = new JComboBox(listOfEntitiesToModify.toArray());
+		boxEntities = new JComboBox<>(listOfEntitiesToModify.toArray());
 		TitleOfPage = new JLabel();
 		prompt = new JLabel();
 		
@@ -79,7 +78,6 @@ public class UpdateDatabaseGUI extends JPanel
 		thirdItem = new JLabel();
 		fourthItem = new JLabel();
 		fifthItem = new JLabel();
-		sixthItem = new JLabel();
 		
 		primaryKeyField = new JTextField();
 		secondItemField = new JTextField();
