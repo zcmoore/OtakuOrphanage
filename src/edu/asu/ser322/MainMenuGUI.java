@@ -1,5 +1,6 @@
 package edu.asu.ser322;
 
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,16 +8,20 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
+import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -27,7 +32,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import edu.asu.ser322.data.access.CharacterDao;
 import edu.asu.ser322.data.access.DAOCollection;
+import edu.asu.ser322.data.access.EpisodeDao;
+import edu.asu.ser322.data.access.FranchiseDao;
+import edu.asu.ser322.data.access.SeasonDao;
+import edu.asu.ser322.data.access.StudioDao;
 import edu.asu.ser322.data.model.Character;
 import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Franchise;
@@ -37,49 +47,52 @@ import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.Studio;
 
 /**
- * 
  * Main Menu Panel, Where most search are to be made.
  * 
- * @author Cuahuc
- * @author Benjamin Paothatat
+ * @author Moore, Zachary
+ * @author Osorio, Cuahuctemoc
+ * @author Paothatat, Benjamin
  * 
  */
-
 public class MainMenuGUI extends JPanel
 {
+	@FunctionalInterface
+	private interface Search extends Consumer<String>
+	{
+	}
+	
+	private class SearchListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			String primaryParameter = tableList.getSelectedItem().toString();
+			String secondaryParameter = searchBy.getSelectedItem().toString();
+			String searchTerm = searchBarTextField.getText();
+			
+			Map<String, Search> searches = searchFunctions.get(primaryParameter);
+			Search search = searches.get(secondaryParameter);
+			search.accept(searchTerm);
+		}
+	}
+	
 	private Client client;
 	
-	private JLabel titleLabel;
 	private JLabel selectedItemPictureLabel;
 	private JLabel selectedItemInfoLabel;
 	private JComboBox<Object> tableList;
 	private JComboBox<String> searchBy;
 	private JTextField searchBarTextField;
-	private JButton profileButton;
-	private JButton searchButton;
-	private JButton logoutButton;
-	private JButton goToUpdateButton;
-	private JButton nextPerson;
-	private JTable results;
 	private List<String> ListOfEntities;
-	private Hashtable<String, String[]> linkEntitesToSearch;
-	private String[] chacacterSerach;
-	private String[] franchiseSerach;
-	private String[] episodeSearch;
-	private String[] seasonSearch;
-	private String[] personSearch;
-	private String[] studioSearch;
 	private List<Character> searchResultsOfCharacter;
-	private List<Franchise> searchResultsOfFranchise;
 	private List<Person> searchResultsOfPerson;
 	private List<Season> searchResultsOfSeason;
-	private List<Episode> searchResultsOfEpisodes;
-	private List<Studio> searchResultsOfStudio;
+	
 	private DefaultTableModel tableModel;
-	private JScrollPane spTable;
 	private Vector<String> columnNames = new Vector<>();
 	private Vector<Vector<String>> rowValues = new Vector<>();
 	private Vector<String> vector = new Vector<>();
+	private Map<String, Map<String, Search>> searchFunctions = new LinkedHashMap<>();
 	
 	private BufferedImage img;
 	
@@ -94,185 +107,6 @@ public class MainMenuGUI extends JPanel
 		this.client = client;
 		this.ListOfEntities = new ArrayList<>();
 		init();
-		layout();
-	}
-	
-	/**
-	 * this will initialize most of objects that we will be using, this creates the all
-	 * swing components and give listeners to where it is needed it places the layout of
-	 * the components being used.
-	 */
-	private void init()
-	{
-		setOpaque(false);
-		addImageBackGround();
-		titleLabel = new JLabel("Anime Database");
-		populateListOfTableArray();
-		tableList = new JComboBox<>(ListOfEntities.toArray());
-		searchBarTextField = new JTextField();
-		searchButton = new JButton("Search");
-		logoutButton = new JButton("Logout");
-		profileButton = new JButton("Profile");
-		goToUpdateButton = new JButton("Update Database");
-		tableModel = new DefaultTableModel();
-		results = new JTable(tableModel);
-		spTable = new JScrollPane(results);
-		nextPerson = new JButton("Next Person");
-		nextPerson.setVisible(false);
-		
-		chacacterSerach = new String[] { "By Name", "By Archetype", "By Gender",
-				"By Hair Color", "List All" };
-		franchiseSerach = new String[] { "By Name", "List All" };
-		episodeSearch = new String[] { "By Name", "List All" };
-		seasonSearch = new String[] { "By Series Name", "By Genre",
-				"By Year Of Air Date", "List All" };
-		personSearch = new String[] { "By Name", "Seasons Acted In", "Played Character",
-				"Archetype Distribution", "List All" };
-		studioSearch = new String[] { "By Name", "List All" };
-		linkEntitesToSearch = new Hashtable<String, String[]>();
-		linkEntitesToSearch.put("Character", chacacterSerach);
-		linkEntitesToSearch.put("Franchise", franchiseSerach);
-		linkEntitesToSearch.put("Episode", episodeSearch);
-		linkEntitesToSearch.put("Season", seasonSearch);
-		linkEntitesToSearch.put("Person", personSearch);
-		linkEntitesToSearch.put("Studio", studioSearch);
-		searchBy = new JComboBox<String>(linkEntitesToSearch.get(tableList
-				.getSelectedItem().toString()));
-		
-		selectedItemPictureLabel = new JLabel();
-		selectedItemInfoLabel = new JLabel();
-		
-		tableList.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				searchBy.removeAllItems();
-				String[] replacementSearchBy = linkEntitesToSearch.get(tableList
-						.getSelectedItem().toString());
-				for (int i = 0; i < replacementSearchBy.length; i++)
-				{
-					searchBy.addItem(replacementSearchBy[i]);
-				}
-				repaint();
-			}
-			
-		});
-		
-		searchButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				if (tableList.getSelectedItem().toString().equals("Character"))
-				{
-					characterSearches();
-				}
-				else if (tableList.getSelectedItem().toString().equals("Franchise"))
-				{
-					franchiseSearches();
-				}
-				else if (tableList.getSelectedItem().toString().equals("Episode"))
-				{
-					episodeSearches();
-				}
-				else if (tableList.getSelectedItem().toString().equals("Season"))
-				{
-					seasonSearches();
-				}
-				else if (tableList.getSelectedItem().toString().equals("Person"))
-				{
-					personSearches();
-				}
-				else
-				{
-					studioSearches();
-				}
-				
-			}
-		});
-		
-		logoutButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e)
-			{
-				Session.logout();
-				clearAllVectors();
-				client.showLogin();
-			}
-		});
-		
-		goToUpdateButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				client.showUpdateDatabase();
-			}
-		});
-		profileButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				client.showProfile();
-			}
-		});
-		titleLabel.setBounds(600, 20, 300, 30);
-		add(titleLabel);
-		
-		searchBy.setBounds(810, 100, 225, 30);
-		add(searchBy);
-		
-		tableList.setBounds(810, 60, 150, 30);
-		add(tableList);
-		
-		searchBarTextField.setBounds(970, 60, 200, 30);
-		add(searchBarTextField);
-		
-		searchButton.setBounds(1180, 60, 80, 30);
-		add(searchButton);
-		
-		logoutButton.setBounds(1180, 15, 80, 30);
-		add(logoutButton);
-		
-		profileButton.setBounds(30, 30, 100, 30);
-		add(profileButton);
-		
-		spTable.setBounds(50, 200, 900, 250);
-		add(spTable);
-		
-		selectedItemPictureLabel.setBounds(350, 200, 150, 200);
-		add(selectedItemPictureLabel);
-		
-		selectedItemInfoLabel.setBounds(510, 200, 210, 200);
-		add(selectedItemInfoLabel);
-		
-		goToUpdateButton.setBounds(140, 30, 200, 30);
-		add(goToUpdateButton);
-	}
-	
-	/**
-	 * just to show layout of gui
-	 */
-	public void layout()
-	{
-	}
-	
-	/**
-	 * this function is used to clear the vector to be used in other methods
-	 */
-	public void clearAllVectors()
-	{
-		columnNames.clear();
-		vector.clear();
-		rowValues.clear();
-	}
-	
-	/**
-	 * this will populate the top combo box of what can be searched
-	 */
-	public void populateListOfTableArray()
-	{
-		ListOfEntities.add("Character");
-		ListOfEntities.add("Episode");
-		ListOfEntities.add("Franchise");
-		ListOfEntities.add("Person");
-		ListOfEntities.add("Season");
-		ListOfEntities.add("Studio");
 	}
 	
 	/**
@@ -297,6 +131,24 @@ public class MainMenuGUI extends JPanel
 		}
 	}
 	
+	public void layout()
+	{
+		
+	}
+	
+	/**
+	 * this will populate the top combo box of what can be searched
+	 */
+	public void populateListOfTableArray()
+	{
+		ListOfEntities.add("Character");
+		ListOfEntities.add("Episode");
+		ListOfEntities.add("Franchise");
+		ListOfEntities.add("Person");
+		ListOfEntities.add("Season");
+		ListOfEntities.add("Studio");
+	}
+	
 	/**
 	 * this will paint the the images onto the background
 	 */
@@ -308,6 +160,357 @@ public class MainMenuGUI extends JPanel
 		{
 			g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
 		}
+	}
+	
+	private void addSearch(String searchTerm, String subSearchTerm, Search action)
+	{
+		if (!searchFunctions.containsKey(searchTerm))
+			searchFunctions.put(searchTerm, new LinkedHashMap<>());
+		
+		Map<String, Search> map = searchFunctions.get(searchTerm);
+		map.put(subSearchTerm, action);
+	}
+	
+	/**
+	 * 
+	 * This will grab from the combobox what you want to search by and when you type it in
+	 * the search it will search by those parameters through the database give you results
+	 * if it finds anything
+	 * 
+	 */
+	private void displayCharacterResults(List<Character> results)
+	{
+		Vector<String> columnNames = new Vector<>();
+		columnNames.add("Name");
+		columnNames.add("Gender");
+		columnNames.add("Archetype");
+		columnNames.add("Hair Color");
+		columnNames.add("Age");
+		tableModel.setColumnIdentifiers(columnNames);
+		tableModel.getDataVector().clear();
+		
+		for (Character character : results)
+		{
+			Vector<String> vector = new Vector<String>();
+			String name = character.getName();
+			String gender = character.getGender().toString();
+			String archetype = character.getArchetype();
+			String hairColor = character.getHairColor();
+			String age = Integer.toString(character.getAge());
+			
+			vector.add(name);
+			vector.add(gender);
+			vector.add(archetype);
+			vector.add(hairColor);
+			vector.add(age);
+			
+			tableModel.addRow(vector);
+		}
+		
+		repaint();
+	}
+	
+	/**
+	 * This will place the column name at the top to be able to identify each column And
+	 * this this will fill the vectors with the results which will then be able to fill
+	 * the table will the results
+	 */
+	private void displayEpisodeResults(List<Episode> episodes)
+	{
+		Vector<String> columnNames = new Vector<>();
+		
+		columnNames.add("SeriesName");
+		columnNames.add("SeasonNumber");
+		columnNames.add("EpisodeNumber");
+		columnNames.add("EpisodeName");
+		columnNames.add("AirDate");
+		columnNames.add("ArtStyle");
+		columnNames.add("Appropriateness");
+		
+		tableModel.setColumnIdentifiers(columnNames);
+		tableModel.getDataVector().clear();
+		
+		for (Episode episode : episodes)
+		{
+			Vector<String> vector = new Vector<String>();
+			
+			String seriesName = episode.getSeriesName();
+			String seasonNumber = Integer.toString(episode.getSeasonNumber());
+			String episodeNumber = Integer.toString(episode.getEpisodeNumber());
+			String showName = episode.getEpisodeName();
+			Date airDate = episode.getAirDate();
+			String airDateString = (airDate != null) ? formatDate(airDate) : "";
+			String artStyle = episode.getArtStyle();
+			String appropriateness = episode.getApproprateness();
+			
+			vector.add(seriesName);
+			vector.add(seasonNumber);
+			vector.add(episodeNumber);
+			vector.add(showName);
+			vector.add(airDateString);
+			vector.add(artStyle);
+			vector.add(appropriateness);
+			
+			tableModel.addRow(vector);
+		}
+		
+		repaint();
+	}
+	
+	/**
+	 * This will place the column name at the top to be able to identify each column And
+	 * this this will fill the vectors with the results which will then be able to fill
+	 * the table will the results
+	 */
+	private void displayFranchiseResults(List<Franchise> franchises)
+	{
+		Vector<String> columnNames = new Vector<>();
+		
+		columnNames.add("FranchiseID");
+		columnNames.add("FranchiseName");
+		
+		tableModel.setColumnIdentifiers(columnNames);
+		tableModel.getDataVector().clear();
+		
+		for (Franchise franchise : franchises)
+		{
+			Vector<String> vector = new Vector<String>();
+			
+			String ID = Integer.toString(franchise.getId());
+			String name = franchise.getName();
+			vector.add(ID);
+			vector.add(name);
+			
+			tableModel.addRow(vector);
+		}
+		
+		repaint();
+	}
+	
+	/**
+	 * 
+	 * This will place the column name at the top to be able to identify each column And
+	 * this this will fill the vectors with the results which will then be able to fill
+	 * the table will the results
+	 * 
+	 */
+	private void displaySeasonResults(List<Season> seasons)
+	{
+		Vector<String> columnNames = new Vector<>();
+		
+		columnNames.add("SeriesName");
+		columnNames.add("SeasonNumber");
+		columnNames.add("ShowName");
+		columnNames.add("AirDate");
+		columnNames.add("FinishDate");
+		columnNames.add("Appropriateness");
+		
+		tableModel.setColumnIdentifiers(columnNames);
+		tableModel.getDataVector().clear();
+		
+		for (Season season : seasons)
+		{
+			Vector<String> vector = new Vector<String>();
+			
+			// TODO: cleanup
+			String seriesName = season.getSeriesName();
+			String seasonNumber = Integer.toString(season.getSeasonNumber());
+			String showName = season.getName();
+			String airDate = "";
+			if (season.getAirDate() != null)
+			{
+				airDate = formatDate(season.getAirDate());
+			}
+			String finishDate = "";
+			if (season.getFinishDate() != null)
+			{
+				finishDate = formatDate(season.getFinishDate());
+			}
+			
+			String appropriateness = season.getAppropriateness();
+			vector.add(seriesName);
+			vector.add(seasonNumber);
+			vector.add(showName);
+			vector.add(airDate);
+			vector.add(finishDate);
+			vector.add(appropriateness);
+			
+			tableModel.addRow(vector);
+		}
+		
+		repaint();
+	}
+	
+	/**
+	 * 
+	 * It will place the columns Names at the top of table to be able to identify each
+	 * column
+	 * 
+	 */
+	private void displayStudioResults(List<Studio> studios)
+	{
+		Vector<String> columnNames = new Vector<>();
+		
+		columnNames.add("StudioName");
+		columnNames.add("StartDate");
+		columnNames.add("CloseDate");
+		
+		tableModel.setColumnIdentifiers(columnNames);
+		tableModel.getDataVector().clear();
+		
+		for (Studio studio : studios)
+		{
+			Vector<String> vector = new Vector<String>();
+			
+			String studioName = studio.getName();
+			String studioStartDate = formatDate(studio.getStartDate());
+			String studioCloseDate = formatDate(studio.getCloseDate());
+			
+			vector.add(studioName);
+			vector.add(studioStartDate);
+			vector.add(studioCloseDate);
+			
+			tableModel.addRow(vector);
+		}
+		
+		repaint();
+	}
+	
+	/**
+	 * Returns a string representing the given date in the format: dd/mm/yyyy, or an empty
+	 * String if the date is null
+	 * 
+	 * @param date
+	 * @return A formatted dateString
+	 */
+	private String formatDate(Date date)
+	{
+		String defaultDateString = "";
+		SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy");
+		
+		return (date == null) ? defaultDateString : format.format(date);
+	}
+	
+	private void updateSubSearchTerms()
+	{
+		Map<String, Search> map = searchFunctions.get(tableList.getSelectedItem());
+		String[] subSearchTerms = map.keySet().toArray(new String[map.size()]);
+		ComboBoxModel<String> model = new DefaultComboBoxModel<>(subSearchTerms);
+		searchBy.setModel(model);
+		repaint();
+	}
+	
+	/**
+	 * this will initialize most of objects that we will be using, this creates the all
+	 * swing components and give listeners to where it is needed it places the layout of
+	 * the components being used.
+	 */
+	private void init()
+	{
+		//@formatter:off
+		addSearch("Character", "By Name", 		this::searchCharactersByName);
+		addSearch("Character", "By Archetype", 	this::searchCharactersByArchetype);
+		addSearch("Character", "By Gender", 	this::searchCharactersByGender);
+		addSearch("Character", "By Hair Color", this::searchCharactersByHairColour);
+		addSearch("Character", "List All", 		(s) -> searchAllCharacters());
+		
+		addSearch("Franchise", "By Name", 		this::searchFranchisesByName);
+		addSearch("Franchise", "List All", 		(s) -> searchAllFranchises());
+		
+		addSearch("Episode", "By Name", 		this::searchEpisodesByName);
+		addSearch("Episode", "List All", 		(s) -> searchAllEpisodes());
+		
+		addSearch("Season", "By Series Name", 	this::searchSeasonsBySeriesName);
+		addSearch("Season", "By Genre", 		this::searchSeasonsByGenre);
+		addSearch("Season", "By Year", 			this::searchSeasonsByYear);
+		addSearch("Season", "List All", 		(s) -> searchAllSeasons());
+		
+		// TODO: add Person Searches
+		/*
+		addSearch("Person", "By Name", 			function);
+		addSearch("Person", "Seasons Acted In", function);
+		addSearch("Person", "Played Character", function);
+		addSearch("Person", "Archetypes", 		function);
+		addSearch("Person", "List All", 		function);
+		*/
+		
+		addSearch("Studio", "By Name", 			this::searchStudiosByName);
+		addSearch("Studio", "List All", 		(s) -> searchAllStudios());
+		//@formatter:on
+		
+		setOpaque(false);
+		addImageBackGround();
+		populateListOfTableArray();
+		
+		JLabel titleLabel = new JLabel("Anime Database");
+		Set<String> primarySearchTerms = searchFunctions.keySet();
+		String[] tableListArray = primarySearchTerms
+				.toArray(new String[primarySearchTerms.size()]);
+		tableList = new JComboBox<>(tableListArray);
+		searchBarTextField = new JTextField();
+		JButton searchButton = new JButton("Search");
+		JButton logoutButton = new JButton("Logout");
+		JButton profileButton = new JButton("Profile");
+		JButton goToUpdateButton = new JButton("Update Database");
+		tableModel = new DefaultTableModel();
+		
+		selectedItemPictureLabel = new JLabel();
+		selectedItemInfoLabel = new JLabel();
+		Component resultsTable = new JTable(tableModel);
+		resultsTable = new JScrollPane(resultsTable);
+		
+		searchBy = new JComboBox<>();
+		updateSubSearchTerms();
+		
+		tableList.addActionListener(new FunctionalListener(this::updateSubSearchTerms));
+		searchButton.addActionListener(new SearchListener());
+		
+		ActionListener listener = new FunctionalListener(client::showUpdateDatabase);
+		goToUpdateButton.addActionListener(listener);
+		
+		listener = new FunctionalListener(client::showProfile);
+		profileButton.addActionListener(listener);
+		
+		logoutButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				Session.logout();
+				client.showLogin();
+			}
+		});
+		
+		titleLabel.setBounds(600, 20, 300, 30);
+		add(titleLabel);
+		
+		searchBy.setBounds(810, 100, 150, 30);
+		add(searchBy);
+		
+		tableList.setBounds(810, 60, 150, 30);
+		add(tableList);
+		
+		searchBarTextField.setBounds(970, 60, 200, 30);
+		add(searchBarTextField);
+		
+		searchButton.setBounds(1180, 60, 80, 30);
+		add(searchButton);
+		
+		logoutButton.setBounds(1180, 15, 80, 30);
+		add(logoutButton);
+		
+		profileButton.setBounds(30, 30, 100, 30);
+		add(profileButton);
+		
+		resultsTable.setBounds(50, 200, 900, 250);
+		add(resultsTable);
+		
+		selectedItemPictureLabel.setBounds(350, 200, 150, 200);
+		add(selectedItemPictureLabel);
+		
+		selectedItemInfoLabel.setBounds(510, 200, 210, 200);
+		add(selectedItemInfoLabel);
+		
+		goToUpdateButton.setBounds(140, 30, 200, 30);
+		add(goToUpdateButton);
 	}
 	
 	/**
@@ -334,39 +537,6 @@ public class MainMenuGUI extends JPanel
 	}
 	
 	/**
-	 * 
-	 * this will place the results of the search and place them into a vector which will
-	 * then in turn places them into the table to display the results to the users
-	 * 
-	 * @param episode
-	 */
-	private void parseEpisode(Episode episode)
-	{
-		vector = new Vector<String>();
-		String seriesName = episode.getSeriesName();
-		String seasonNumber = Integer.toString(episode.getSeasonNumber());
-		String episodeNumber = Integer.toString(episode.getEpisodeNumber());
-		String showName = episode.getEpisodeName();
-		String airDate = "";
-		if (episode.getAirDate() != null)
-		{
-			airDate = parseDate(episode.getAirDate());
-		}
-		
-		String artStyle = episode.getArtStyle();
-		String appropriateness = episode.getApproprateness();
-		vector.add(seriesName);
-		vector.add(seasonNumber);
-		vector.add(episodeNumber);
-		vector.add(showName);
-		vector.add(airDate);
-		vector.add(artStyle);
-		vector.add(appropriateness);
-		rowValues.add(vector);
-		// return vector;
-	}
-	
-	/**
 	 * this will grab the season results and place them into a vector which will then in
 	 * turn place them into the table to display the results
 	 * 
@@ -381,19 +551,12 @@ public class MainMenuGUI extends JPanel
 		String airDate = "";
 		if (season.getAirDate() != null)
 		{
-			airDate = parseDate(season.getAirDate());
+			airDate = formatDate(season.getAirDate());
 		}
 		String finishDate = "";
 		if (season.getFinishDate() != null)
 		{
-			finishDate = parseDate(season.getFinishDate());
-		}
-		Calendar calendar = new GregorianCalendar();
-		calendar.set(2, 11, 31);
-		Date badDate = calendar.getTime();
-		if (finishDate.equals(parseDate(badDate)))
-		{
-			finishDate = null;
+			finishDate = formatDate(season.getFinishDate());
 		}
 		
 		String appropriateness = season.getAppropriateness();
@@ -408,186 +571,6 @@ public class MainMenuGUI extends JPanel
 	
 	/**
 	 * 
-	 * This will grab from the combobox what you want to search by and when you type it in
-	 * the search it will search by those parameters through the database give you results
-	 * if it finds anything
-	 * 
-	 */
-	
-	private void characterSearches()
-	{
-		clearAllVectors();
-		if (searchBy.getSelectedItem().toString().equals("By Name"))
-		{
-			searchResultsOfCharacter = DAOCollection.getCharacterDao()
-					.findCharactersByName(searchBarTextField.getText());
-		}
-		else if (searchBy.getSelectedItem().toString().equals("By Archetype"))
-		{
-			searchResultsOfCharacter = DAOCollection.getCharacterDao()
-					.findCharactersByArchetype(searchBarTextField.getText());
-		}
-		else if (searchBy.getSelectedItem().toString().equals("By Gender"))
-		{
-			searchResultsOfCharacter = DAOCollection.getCharacterDao()
-					.findCharactersByGender(
-							(Gender.valueOf(searchBarTextField.getText().toUpperCase())));
-		}
-		else if (searchBy.getSelectedItem().toString().equals("By Hair Color"))
-		{
-			searchResultsOfCharacter = DAOCollection.getCharacterDao()
-					.findCharactersByHairColour(searchBarTextField.getText());
-		}
-		else
-		{
-			searchResultsOfCharacter = DAOCollection.getCharacterDao().listAll();
-		}
-		
-		columnNames.add("Name");
-		columnNames.add("Gender");
-		columnNames.add("Archetype");
-		columnNames.add("Hair Color");
-		columnNames.add("Age");
-		tableModel.setColumnIdentifiers(columnNames);
-		
-		for (int i = 0; i < searchResultsOfCharacter.size(); i++)
-		{
-			parseCharacter(searchResultsOfCharacter.get(i));
-		}
-		repaint();
-		tableModel.setDataVector(rowValues, columnNames);
-	}
-	
-	/**
-	 * This will place the column name at the top to be able to identify each column And
-	 * this this will fill the vectors with the results which will then be able to fill
-	 * the table will the results
-	 */
-	
-	private void franchiseSearches()
-	{
-		clearAllVectors();
-		
-		columnNames.add("FranchiseID");
-		columnNames.add("FranchiseName");
-		tableModel.setColumnIdentifiers(columnNames);
-		
-		if (searchBy.getSelectedItem().toString().equals("By Name"))
-		{
-			Franchise franchise = DAOCollection.getFranchiseDao().findFranchise(
-					searchBarTextField.getText());
-			
-			String ID = Integer.toString(franchise.getId());
-			String name = franchise.getName();
-			vector.add(ID);
-			vector.add(name);
-			rowValues.add(vector);
-		}
-		else
-		{
-			searchResultsOfFranchise = DAOCollection.getFranchiseDao().listAll();
-			for (Franchise franchise : searchResultsOfFranchise)
-			{
-				vector = new Vector<String>();
-				String ID = Integer.toString(franchise.getId());
-				String name = franchise.getName();
-				vector.add(ID);
-				vector.add(name);
-				rowValues.add(vector);
-			}
-		}
-		repaint();
-		tableModel.setDataVector(rowValues, columnNames);
-	}
-	
-	/**
-	 * This will place the column name at the top to be able to identify each column And
-	 * this this will fill the vectors with the results which will then be able to fill
-	 * the table will the results
-	 */
-	
-	private void episodeSearches()
-	{
-		clearAllVectors();
-		
-		if (searchBy.getSelectedItem().toString().equals("By Name"))
-		{
-			searchResultsOfEpisodes = DAOCollection.getEpisodeDao().findEpisode(
-					searchBarTextField.getText());
-		}
-		else
-		{
-			searchResultsOfEpisodes = DAOCollection.getEpisodeDao().listAll();
-		}
-		columnNames.add("SeriesName");
-		columnNames.add("SeasonNumber");
-		columnNames.add("EpisodeNumber");
-		columnNames.add("EpisodeName");
-		columnNames.add("AirDate");
-		columnNames.add("ArtStyle");
-		columnNames.add("Appropriateness");
-		
-		tableModel.setColumnIdentifiers(columnNames);
-		
-		for (Episode episode : searchResultsOfEpisodes)
-		{
-			parseEpisode(episode);
-		}
-		
-		repaint();
-		tableModel.setDataVector(rowValues, columnNames);
-	}
-	
-	/**
-	 * 
-	 * This will place the column name at the top to be able to identify each column And
-	 * this this will fill the vectors with the results which will then be able to fill
-	 * the table will the results
-	 * 
-	 */
-	private void seasonSearches()
-	{
-		clearAllVectors();
-		if (searchBy.getSelectedItem().toString().equals("By Series Name"))
-		{
-			searchResultsOfSeason = DAOCollection.getSeasonDao().findSeasonsBySeriesName(
-					searchBarTextField.getText());
-		}
-		else if (searchBy.getSelectedItem().toString().equals("By Year Of Air Date"))
-		{
-			searchResultsOfSeason = DAOCollection.getSeasonDao().seasonsByAirYear(
-					Integer.parseInt(searchBarTextField.getText()));
-		}
-		else if (searchBy.getSelectedItem().toString().equals("By Genre"))
-		{
-			searchResultsOfSeason = DAOCollection.getSeasonDao().seasonsByGenre(
-					searchBarTextField.getText());
-		}
-		else
-		{
-			searchResultsOfSeason = DAOCollection.getSeasonDao().listAll();
-		}
-		
-		columnNames.add("SeriesName");
-		columnNames.add("SeasonNumber");
-		columnNames.add("ShowName");
-		columnNames.add("AirDate");
-		columnNames.add("FinishDate");
-		columnNames.add("Appropriateness");
-		
-		tableModel.setColumnIdentifiers(columnNames);
-		
-		for (Season season : searchResultsOfSeason)
-		{
-			parseSeason(season);
-		}
-		
-		repaint();
-		tableModel.setDataVector(rowValues, columnNames);
-	}
-	
-	/**
-	 * 
 	 * This will place the column name at the top to be able to identify each column And
 	 * this this will fill the vectors with the results which will then be able to fill
 	 * the table will the results
@@ -595,7 +578,6 @@ public class MainMenuGUI extends JPanel
 	 */
 	private void personSearches()
 	{
-		clearAllVectors();
 		if (searchBy.getSelectedItem().toString().equals("By Name"))
 		{
 			searchResultsOfPerson = DAOCollection.getPeopleDao().findPerson(
@@ -745,94 +727,119 @@ public class MainMenuGUI extends JPanel
 		tableModel.setDataVector(rowValues, columnNames);
 	}
 	
-	/**
-	 * 
-	 * It will place the columns Names at the top of table to be able to identify each
-	 * column
-	 * 
-	 */
-	private void studioSearches()
+	private void searchAllCharacters()
 	{
-		clearAllVectors();
-		columnNames.add("StudioName");
-		columnNames.add("StartDate");
-		columnNames.add("CloseDate");
-		tableModel.setColumnIdentifiers(columnNames);
-		
-		if (searchBy.getSelectedItem().toString().equals("By Name"))
-		{
-			Studio studio = DAOCollection.getStudioDao().findStudio(
-					searchBarTextField.getText());
-			parseStudio(studio);
-		}
-		else
-		{
-			searchResultsOfStudio = DAOCollection.getStudioDao().listAll();
-			for (Studio studio : searchResultsOfStudio)
-			{
-				parseStudio(studio);
-			}
-		}
-		
-		repaint();
-		tableModel.setDataVector(rowValues, columnNames);
+		CharacterDao dao = DAOCollection.getCharacterDao();
+		List<Character> results = dao.listAll();
+		displayCharacterResults(results);
+	}
+	
+	private void searchAllEpisodes()
+	{
+		EpisodeDao dao = DAOCollection.getEpisodeDao();
+		List<Episode> results = dao.listAll();
+		displayEpisodeResults(results);
+	}
+	
+	private void searchAllFranchises()
+	{
+		FranchiseDao dao = DAOCollection.getFranchiseDao();
+		List<Franchise> results = dao.listAll();
+		displayFranchiseResults(results);
+	}
+	
+	private void searchAllSeasons()
+	{
+		SeasonDao dao = DAOCollection.getSeasonDao();
+		List<Season> results = dao.listAll();
+		displaySeasonResults(results);
+	}
+	
+	private void searchAllStudios()
+	{
+		StudioDao dao = DAOCollection.getStudioDao();
+		List<Studio> results = dao.listAll();
+		displayStudioResults(results);
+	}
+	
+	private void searchCharactersByArchetype(String searchTerm)
+	{
+		CharacterDao dao = DAOCollection.getCharacterDao();
+		List<Character> results = dao.findCharactersByArchetype(searchTerm);
+		displayCharacterResults(results);
+	}
+	
+	private void searchCharactersByGender(String searchTerm)
+	{
+		Gender gender = Gender.valueOf(searchTerm);
+		CharacterDao dao = DAOCollection.getCharacterDao();
+		List<Character> results = dao.findCharactersByGender(gender);
+		displayCharacterResults(results);
+	}
+	
+	private void searchCharactersByHairColour(String searchTerm)
+	{
+		CharacterDao dao = DAOCollection.getCharacterDao();
+		List<Character> results = dao.findCharactersByHairColour(searchTerm);
+		displayCharacterResults(results);
+	}
+	
+	private void searchCharactersByName(String searchTerm)
+	{
+		CharacterDao dao = DAOCollection.getCharacterDao();
+		List<Character> results = dao.findCharactersByName(searchTerm);
+		displayCharacterResults(results);
+	}
+	
+	private void searchEpisodesByName(String searchTerm)
+	{
+		EpisodeDao dao = DAOCollection.getEpisodeDao();
+		List<Episode> results = dao.findEpisode(searchTerm);
+		displayEpisodeResults(results);
+	}
+	
+	private void searchFranchisesByName(String searchTerm)
+	{
+		FranchiseDao dao = DAOCollection.getFranchiseDao();
+		List<Franchise> results = new LinkedList<>();
+		Franchise result = dao.findFranchise(searchTerm);
+		results.add(result);
+		displayFranchiseResults(results);
+	}
+	
+	private void searchSeasonsByGenre(String searchTerm)
+	{
+		SeasonDao dao = DAOCollection.getSeasonDao();
+		List<Season> results = dao.findSeasonsByGenre(searchTerm);
+		displaySeasonResults(results);
+	}
+	
+	private void searchSeasonsBySeriesName(String searchTerm)
+	{
+		SeasonDao dao = DAOCollection.getSeasonDao();
+		List<Season> results = dao.findSeasonsBySeriesName(searchTerm);
+		displaySeasonResults(results);
+	}
+	
+	private void searchSeasonsByYear(String searchTerm)
+	{
+		SeasonDao dao = DAOCollection.getSeasonDao();
+		int year = Integer.parseInt(searchTerm);
+		List<Season> results = dao.seasonsByAirYear(year);
+		displaySeasonResults(results);
+	}
+	
+	private void searchStudiosByName(String searchTerm)
+	{
+		StudioDao dao = DAOCollection.getStudioDao();
+		List<Studio> results = new LinkedList<>();
+		Studio result = dao.findStudio(searchTerm);
+		results.add(result);
+		displayStudioResults(results);
 	}
 	
 	/**
-	 * It will places the search results into a vector which will places it into the Table
-	 * to display the results
-	 * 
-	 * @param studio
-	 */
-	private void parseStudio(Studio studio)
-	{
-		Vector<String> vector = new Vector<>();
-		String studioName = studio.getName();
-		String studioStartDate = "";
-		String studioCloseDate = "";
-		if (studio.getStartDate() != null)
-		{
-			studioStartDate = parseDate(studio.getStartDate());
-		}
-		
-		if (studio.getCloseDate() != null)
-		{
-			studioCloseDate = parseDate(studio.getCloseDate());
-		}
-		Calendar calendar = new GregorianCalendar();
-		calendar.set(2, 11, 31);
-		Date badDate = calendar.getTime();
-		if (studioCloseDate.equals(parseDate(badDate)))
-		{
-			studioCloseDate = null;
-		}
-		
-		vector.add(studioName);
-		vector.add(studioStartDate);
-		vector.add(studioCloseDate);
-		
-		rowValues.add(vector);
-	}
-	
-	/**
-	 * 
-	 * This will changes the date to be more readable to be: DAY/MONTH/YEAR
-	 * 
-	 * @param date
-	 * @return
-	 */
-	private String parseDate(Date date)
-	{
-		String result;
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(date);
-		result = (calendar.get(Calendar.DATE) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar
-				.get(Calendar.YEAR));
-		return result;
-	}
-	
-	/**
-	 * This will separate the resulats should there be an instances of the same name of
+	 * This will separate the results should there be an instances of the same name of
 	 * Persons
 	 * 
 	 * @param length
