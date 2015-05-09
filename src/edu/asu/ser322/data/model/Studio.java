@@ -20,6 +20,7 @@ import java.util.List;
  */
 public class Studio
 {
+	public static final Studio NULL_STUDIO = new Studio();
 	private String name;
 	
 	/** If {@link #name} is changed, the original name will be stored here. */
@@ -30,11 +31,24 @@ public class Studio
 	private List<Person> generalStaff;
 	private List<Franchise> franchises;
 	
+	public Studio()
+	{
+		super();
+	}
+	
 	public Studio(String name, Date startDate)
 	{
 		super();
 		this.name = name;
 		this.startDate = startDate;
+	}
+	
+	public Studio(String name, Date startDate, Date closeDate)
+	{
+		super();
+		this.name = name;
+		this.startDate = startDate;
+		this.closeDate = closeDate;
 	}
 	
 	public String getName()

@@ -14,8 +14,21 @@ package edu.asu.ser322.data.model;
  */
 public class Franchise
 {
+	public static final Franchise NULL_FRANCHISE = new Franchise();
+	
 	private int id;
 	private String name;
+	
+	public Franchise()
+	{
+		super();
+	}
+	
+	public Franchise(int id, String name)
+	{
+		this.id = id;
+		this.name = name;
+	}
 	
 	public int getId()
 	{

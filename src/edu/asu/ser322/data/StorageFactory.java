@@ -21,6 +21,27 @@ public class StorageFactory
 	}
 	
 	/**
+	 * @return Connection to {@link SQL#CONNECTION_URL}, or null if a connection cannot be
+	 *         established.
+	 */
+	public static Connection createDatabaseConnection()
+	{
+		Connection connection = null;
+		
+		try
+		{
+			Class.forName(SQL.DRIVER_PATH);
+			connection = DriverManager.getConnection(SQL.CONNECTION_URL);
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		
+		return connection;
+	}
+	
+	/**
 	 * Creates an SQLite database and places the store in the root project folder. If the
 	 * database already exists, it will be overwritten.
 	 * 
@@ -47,7 +68,7 @@ public class StorageFactory
 					"Episodes", "CharacterAppearances", "SeasonEpisodeMap",
 					"CharacterBirthDates", "FranchiseSeasonMap", "StudioFranchiseMap",
 					"Users", "Watched", "Series", "Seasons", "Characters",
-					"ActorAppearances", "Reviews", "Franchises", "ReviewMap" };
+					"ActorAppearances", "Reviews", "Franchises", "ReviewMap", "GenreMap" };
 			String sql;
 			
 			for (String tableName : tableNames)
@@ -70,7 +91,7 @@ public class StorageFactory
             "Gender        TEXT," +
             "DOB           TEXT," +
             "HairColor     TEXT," +
-            "Archtype      TEXT," +
+            "Archetype      TEXT," +
             "PRIMARY KEY (CharacterID));";
             sqlStatement.execute(sql);
 
@@ -115,6 +136,13 @@ public class StorageFactory
             "ShowName       TEXT," +
             "FinishDate     TEXT," +
             "PRIMARY KEY (Series, SeasonNumber));";
+            sqlStatement.execute(sql);
+           
+            sql = "CREATE TABLE GenreMap(" +
+            "Series         TEXT," +
+            "SeasonNumber   INTEGER," +
+            "Genre          TEXT," +
+            "PRIMARY KEY (Series, SeasonNumber, Genre));";
             sqlStatement.execute(sql);
            
             sql = "CREATE TABLE Episodes(" +
@@ -210,11 +238,10 @@ public class StorageFactory
             "User          TEXT," +
             "Series        TEXT," +
             "Season        INTEGER," +
-            "Episode       INTEGER," +
-            "PRIMARY KEY (User, Series, Season, Episode)," +
+            "EpisodeCount  INTEGER," +
+            "PRIMARY KEY (User, Series, Season)," +
             "FOREIGN KEY(Series) REFERENCES Seasons(Series)," +
-            "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber)," +
-            "FOREIGN KEY(Episode) REFERENCES Episodes(EpisodeNumber));";
+            "FOREIGN KEY(Season) REFERENCES Seasons(SeasonNumber));";
             sqlStatement.execute(sql);
             
             sql = "CREATE TABLE ReviewMap(" +

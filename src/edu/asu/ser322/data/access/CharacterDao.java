@@ -3,6 +3,7 @@ package edu.asu.ser322.data.access;
 import java.util.List;
 
 import edu.asu.ser322.data.model.Character;
+import edu.asu.ser322.data.model.Episode;
 import edu.asu.ser322.data.model.Gender;
 
 /**
@@ -10,7 +11,7 @@ import edu.asu.ser322.data.model.Gender;
  * persistent store.
  * 
  * @author Moore, Zachary
- *
+ * 
  */
 public interface CharacterDao
 {
@@ -23,16 +24,21 @@ public interface CharacterDao
 	 */
 	public boolean addCharacter(Character character);
 	
-	/**
-	 * Updates a character in the persistent store
-	 * 
-	 * @param character
-	 *            Target to update.
-	 * @return true if the data was updated successfully. False if the update failed, if
-	 *         the specified entity does not exist in the persistent store, or if the
-	 *         entity is invalid.
-	 */
-	public boolean updateCharacter(Character character);
+	public boolean characterExists(int id);
+	
+	public boolean deleteCharacter(Character chracter);
+	
+	public boolean deleteCharacter(int id);
+	
+	public Character findCharacter(int id);
+	
+	public List<Character> findCharactersByAge(int age, ComparisonType comparisonType);
+	
+	public List<Character> findCharactersByArchetype(String archetype);
+	
+	public List<Character> findCharactersByGender(Gender gender);
+	
+	public List<Character> findCharactersByHairColour(String colour);
 	
 	/**
 	 * Finds all characters with the specified name, and loads them from the persistent
@@ -45,24 +51,24 @@ public interface CharacterDao
 	 */
 	public List<Character> findCharactersByName(String name);
 	
-	public List<Character> findCharactersByHairColour(String colour);
-	
-	public List<Character> findCharactersByArchetype(String archetype);
-	
-	public List<Character> findCharactersByGender(Gender gender);
-	
-	public List<Character> findCharactersByAge(int age, ComparisonType comparisonType);
-	
 	/**
 	 * @return A list of characters who are claimed as waifus by one or more users
 	 */
 	public List<Character> getWaifus();
-
-	public Character findCharacter(int id);
 	
-	public boolean characterExists(int id);
+	public List<Character> listAll();
 	
-	public boolean deleteCharacter(int id);
+	/**
+	 * Updates a character in the persistent store
+	 * 
+	 * @param character
+	 *            Target to update.
+	 * @return true if the data was updated successfully. False if the update failed, if
+	 *         the specified entity does not exist in the persistent store, or if the
+	 *         entity is invalid.
+	 */
+	public boolean updateCharacter(Character character);
 	
-	public boolean deleteCharacter(Character chracter);
+	public boolean associateCharacterWithShow(int characterId, Episode episode,
+			String role);
 }

@@ -8,20 +8,23 @@ import java.util.Date;
  * Model of an anime character, identified by {@link Character#id}.
  * 
  * @author Moore, Zachary
- *
+ * 
  */
 public class Character
 {
+	public static final Character NULL_CHARACTER = new Character();
+	
 	private int id;
 	private Gender gender;
 	private String archetype;
 	private String name;
-	private String hairColour;
+	private String hairColor;
 	private Date birthDate;
+	private int age;
 	
-	public int getID()
+	public Character()
 	{
-		return id;
+		super();
 	}
 	
 	public int getId()
@@ -64,14 +67,14 @@ public class Character
 		this.name = name;
 	}
 	
-	public String getHairColour()
+	public String getHairColor()
 	{
-		return hairColour;
+		return hairColor;
 	}
 	
-	public void setHairColour(String hairColour)
+	public void setHairColor(String hairColor)
 	{
-		this.hairColour = hairColour;
+		this.hairColor = hairColor;
 	}
 	
 	public Date getBirthDate()
@@ -86,8 +89,11 @@ public class Character
 	
 	public int getAge()
 	{
-		// TODO calculate age from DOB
-		throw new UnsupportedOperationException();
+		return age;
 	}
 	
+	public void setAge(int age)
+	{
+		this.age = age;
+	}
 }

@@ -1,6 +1,10 @@
 package edu.asu.ser322.data.access;
 
+import java.util.List;
+
+import edu.asu.ser322.data.model.Season;
 import edu.asu.ser322.data.model.User;
+import edu.asu.ser322.data.model.WatchRecord;
 
 /**
  * Intermediate layer to communicate {@link User} data between a client and a persistent
@@ -21,15 +25,13 @@ public interface UserDao
 	public boolean addUser(User user);
 	
 	/**
-	 * Updates a user in the persistent store
+	 * Deletes a user with the specified username
 	 * 
-	 * @param user
-	 *            Target to update.
-	 * @return true if the user was updated successfully. False if the update failed, if
-	 *         the specified user does not exist in the persistent store, or if the user
-	 *         is invalid.
+	 * @param series
+	 *            Target user's username
+	 * @return true if the deletion was successful. False otherwise
 	 */
-	public boolean updateUser(User user);
+	public boolean deleteUser(String username);
 	
 	/**
 	 * Finds the user with the given username, and loads it from the persistent store
@@ -40,22 +42,11 @@ public interface UserDao
 	 */
 	public User findUser(String username);
 	
-	/**
-	 * Checks that a user is in the system
-	 * 
-	 * @param username
-	 * @return true if a user with the specified username exists
-	 */
-	public boolean userExists(String username);
+	public List<WatchRecord> findWatchRecordsFor(String username);
 	
-	/**
-	 * Deletes a user with the specified username
-	 * 
-	 * @param email
-	 *            Target user's username
-	 * @return true if the deletion was successful. False otherwise
-	 */
-	public boolean deleteUser(String username);
+	public List<User> listAll();
+	
+	public List<WatchRecord> listAllWatchRecords();
 	
 	/**
 	 * Finds a user and logs them in if password is correct. Note: this method is only
@@ -81,4 +72,34 @@ public interface UserDao
 	 * @return true if the logout was successful
 	 */
 	public boolean logout(String username, String password);
+	
+	/**
+	 * Marks that a user has watched the specified number of episodes of the given season.
+	 * 
+	 * @param user
+	 * @param anime
+	 * @param episodeCount
+	 * @param rating
+	 * @return
+	 */
+	public boolean registerWatch(User user, Season anime, int episodeCount, int rating);
+	
+	/**
+	 * Updates a user in the persistent store
+	 * 
+	 * @param user
+	 *            Target to update.
+	 * @return true if the user was updated successfully. False if the update failed, if
+	 *         the specified user does not exist in the persistent store, or if the user
+	 *         is invalid.
+	 */
+	public boolean updateUser(User user);
+	
+	/**
+	 * Checks that a user is in the system
+	 * 
+	 * @param username
+	 * @return true if a user with the specified username exists
+	 */
+	public boolean userExists(String username);
 }

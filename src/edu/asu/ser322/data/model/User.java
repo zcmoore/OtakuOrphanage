@@ -63,4 +63,9 @@ public class User
 		this.waifu = waifu;
 	}
 	
+	public boolean validate()
+	{
+		return username != null && username.trim().length() > 0;
+	}
+	
 }
