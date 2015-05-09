@@ -28,6 +28,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import edu.asu.ser322.data.access.CharacterDao;
@@ -463,20 +465,37 @@ public class MainMenuGUI extends JPanel
 		
 		JLabel titleLabel = new JLabel("Anime Database");
 		Set<String> primarySearchTerms = searchFunctions.keySet();
-		String[] tableListArray = primarySearchTerms
-				.toArray(new String[primarySearchTerms.size()]);
+		int size = primarySearchTerms.size();
+		String[] tableListArray = primarySearchTerms.toArray(new String[size]);
 		tableList = new JComboBox<>(tableListArray);
 		searchBarTextField = new JTextField();
 		JButton searchButton = new JButton("Search");
 		JButton logoutButton = new JButton("Logout");
 		JButton profileButton = new JButton("Profile");
 		JButton goToUpdateButton = new JButton("Update Database");
-		tableModel = new DefaultTableModel();
+		tableModel = new DefaultTableModel() {
+			@Override
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;
+			}
+		};
 		
 		selectedItemPictureLabel = new JLabel();
 		selectedItemInfoLabel = new JLabel();
-		Component resultsTable = new JTable(tableModel);
-		resultsTable = new JScrollPane(resultsTable);
+		JTable resultsTable = new JTable(tableModel);
+		resultsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		resultsTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value,
+					boolean isSelected, boolean hasFocus, int row, int column)
+			{
+				super.getTableCellRendererComponent(table, value, isSelected, false, row,
+						column);
+				return this;
+			}
+		});
+		Component resultsDisplay = new JScrollPane(resultsTable);
 		
 		searchBy = new JComboBox<>();
 		updateSubSearchTerms();
@@ -519,8 +538,8 @@ public class MainMenuGUI extends JPanel
 		profileButton.setBounds(30, 30, 100, 30);
 		add(profileButton);
 		
-		resultsTable.setBounds(50, 200, 900, 250);
-		add(resultsTable);
+		resultsDisplay.setBounds(50, 200, 900, 250);
+		add(resultsDisplay);
 		
 		selectedItemPictureLabel.setBounds(350, 200, 150, 200);
 		add(selectedItemPictureLabel);
@@ -641,6 +660,7 @@ public class MainMenuGUI extends JPanel
 		displayFranchiseResults(results);
 	}
 	
+	@SuppressWarnings("unused")
 	private void searchPeopleByCharacterActed(String searchTerm)
 	{
 		// TODO
