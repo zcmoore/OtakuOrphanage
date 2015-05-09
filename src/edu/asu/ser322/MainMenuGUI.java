@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -25,7 +24,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -36,6 +34,7 @@ import edu.asu.ser322.data.access.CharacterDao;
 import edu.asu.ser322.data.access.DAOCollection;
 import edu.asu.ser322.data.access.EpisodeDao;
 import edu.asu.ser322.data.access.FranchiseDao;
+import edu.asu.ser322.data.access.PeopleDao;
 import edu.asu.ser322.data.access.SeasonDao;
 import edu.asu.ser322.data.access.StudioDao;
 import edu.asu.ser322.data.model.Character;
@@ -76,25 +75,22 @@ public class MainMenuGUI extends JPanel
 		}
 	}
 	
-	private Client client;
+	private DefaultTableModel tableModel;
+	private Map<String, Map<String, Search>> searchFunctions = new LinkedHashMap<>();
+	private BufferedImage img;
 	
+	private Client client;
 	private JLabel selectedItemPictureLabel;
 	private JLabel selectedItemInfoLabel;
+	
+	/** Selector for the primary search criteria (i.e. what entity is being searched) */
 	private JComboBox<Object> tableList;
+	
+	/** Selector for the secondary search criteria (i.e. what criteria is being searched) */
 	private JComboBox<String> searchBy;
+	
+	/** Input field for the search term */
 	private JTextField searchBarTextField;
-	private List<String> ListOfEntities;
-	private List<Character> searchResultsOfCharacter;
-	private List<Person> searchResultsOfPerson;
-	private List<Season> searchResultsOfSeason;
-	
-	private DefaultTableModel tableModel;
-	private Vector<String> columnNames = new Vector<>();
-	private Vector<Vector<String>> rowValues = new Vector<>();
-	private Vector<String> vector = new Vector<>();
-	private Map<String, Map<String, Search>> searchFunctions = new LinkedHashMap<>();
-	
-	private BufferedImage img;
 	
 	/**
 	 * constructor for the MainMenu Panel passes and client instance into here to connect
@@ -105,7 +101,6 @@ public class MainMenuGUI extends JPanel
 	public MainMenuGUI(Client client)
 	{
 		this.client = client;
-		this.ListOfEntities = new ArrayList<>();
 		init();
 	}
 	
@@ -137,19 +132,6 @@ public class MainMenuGUI extends JPanel
 	}
 	
 	/**
-	 * this will populate the top combo box of what can be searched
-	 */
-	public void populateListOfTableArray()
-	{
-		ListOfEntities.add("Character");
-		ListOfEntities.add("Episode");
-		ListOfEntities.add("Franchise");
-		ListOfEntities.add("Person");
-		ListOfEntities.add("Season");
-		ListOfEntities.add("Studio");
-	}
-	
-	/**
 	 * this will paint the the images onto the background
 	 */
 	@Override
@@ -169,6 +151,31 @@ public class MainMenuGUI extends JPanel
 		
 		Map<String, Search> map = searchFunctions.get(searchTerm);
 		map.put(subSearchTerm, action);
+	}
+	
+	private void displayArchetypeDistribution(Map<String, Integer> results)
+	{
+		Vector<String> columnNames = new Vector<>();
+		
+		columnNames.add("Archetype");
+		columnNames.add("Number of Roles Played");
+		
+		tableModel.setColumnIdentifiers(columnNames);
+		tableModel.getDataVector().clear();
+		
+		for (String key : results.keySet())
+		{
+			Vector<String> vector = new Vector<String>();
+			
+			int count = results.get(key);
+			String value = Integer.toString(count);
+			vector.add(key);
+			vector.add(value);
+			
+			tableModel.addRow(vector);
+		}
+		
+		repaint();
 	}
 	
 	/**
@@ -287,6 +294,32 @@ public class MainMenuGUI extends JPanel
 		repaint();
 	}
 	
+	private void displayPeopleResults(List<Person> people)
+	{
+		Vector<String> columnNames = new Vector<>();
+		
+		columnNames.add("PersonID");
+		columnNames.add("Name");
+		
+		tableModel.setColumnIdentifiers(columnNames);
+		tableModel.getDataVector().clear();
+		
+		for (Person person : people)
+		{
+			Vector<String> vector = new Vector<String>();
+			
+			String personId = Integer.toString(person.getID());
+			String name = person.getName();
+			
+			vector.add(personId);
+			vector.add(name);
+			
+			tableModel.addRow(vector);
+		}
+		
+		repaint();
+	}
+	
 	/**
 	 * 
 	 * This will place the column name at the top to be able to identify each column And
@@ -391,15 +424,6 @@ public class MainMenuGUI extends JPanel
 		return (date == null) ? defaultDateString : format.format(date);
 	}
 	
-	private void updateSubSearchTerms()
-	{
-		Map<String, Search> map = searchFunctions.get(tableList.getSelectedItem());
-		String[] subSearchTerms = map.keySet().toArray(new String[map.size()]);
-		ComboBoxModel<String> model = new DefaultComboBoxModel<>(subSearchTerms);
-		searchBy.setModel(model);
-		repaint();
-	}
-	
 	/**
 	 * this will initialize most of objects that we will be using, this creates the all
 	 * swing components and give listeners to where it is needed it places the layout of
@@ -425,14 +449,12 @@ public class MainMenuGUI extends JPanel
 		addSearch("Season", "By Year", 			this::searchSeasonsByYear);
 		addSearch("Season", "List All", 		(s) -> searchAllSeasons());
 		
-		// TODO: add Person Searches
-		/*
-		addSearch("Person", "By Name", 			function);
-		addSearch("Person", "Seasons Acted In", function);
-		addSearch("Person", "Played Character", function);
-		addSearch("Person", "Archetypes", 		function);
-		addSearch("Person", "List All", 		function);
-		*/
+		// TODO: Reorganize Searches
+		addSearch("Person", "By Name", 			this::searchPeopleByName);
+		addSearch("Person", "Seasons Acted In", this::searchSeasonsByActor);
+		addSearch("Person", "Played Character", this::searchCharactersByActor);
+		addSearch("Person", "Archetypes", 		this::searchArchetypeDistributionByPerson);
+		addSearch("Person", "List All", 		(s) -> searchAllPeople());
 		
 		addSearch("Studio", "By Name", 			this::searchStudiosByName);
 		addSearch("Studio", "List All", 		(s) -> searchAllStudios());
@@ -440,7 +462,6 @@ public class MainMenuGUI extends JPanel
 		
 		setOpaque(false);
 		addImageBackGround();
-		populateListOfTableArray();
 		
 		JLabel titleLabel = new JLabel("Anime Database");
 		Set<String> primarySearchTerms = searchFunctions.keySet();
@@ -513,220 +534,6 @@ public class MainMenuGUI extends JPanel
 		add(goToUpdateButton);
 	}
 	
-	/**
-	 * this will place the results of the search and place them into a vector which will
-	 * then in turn places them into the table to display the results to the users
-	 * 
-	 * @param character
-	 */
-	private void parseCharacter(Character character)
-	{
-		Vector<String> vector = new Vector<String>();
-		String name = character.getName();
-		String gender = character.getGender().toString();
-		String archetype = character.getArchetype();
-		String hairColor = character.getHairColor();
-		String age = Integer.toString(character.getAge());
-		
-		vector.add(name);
-		vector.add(gender);
-		vector.add(archetype);
-		vector.add(hairColor);
-		vector.add(age);
-		rowValues.add(vector);
-	}
-	
-	/**
-	 * this will grab the season results and place them into a vector which will then in
-	 * turn place them into the table to display the results
-	 * 
-	 * @param season
-	 */
-	private void parseSeason(Season season)
-	{
-		Vector<String> vector = new Vector<String>();
-		String seriesName = season.getSeriesName();
-		String seasonNumber = Integer.toString(season.getSeasonNumber());
-		String showName = season.getName();
-		String airDate = "";
-		if (season.getAirDate() != null)
-		{
-			airDate = formatDate(season.getAirDate());
-		}
-		String finishDate = "";
-		if (season.getFinishDate() != null)
-		{
-			finishDate = formatDate(season.getFinishDate());
-		}
-		
-		String appropriateness = season.getAppropriateness();
-		vector.add(seriesName);
-		vector.add(seasonNumber);
-		vector.add(showName);
-		vector.add(airDate);
-		vector.add(finishDate);
-		vector.add(appropriateness);
-		rowValues.add(vector);
-	}
-	
-	/**
-	 * 
-	 * This will place the column name at the top to be able to identify each column And
-	 * this this will fill the vectors with the results which will then be able to fill
-	 * the table will the results
-	 * 
-	 */
-	private void personSearches()
-	{
-		if (searchBy.getSelectedItem().toString().equals("By Name"))
-		{
-			searchResultsOfPerson = DAOCollection.getPeopleDao().findPerson(
-					searchBarTextField.getText());
-			columnNames.add("PersonID");
-			columnNames.add("Name");
-			
-			tableModel.setColumnIdentifiers(columnNames);
-			
-			for (Person person : searchResultsOfPerson)
-			{
-				Vector<String> vector = new Vector<String>();
-				String personId = Integer.toString(person.getID());
-				String name = person.getName();
-				
-				vector.add(personId);
-				vector.add(name);
-				
-				rowValues.add(vector);
-			}
-		}
-		else if (searchBy.getSelectedItem().toString().equals("Seasons Acted In"))
-		{
-			columnNames.add("SeriesName");
-			columnNames.add("SeasonNumber");
-			columnNames.add("ShowName");
-			columnNames.add("AirDate");
-			columnNames.add("FinishDate");
-			columnNames.add("Appropriateness");
-			tableModel.setColumnIdentifiers(columnNames);
-			searchResultsOfPerson = DAOCollection.getPeopleDao().findPerson(
-					searchBarTextField.getText());
-			
-			if (searchResultsOfPerson.size() != 0)
-			{
-				JOptionPane
-						.showMessageDialog(
-								client,
-								"Multiple persons' with the same name!!!\nEach person is seperated by ======.",
-								"Multiple people with the same name",
-								JOptionPane.WARNING_MESSAGE);
-				
-				for (Person person : searchResultsOfPerson)
-				{
-					searchResultsOfSeason = DAOCollection.getPeopleDao()
-							.getSeasonsActedBy(person);
-					for (Season season : searchResultsOfSeason)
-					{
-						parseSeason(season);
-					}
-					seperator(6);
-				}
-			}
-		}
-		else if (searchBy.getSelectedItem().toString().equals("Played Character"))
-		{
-			columnNames.add("Name");
-			columnNames.add("Gender");
-			columnNames.add("Archetype");
-			columnNames.add("Hair Color");
-			columnNames.add("Age");
-			tableModel.setColumnIdentifiers(columnNames);
-			searchResultsOfPerson = DAOCollection.getPeopleDao().findPerson(
-					searchBarTextField.getText());
-			if (searchResultsOfPerson.size() != 0)
-			{
-				if (searchResultsOfPerson.size() > 1)
-				{
-					JOptionPane
-							.showMessageDialog(
-									client,
-									"Multiple persons' with the same name!!!\nEach person is seperated by ======.",
-									"Multiple people with the same name",
-									JOptionPane.WARNING_MESSAGE);
-				}
-				
-				for (Person person : searchResultsOfPerson)
-				{
-					searchResultsOfCharacter = DAOCollection.getPeopleDao()
-							.getCharactersActedBy(person);
-					for (Character character : searchResultsOfCharacter)
-					{
-						parseCharacter(character);
-					}
-					seperator(5);
-				}
-			}
-			
-		}
-		else if (searchBy.getSelectedItem().toString().equals("Archetype Distribution"))
-		{
-			columnNames.add("Archetype");
-			columnNames.add("Number of instances of being that Archetype");
-			tableModel.setColumnIdentifiers(columnNames);
-			searchResultsOfPerson = DAOCollection.getPeopleDao().findPerson(
-					searchBarTextField.getText());
-			if (searchResultsOfPerson.size() != 0)
-			{
-				if (searchResultsOfPerson.size() > 1)
-				{
-					JOptionPane
-							.showMessageDialog(
-									client,
-									"Multiple persons' with the same name!!!\nEach person is seperated by ======.",
-									"Multiple people with the same name",
-									JOptionPane.WARNING_MESSAGE);
-				}
-				for (Person person : searchResultsOfPerson)
-				{
-					Map<String, Integer> countingArchetype = DAOCollection.getPeopleDao()
-							.getArchetypeDistributionOf(person);
-					for (String key : countingArchetype.keySet())
-					{
-						vector = new Vector<String>();
-						String insertedKey = key;
-						String count = Integer.toString(countingArchetype.get(key));
-						vector.add(insertedKey);
-						vector.add(count);
-						rowValues.add(vector);
-					}
-					
-					seperator(2);
-				}
-			}
-		}
-		else
-		{
-			searchResultsOfPerson = DAOCollection.getPeopleDao().listAll();
-			columnNames.add("PersonID");
-			columnNames.add("Name");
-			
-			tableModel.setColumnIdentifiers(columnNames);
-			
-			for (Person person : searchResultsOfPerson)
-			{
-				Vector<String> vector = new Vector<String>();
-				String personId = Integer.toString(person.getID());
-				String name = person.getName();
-				
-				vector.add(personId);
-				vector.add(name);
-				
-				rowValues.add(vector);
-			}
-		}
-		repaint();
-		tableModel.setDataVector(rowValues, columnNames);
-	}
-	
 	private void searchAllCharacters()
 	{
 		CharacterDao dao = DAOCollection.getCharacterDao();
@@ -748,6 +555,13 @@ public class MainMenuGUI extends JPanel
 		displayFranchiseResults(results);
 	}
 	
+	private void searchAllPeople()
+	{
+		PeopleDao dao = DAOCollection.getPeopleDao();
+		List<Person> results = dao.listAll();
+		displayPeopleResults(results);
+	}
+	
 	private void searchAllSeasons()
 	{
 		SeasonDao dao = DAOCollection.getSeasonDao();
@@ -760,6 +574,28 @@ public class MainMenuGUI extends JPanel
 		StudioDao dao = DAOCollection.getStudioDao();
 		List<Studio> results = dao.listAll();
 		displayStudioResults(results);
+	}
+	
+	private void searchArchetypeDistributionByPerson(String searchTerm)
+	{
+		// TODO: Clean up
+		// TODO: Support Multiple Actors Found
+		// TODO: Handle "no results"
+		PeopleDao dao = DAOCollection.getPeopleDao();
+		Person actor = dao.findPerson(searchTerm).get(0);
+		Map<String, Integer> results = dao.getArchetypeDistributionOf(actor);
+		displayArchetypeDistribution(results);
+	}
+	
+	private void searchCharactersByActor(String searchTerm)
+	{
+		// TODO: Clean up
+		// TODO: Support Multiple Actors Found
+		// TODO: Handle "no results"
+		PeopleDao dao = DAOCollection.getPeopleDao();
+		Person actor = dao.findPerson(searchTerm).get(0);
+		List<Character> results = dao.getCharactersActedBy(actor);
+		displayCharacterResults(results);
 	}
 	
 	private void searchCharactersByArchetype(String searchTerm)
@@ -807,6 +643,30 @@ public class MainMenuGUI extends JPanel
 		displayFranchiseResults(results);
 	}
 	
+	private void searchPeopleByCharacterActed(String searchTerm)
+	{
+		// TODO
+		throw new UnsupportedOperationException("Not Yet Implemented");
+	}
+	
+	private void searchPeopleByName(String searchTerm)
+	{
+		PeopleDao dao = DAOCollection.getPeopleDao();
+		List<Person> results = dao.findPerson(searchTerm);
+		displayPeopleResults(results);
+	}
+	
+	private void searchSeasonsByActor(String searchTerm)
+	{
+		// TODO: Clean up
+		// TODO: Support Multiple Actors Found
+		// TODO: Handle "no results"
+		PeopleDao dao = DAOCollection.getPeopleDao();
+		Person actor = dao.findPerson(searchTerm).get(0);
+		List<Season> results = dao.getSeasonsActedBy(actor);
+		displaySeasonResults(results);
+	}
+	
 	private void searchSeasonsByGenre(String searchTerm)
 	{
 		SeasonDao dao = DAOCollection.getSeasonDao();
@@ -838,20 +698,12 @@ public class MainMenuGUI extends JPanel
 		displayStudioResults(results);
 	}
 	
-	/**
-	 * This will separate the results should there be an instances of the same name of
-	 * Persons
-	 * 
-	 * @param length
-	 */
-	private void seperator(int length)
+	private void updateSubSearchTerms()
 	{
-		vector = new Vector<>();
-		String dashes = "=============";
-		for (int i = 0; i < length; i++)
-		{
-			vector.add(dashes);
-		}
-		rowValues.add(vector);
+		Map<String, Search> map = searchFunctions.get(tableList.getSelectedItem());
+		String[] subSearchTerms = map.keySet().toArray(new String[map.size()]);
+		ComboBoxModel<String> model = new DefaultComboBoxModel<>(subSearchTerms);
+		searchBy.setModel(model);
+		repaint();
 	}
 }
