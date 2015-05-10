@@ -421,16 +421,15 @@ public class MainMenuGUI extends JPanel
 		return (date == null) ? defaultDateString : format.format(date);
 	}
 	
-	/**
-	 * this will initialize most of objects that we will be using, this creates the all
-	 * swing components and give listeners to where it is needed it places the layout of
-	 * the components being used.
-	 */
-	private void init()
+	private String[] getPrimarySearchCriteria()
 	{
-		// XXX: Consider a layout manager
-		this.setLayout(null);
-		
+		Set<String> primarySearchTerms = searchFunctions.keySet();
+		int size = primarySearchTerms.size();
+		return primarySearchTerms.toArray(new String[size]);
+	}
+	
+	protected void populateSearchFunctions()
+	{
 		//@formatter:off
 		addSearch("Character", "By Name", 		this::searchCharactersByName);
 		addSearch("Character", "By Archetype", 	this::searchCharactersByArchetype);
@@ -459,15 +458,26 @@ public class MainMenuGUI extends JPanel
 		addSearch("Studio", "By Name", 			this::searchStudiosByName);
 		addSearch("Studio", "List All", 		(s) -> searchAllStudios());
 		//@formatter:on
-		
+	}
+	
+	/**
+	 * this will initialize most of objects that we will be using, this creates the all
+	 * swing components and give listeners to where it is needed it places the layout of
+	 * the components being used.
+	 */
+	private void init()
+	{
+		// XXX: Consider a layout manager
+		setLayout(null);
 		setOpaque(false);
 		addImageBackGround();
+		populateSearchFunctions();
+		
+		String[] primarySearchList = getPrimarySearchCriteria();
 		
 		JLabel titleLabel = new JLabel("Anime Database");
-		Set<String> primarySearchTerms = searchFunctions.keySet();
-		int size = primarySearchTerms.size();
-		String[] tableListArray = primarySearchTerms.toArray(new String[size]);
-		tableList = new JComboBox<>(tableListArray);
+		
+		tableList = new JComboBox<>(primarySearchList);
 		searchBarTextField = new JTextField();
 		JButton searchButton = new JButton("Search");
 		JButton logoutButton = new JButton("Logout");
